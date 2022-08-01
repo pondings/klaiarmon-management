@@ -7,6 +7,8 @@ import { initializeApp,provideFirebaseApp } from '@angular/fire/app';
 import { environment } from '../environments/environment';
 import { provideAuth,getAuth } from '@angular/fire/auth';
 import { provideDatabase,getDatabase } from '@angular/fire/database';
+import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
+import { CoreModule } from './core/core.module';
 
 @NgModule({
   declarations: [
@@ -17,7 +19,9 @@ import { provideDatabase,getDatabase } from '@angular/fire/database';
     AppRoutingModule,
     provideFirebaseApp(() => initializeApp(environment.firebase)),
     provideAuth(() => getAuth()),
-    provideDatabase(() => getDatabase())
+    provideDatabase(() => getDatabase()),
+    NgbModule,
+    CoreModule
   ],
   providers: [],
   bootstrap: [AppComponent]
