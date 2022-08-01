@@ -1,0 +1,14 @@
+{
+  "projects": {
+    "default": "klaiarmon-management"
+  },
+  "targets": {
+    "klaiarmon-management": {
+      "hosting": {
+        "klaiarmon-management": [
+          "klaiarmon-management"
+        ]
+      }
+    }
+  }
+}
