@@ -100,6 +100,16 @@
             ],
             "scripts": []
           }
+        },
+        "deploy": {
+          "builder": "@angular/fire:deploy",
+          "options": {
+            "prerender": false,
+            "ssr": false,
+            "browserTarget": "klaiarmon-management:build:production",
+            "firebaseProject": "klaiarmon-management",
+            "firebaseHostingSite": "klaiarmon-management"
+          }
         }
       }
     }
