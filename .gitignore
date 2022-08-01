@@ -107,3 +107,6 @@ dist
 .firebase
 *-debug.log
 .runtimeconfig.json
+
+# Angular
+.angular
