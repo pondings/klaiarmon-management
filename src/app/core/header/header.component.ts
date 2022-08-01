@@ -3,6 +3,7 @@ import { ChangeDetectionStrategy, Component, ViewEncapsulation } from "@angular/
 @Component({
     selector: 'app-header',
     templateUrl: './header.component.html',
+    styleUrls: ['./header.component.scss'],
     changeDetection: ChangeDetectionStrategy.OnPush,
     encapsulation: ViewEncapsulation.None
 })
