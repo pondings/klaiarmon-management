@@ -20,7 +20,8 @@
                     <a class="nav-link">Home Management</a>
                 </li>
             </ul>
-            <div class="d-flex">
+            <div class="d-flex user-info">
+                <span>{{username$ | async}}</span>
                 <button class="btn btn-outline-success" (click)="logout()">
                     <fa-icon [icon]="faRightFromBracket"></fa-icon>
                     Logout
