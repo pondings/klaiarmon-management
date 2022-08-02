@@ -7,6 +7,9 @@ jobs:
   build_and_preview:
     if: '${{ github.event.pull_request.head.repo.full_name == github.repository }}'
     runs-on: ubuntu-latest
+    env:
+      FIREBASE_API_KEY: '${{ secrets.FIREBASE_API_KEY }}'
+      FIREBASE_APP_ID: '${{ secrets.FIREBASE_APP_ID }}'
     steps:
       - name: Checkout Repo
         uses: actions/checkout@v2
