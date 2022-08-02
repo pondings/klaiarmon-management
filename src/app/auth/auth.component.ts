@@ -1,6 +1,7 @@
 import { ChangeDetectionStrategy, Component, ViewEncapsulation } from "@angular/core";
 import { AngularFireAuth } from "@angular/fire/compat/auth";
 import { FormBuilder, FormGroup } from "@angular/forms";
+import { Router } from "@angular/router";
 
 @Component({
     selector: 'app-auth',
@@ -14,16 +15,14 @@ export class AuthComponent {
     loginForm: FormGroup;
 
     constructor(private angularFireAuth: AngularFireAuth,
+        private router: Router,
         private fb: FormBuilder) {
-        // setTimeout(() => {
-            // angularFireAuth.signInWithEmailAndPassword('pawarut.klaiarmon@gmail.com', 'Pond1234')
-            // .then(console.log);
-        // }, 5000);
         this.loginForm = this.createFormGroup();
     }
 
     login() {
-        this.angularFireAuth.signInWithEmailAndPassword(this.usernameCtrl.value, this.passwordCtrl.value);
+        this.angularFireAuth.signInWithEmailAndPassword(this.usernameCtrl.value, this.passwordCtrl.value)
+            .then(userInfo => this.router.navigate(['']));
     }
 
     get usernameCtrl() {
