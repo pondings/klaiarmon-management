@@ -1,18 +1,11 @@
+import { firebase } from './firebase-environment';
+
 // This file can be replaced during build by using the `fileReplacements` array.
 // `ng build` replaces `environment.ts` with `environment.prod.ts`.
 // The list of file replacements can be found in `angular.json`.
 
 export const environment = {
-  firebase: {
-    projectId: 'klaiarmon-management',
-    appId: '1:870991689767:web:0f067378159faa86177602',
-    databaseURL: 'https://klaiarmon-management-default-rtdb.asia-southeast1.firebasedatabase.app',
-    storageBucket: 'klaiarmon-management.appspot.com',
-    apiKey: '',
-    authDomain: 'klaiarmon-management.firebaseapp.com',
-    messagingSenderId: '870991689767',
-    measurementId: 'G-L4BC23E9QC',
-  },
+  ...firebase,
   production: false
 };
 
