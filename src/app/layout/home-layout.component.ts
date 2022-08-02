@@ -5,6 +5,7 @@ import { ChangeDetectionStrategy, Component } from "@angular/core";
     template: `
         <app-header></app-header>
         <router-outlet></router-outlet>
+        <app-sidebar></app-sidebar>
     `,
     changeDetection: ChangeDetectionStrategy.OnPush
 })
