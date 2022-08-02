@@ -1,3 +1,5 @@
+@import '~bootstrap/scss/bootstrap-utilities';
+
 app-auth {
     height: 100vh;
     display: flex;
@@ -5,14 +7,25 @@ app-auth {
     align-items: center;
 
     .card {
-        height: 50vh;
         width: 50vw;
+
+        @include media-breakpoint-down(sm) { 
+            width: 90vw;
+        }
     }
 
-    .flex-input {
-        display: flex;
-        flex-flow: column;
-        align-items: start;
+    .card-body.grid {
+        text-align: left;
+        --bs-rows: 2;
+
+        div.grid {
+            --bs-rows: 2;
+            --bs-columns: 1;
+            row-gap: 0;
+
+            justify-self: center;
+            width: 80%;
+        }
     }
 
 }
