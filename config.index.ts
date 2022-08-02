@@ -5,7 +5,7 @@ const targetPath = './src/environments/environment.prod.ts';
 const envConfigFile = `export const environment = {
     firebase: {
       projectId: 'klaiarmon-management',
-      appId: '1:870991689767:web:0f067378159faa86177602',
+      appId: '${process.env['FIREBASE_APP_ID']}',
       databaseURL: 'https://klaiarmon-management-default-rtdb.asia-southeast1.firebasedatabase.app',
       storageBucket: 'klaiarmon-management.appspot.com',
       apiKey: '${process.env['FIREBASE_API_KEY']}',

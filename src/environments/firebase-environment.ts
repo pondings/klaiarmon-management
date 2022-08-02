@@ -1,7 +1,7 @@
 export const firebase = {
   firebase: {
     projectId: 'klaiarmon-management',
-      appId: '1:870991689767:web:0f067378159faa86177602',
+      appId: '',
       databaseURL: 'https://klaiarmon-management-default-rtdb.asia-southeast1.firebasedatabase.app',
       storageBucket: 'klaiarmon-management.appspot.com',
       apiKey: '',
