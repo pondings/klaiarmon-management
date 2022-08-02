@@ -7,17 +7,8 @@
         </button>
         <div class="collapse navbar-collapse" id="navbarCollapse">
             <ul class="navbar-nav me-auto mb-2 mb-md-0">
-                <li class="nav-item">
-                    <a class="nav-link active">Dashboard</a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link">Accounting</a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link">Condo Management</a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link">Home Management</a>
+                <li *ngFor="let menu of menuList" class="nav-item">
+                    <a class="nav-link" [routerLink]="menu.path" [routerLinkActive]="['active']">{{menu.title}}</a>
                 </li>
             </ul>
             <div class="d-flex user-info">

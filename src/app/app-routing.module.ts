@@ -13,6 +13,9 @@ const routes: Routes = [
   {
     path: '',
     component: HomeLayoutComponent,
+    children: [
+      { path: '', loadChildren: () => import('./pages/dashboard/dashboard.module').then(m => m.DashboardModule) }
+    ],
     ...canActivate(redirectUnauthorizedToLogin)
   },
   {

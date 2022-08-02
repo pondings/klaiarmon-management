@@ -18,6 +18,13 @@ export class HeaderComponent {
     faRightFromBracket = faRightFromBracket;
     username$: Observable<string | null | undefined>;
 
+    menuList = [
+        { title: 'Dashboard', path: '' },
+        { title: 'Accounting', path: 'accounting' },
+        { title: 'Condo', path: 'condo' },
+        { title: 'Home', path: 'home' }
+    ];
+
     constructor(private angularFireAuth: AngularFireAuth,
             private spinnerService: SpinnerService,
             private toastService: ToastService,
