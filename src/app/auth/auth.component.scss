@@ -1,0 +1,18 @@
+app-auth {
+    height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+    .card {
+        height: 50vh;
+        width: 50vw;
+    }
+
+    .flex-input {
+        display: flex;
+        flex-flow: column;
+        align-items: start;
+    }
+
+}

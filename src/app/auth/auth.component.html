@@ -1,0 +1,19 @@
+<div class="card text-center d-flex" [formGroup]="loginForm">
+    <div class="card-header">
+        <h5 class="card-title">Please Login To Continue</h5>
+    </div>
+    <div class="card-body">
+        <div class="g-col-12 mb-3 flex-input">
+            <label class="form-label">Email address</label>
+            <input type="email" class="form-control" placeholder="name@example.com"
+                formControlName="username">
+        </div>
+        <div class="g-col-12 mb-3 flex-input">
+            <label class="form-label">Password</label>
+            <input type="password" class="form-control" formControlName="password">
+        </div>
+    </div>
+    <div class="card-footer text-muted">
+        <a class="btn btn-primary" (click)="login()">Login</a>
+    </div>
+</div>

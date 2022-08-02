@@ -9,10 +9,16 @@ import { provideAuth,getAuth } from '@angular/fire/auth';
 import { provideDatabase,getDatabase } from '@angular/fire/database';
 import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
 import { CoreModule } from './core/core.module';
+import { AuthLayoutComponent } from './layout/auth-layout.component';
+import { HomeLayoutComponent } from './layout/home-layout.component';
+import { FIREBASE_OPTIONS } from '@angular/fire/compat';
+import { AuthModule } from './auth/auth.module';
 
 @NgModule({
   declarations: [
-    AppComponent
+    AppComponent,
+    AuthLayoutComponent,
+    HomeLayoutComponent
   ],
   imports: [
     BrowserModule,
@@ -21,9 +27,12 @@ import { CoreModule } from './core/core.module';
     provideAuth(() => getAuth()),
     provideDatabase(() => getDatabase()),
     NgbModule,
-    CoreModule
+    CoreModule,
+    AuthModule
   ],
-  providers: [],
+  providers: [
+    { provide: FIREBASE_OPTIONS, useValue: environment.firebase }
+  ],
   bootstrap: [AppComponent]
 })
 export class AppModule { }
