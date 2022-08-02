@@ -5,7 +5,6 @@ import { SpinnerService } from './core/spinner/spinner.service';
 @Component({
   selector: 'km-root',
   templateUrl: './app.component.html',
-  styleUrls: ['./app.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
   encapsulation: ViewEncapsulation.None
 })
