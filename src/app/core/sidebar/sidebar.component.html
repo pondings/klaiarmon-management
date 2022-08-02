@@ -1,0 +1,20 @@
+<button class="btn btn-primary" type="button" data-bs-toggle="offcanvas" data-bs-target="#offcanvasWithBothOptions"
+    aria-controls="offcanvasWithBothOptions" (click)="show()">Test sidebar sub menu list</button>
+
+<div class="offcanvas show offcanvas-start" tabindex="-1" id="offcanvasWithBothOptions"
+    aria-labelledby="offcanvasWithBothOptionsLabel" [ngClass]=" { show: isShow$ | async } ">
+    <div class="offcanvas-header">
+        <h5 class="offcanvas-title" id="offcanvasWithBothOptionsLabel">Sub Menu</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="offcanvas" aria-label="Close"></button>
+    </div>
+    <div class="offcanvas-body">
+        <ul class="nav nav-pills flex-column mb-auto">
+            <li *ngFor="let menu of (subMenuList$ | async)" class="nav-item">
+                <a class="nav-link" [routerLink]="menu.path" [routerLinkActive]="['active']" [routerLinkActiveOptions]="{exact: true}">
+                    <fa-icon [icon]="menu.icon" class="me-2"></fa-icon>
+                    {{menu.title}}
+                </a>
+            </li>
+        </ul>
+    </div>
+</div>

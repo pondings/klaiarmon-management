@@ -1,6 +1,7 @@
 import { ChangeDetectionStrategy, Component, ViewEncapsulation } from '@angular/core';
 import { BehaviorSubject } from 'rxjs';
 import { SpinnerService } from './core/spinner/spinner.service';
+import { MenuService } from './service/menu.service';
 
 @Component({
   selector: 'km-root',
@@ -12,7 +13,8 @@ export class AppComponent {
 
   isShowSpinner$: BehaviorSubject<boolean>;
 
-  constructor(private spinnerService: SpinnerService) {
+  constructor(private spinnerService: SpinnerService,
+      menuService: MenuService) {
     this.isShowSpinner$ = spinnerService.isShowSpinner$;
   }
 

@@ -8,3 +8,13 @@ $enable-cssgrid: true;
 body {
     background-color: lightcyan;
 }
+
+@include media-breakpoint-down(sm) {
+    app-auth > form.card {
+        width: 90vw;
+    }
+
+    app-sidebar > div.offcanvas {
+        max-width: 60% !important;
+    }
+}
