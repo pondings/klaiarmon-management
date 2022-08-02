@@ -16,10 +16,10 @@ const routes: Routes = [
     pathMatch: 'full'
   },
   {
-    path: 'dashboard',
+    path: '',
     component: HomeLayoutComponent,
     children: [
-      { path: '', loadChildren: () => import('./pages/dashboard/dashboard.module').then(m => m.DashboardModule) },
+      { path: 'dashboard', loadChildren: () => import('./pages/dashboard/dashboard.module').then(m => m.DashboardModule) },
       { path: 'accounting', loadChildren: () => import('./pages/accounting/accounting.module').then(m => m.AccountingModule) },
       { path: 'condo', loadChildren: () => import('./pages/condo/condo.module').then(m => m.CondoModule) },
       { path: 'home', loadChildren: () => import('./pages/home/home.module').then(m => m.HomeModule) }

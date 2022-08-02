@@ -7,8 +7,11 @@
         </button>
         <div class="collapse navbar-collapse" id="navbarCollapse">
             <ul class="navbar-nav me-auto mb-2 mb-md-0">
-                <li *ngFor="let menu of menuList" class="nav-item">
-                    <a class="nav-link" [routerLink]="menu.path" [routerLinkActive]="['active']">{{menu.title}}</a>
+                <li *ngFor="let menu of (menuList$ | async)" class="nav-item">
+                    <a class="nav-link" [routerLink]="menu.path" [routerLinkActive]="['active']">
+                        <fa-icon [icon]="menu.icon"></fa-icon>
+                        {{menu.title}}
+                    </a>
                 </li>
             </ul>
             <div class="d-flex user-info">

@@ -2,7 +2,9 @@ import { ChangeDetectionStrategy, Component, ViewEncapsulation } from "@angular/
 import { AngularFireAuth } from "@angular/fire/compat/auth";
 import { Router } from "@angular/router";
 import { faRightFromBracket } from '@fortawesome/free-solid-svg-icons';
-import { map, Observable } from "rxjs";
+import { BehaviorSubject, map, Observable } from "rxjs";
+import { Menu } from "src/app/model/menu";
+import { MenuService } from "src/app/service/menu.service";
 import { SpinnerService } from "../spinner/spinner.service";
 import { ToastService } from "../toast/toast.service";
 
@@ -17,20 +19,16 @@ export class HeaderComponent {
 
     faRightFromBracket = faRightFromBracket;
     username$: Observable<string | null | undefined>;
-
-    menuList = [
-        { title: 'Dashboard', path: '' },
-        { title: 'Accounting', path: 'accounting' },
-        { title: 'Condo', path: 'condo' },
-        { title: 'Home', path: 'home' }
-    ];
+    menuList$: BehaviorSubject<Menu[]>;
 
     constructor(private angularFireAuth: AngularFireAuth,
-            private spinnerService: SpinnerService,
-            private toastService: ToastService,
-            private router: Router) {
-                this.username$ = angularFireAuth.user.pipe(map(user => user?.displayName || user?.email));
-        }
+        private spinnerService: SpinnerService,
+        private toastService: ToastService,
+        private router: Router,
+        menuService: MenuService) {
+        this.username$ = angularFireAuth.user.pipe(map(user => user?.displayName || user?.email));
+        this.menuList$ = menuService.menuList$;
+    }
 
     logout(): void {
         this.spinnerService.show();

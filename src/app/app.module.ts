@@ -14,6 +14,7 @@ import { HomeLayoutComponent } from './layout/home-layout.component';
 import { FIREBASE_OPTIONS } from '@angular/fire/compat';
 import { AuthModule } from './auth/auth.module';
 import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
+import { MenuService } from './service/menu.service';
 
 @NgModule({
   declarations: [
@@ -33,7 +34,8 @@ import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
     FontAwesomeModule
   ],
   providers: [
-    { provide: FIREBASE_OPTIONS, useValue: environment.firebase }
+    { provide: FIREBASE_OPTIONS, useValue: environment.firebase },
+    MenuService
   ],
   bootstrap: [AppComponent]
 })
