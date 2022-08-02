@@ -2,6 +2,7 @@ import { ChangeDetectionStrategy, Component, ViewEncapsulation } from "@angular/
 import { AngularFireAuth } from "@angular/fire/compat/auth";
 import { FormBuilder, FormGroup } from "@angular/forms";
 import { Router } from "@angular/router";
+import { SpinnerService } from "../core/spinner/spinner.service";
 
 @Component({
     selector: 'app-auth',
@@ -15,14 +16,17 @@ export class AuthComponent {
     loginForm: FormGroup;
 
     constructor(private angularFireAuth: AngularFireAuth,
+        private spinnerService: SpinnerService,
         private router: Router,
         private fb: FormBuilder) {
         this.loginForm = this.createFormGroup();
     }
 
     login() {
+        this.spinnerService.show();
         this.angularFireAuth.signInWithEmailAndPassword(this.usernameCtrl.value, this.passwordCtrl.value)
-            .then(userInfo => this.router.navigate(['']));
+            .then(_ => this.router.navigate(['']))
+            .finally(() => this.spinnerService.hide());
     }
 
     get usernameCtrl() {

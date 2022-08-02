@@ -2,6 +2,7 @@ import { ChangeDetectionStrategy, Component, ViewEncapsulation } from "@angular/
 import { AngularFireAuth } from "@angular/fire/compat/auth";
 import { Router } from "@angular/router";
 import { faRightFromBracket } from '@fortawesome/free-solid-svg-icons';
+import { SpinnerService } from "../spinner/spinner.service";
 
 @Component({
     selector: 'app-header',
@@ -15,11 +16,14 @@ export class HeaderComponent {
     faRightFromBracket = faRightFromBracket;
 
     constructor(private angularFireAuth: AngularFireAuth,
+            private spinnerService: SpinnerService,
             private router: Router) {}
 
     logout(): void {
+        this.spinnerService.show();
         this.angularFireAuth.signOut()
-            .then(_ => this.router.navigate(['login']));
+            .then(_ => this.router.navigate(['login']))
+            .finally(() => this.spinnerService.hide());
     }
 
 }
