@@ -15,7 +15,8 @@ const routes: Routes = [
     component: HomeLayoutComponent,
     children: [
       { path: '', loadChildren: () => import('./pages/dashboard/dashboard.module').then(m => m.DashboardModule) },
-      { path: 'accounting', loadChildren: () => import('./pages/accounting/accounting.module').then(m => m.AccountingModule) }
+      { path: 'accounting', loadChildren: () => import('./pages/accounting/accounting.module').then(m => m.AccountingModule) },
+      { path: 'condo', loadChildren: () => import('./pages/condo/condo.module').then(m => m.CondoModule) }
     ],
     ...canActivate(redirectUnauthorizedToLogin)
   },
