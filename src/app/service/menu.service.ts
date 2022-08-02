@@ -29,7 +29,6 @@ export class MenuService {
     }
 
     private mapUrlToMenu(url: string): Menu | undefined {
-        console.log(url);
         return MENU_LIST.find(menu => menu.path === url);
     }
 

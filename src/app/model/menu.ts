@@ -15,6 +15,7 @@ const DASHBOARD: Menu = {
     icon: faChartLine,
 
     subMenuList: [
+        { path: 'dashboard', title: 'Dashboard Home', icon: faChartLine },
         { path: 'dashboard/calendar', title: 'Calendar', icon: faCalendar }
     ]
 }
