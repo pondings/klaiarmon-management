@@ -1,0 +1,10 @@
+app-toast {
+    ngb-toast {
+        position: fixed;
+        bottom: 0;
+        right: 0;
+        margin-bottom: 8px;
+        margin-right: 8px;
+        z-index: 9999;
+    }
+}

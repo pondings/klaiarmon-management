@@ -37,4 +37,13 @@ app-header {
         width: unset !important;
     }
 
+    .user-info {
+        align-items: center;
+
+        span {
+            margin-right: 1rem;
+            font-weight: bolder;
+        }
+    }
+
 }

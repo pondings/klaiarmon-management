@@ -3,6 +3,7 @@ import { AngularFireAuth } from "@angular/fire/compat/auth";
 import { FormBuilder, FormGroup } from "@angular/forms";
 import { Router } from "@angular/router";
 import { SpinnerService } from "../core/spinner/spinner.service";
+import { ToastService } from "../core/toast/toast.service";
 
 @Component({
     selector: 'app-auth',
@@ -17,6 +18,7 @@ export class AuthComponent {
 
     constructor(private angularFireAuth: AngularFireAuth,
         private spinnerService: SpinnerService,
+        private toastService: ToastService,
         private router: Router,
         private fb: FormBuilder) {
         this.loginForm = this.createFormGroup();
@@ -25,8 +27,14 @@ export class AuthComponent {
     login() {
         this.spinnerService.show();
         this.angularFireAuth.signInWithEmailAndPassword(this.usernameCtrl.value, this.passwordCtrl.value)
-            .then(_ => this.router.navigate(['']))
+            .then(credential => this.successLogin(credential.user?.displayName || credential.user?.email))
+            .catch(_ => this.toastService.showError('Something went wrong, please contact Pondz.'))
             .finally(() => this.spinnerService.hide());
+    }
+
+    successLogin(displayName: string | null | undefined): void {
+        this.router.navigate(['']);
+        this.toastService.showSuccess(`Greeting ${displayName}`);
     }
 
     get usernameCtrl() {
