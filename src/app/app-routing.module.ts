@@ -1,7 +1,29 @@
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
+import { canActivate, redirectUnauthorizedTo, redirectLoggedInTo } from '@angular/fire/compat/auth-guard';
 
-const routes: Routes = [];
+import { AuthComponent } from './auth/auth.component';
+import { AuthLayoutComponent } from './layout/auth-layout.component';
+import { HomeLayoutComponent } from './layout/home-layout.component';
+
+const redirectUnauthorizedToLogin = () => redirectUnauthorizedTo(['login']);
+const redirectAuthorizedToHome = () => redirectLoggedInTo(['']);
+
+const routes: Routes = [
+  {
+    path: '',
+    component: HomeLayoutComponent,
+    ...canActivate(redirectUnauthorizedToLogin)
+  },
+  {
+    path: 'login',
+    component: AuthLayoutComponent,
+    children: [
+      { path: '', component: AuthComponent }
+    ],
+    ...canActivate(redirectAuthorizedToHome)
+  }
+];
 
 @NgModule({
   imports: [RouterModule.forRoot(routes)],

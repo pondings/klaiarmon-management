@@ -1,0 +1,31 @@
+@import '~bootstrap/scss/bootstrap-utilities';
+
+app-auth {
+    height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+    .card {
+        width: 50vw;
+
+        @include media-breakpoint-down(sm) { 
+            width: 90vw;
+        }
+    }
+
+    .card-body.grid {
+        text-align: left;
+        --bs-rows: 2;
+
+        div.grid {
+            --bs-rows: 2;
+            --bs-columns: 1;
+            row-gap: 0;
+
+            justify-self: center;
+            width: 80%;
+        }
+    }
+
+}
