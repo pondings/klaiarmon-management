@@ -13,6 +13,7 @@ import { AuthLayoutComponent } from './layout/auth-layout.component';
 import { HomeLayoutComponent } from './layout/home-layout.component';
 import { FIREBASE_OPTIONS } from '@angular/fire/compat';
 import { AuthModule } from './auth/auth.module';
+import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
 
 @NgModule({
   declarations: [
@@ -28,7 +29,8 @@ import { AuthModule } from './auth/auth.module';
     provideDatabase(() => getDatabase()),
     NgbModule,
     CoreModule,
-    AuthModule
+    AuthModule,
+    FontAwesomeModule
   ],
   providers: [
     { provide: FIREBASE_OPTIONS, useValue: environment.firebase }
