@@ -12,6 +12,11 @@ const redirectAuthorizedToHome = () => redirectLoggedInTo(['']);
 const routes: Routes = [
   {
     path: '',
+    redirectTo: 'dashboard',
+    pathMatch: 'full'
+  },
+  {
+    path: 'dashboard',
     component: HomeLayoutComponent,
     children: [
       { path: '', loadChildren: () => import('./pages/dashboard/dashboard.module').then(m => m.DashboardModule) },
