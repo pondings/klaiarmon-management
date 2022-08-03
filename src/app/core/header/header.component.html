@@ -1,26 +1,8 @@
 <nav class="navbar navbar-expand-md mb-4">
     <div class="container-fluid">
         <a class="navbar-brand animate-charcter"><h2>KM</h2></a>
-        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCollapse"
-            aria-controls="navbarCollapse" aria-expanded="false" aria-label="Toggle navigation">
+        <button class="sidebar-toggle" type="button" (click)="sidebarService.toggle()">
             <span class="navbar-toggler-icon"></span>
         </button>
-        <div class="collapse navbar-collapse" id="navbarCollapse">
-            <ul class="navbar-nav me-auto mb-2 mb-md-0">
-                <li *ngFor="let menu of (menuList$ | async)" class="nav-item">
-                    <a class="nav-link" [routerLink]="menu.path" [routerLinkActive]="['active']">
-                        <fa-icon [icon]="menu.icon"></fa-icon>
-                        {{menu.title}}
-                    </a>
-                </li>
-            </ul>
-            <div class="d-flex user-info">
-                <span>{{username$ | async}}</span>
-                <button class="btn btn-outline-success" (click)="logout()">
-                    <fa-icon [icon]="faRightFromBracket"></fa-icon>
-                    Logout
-                </button>
-            </div>
-        </div>
     </div>
 </nav>

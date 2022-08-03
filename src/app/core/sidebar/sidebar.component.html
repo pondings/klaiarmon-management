@@ -1,18 +1,28 @@
-<button class="btn btn-primary" type="button" (click)="sidebarService.show()">Test sidebar sub menu list</button>
-
-<div class="offcanvas offcanvas-end" tabindex="-1" id="offCanvas">
+<div #offCanvas class="offcanvas offcanvas-end" tabindex="-1" id="offCanvas">
     <div class="offcanvas-header">
-        <h5 class="offcanvas-title" id="offCanvasLabel">Sub Menu</h5>
-        <button type="button" class="btn-close" data-bs-dismiss="offcanvas" aria-label="Close"></button>
+        <h5 class="offcanvas-title" id="offCanvasLabel">Menu</h5>
+        <button type="button" class="btn-close btn-close-white" (click)="hide()"></button>
     </div>
     <div class="offcanvas-body">
-        <ul class="nav nav-pills flex-column mb-auto">
-            <li *ngFor="let menu of (subMenuList$ | async)" class="nav-item">
-                <a class="nav-link" [routerLink]="menu.path" [routerLinkActive]="['active']" 
-                    [routerLinkActiveOptions]="{exact: true}" (click)="sidebarService.hide()">
+        <ul class="navbar-nav justify-content-end flex-grow-1 pe-3">
+            <li ngbDropdown *ngFor="let menu of (menuList$ | async)" class="nav-item dropdown show">
+                <div class="d-flex flex-row align-items-center" [attr.menuParent]="menu.path">
                     <fa-icon [icon]="menu.icon" class="me-2"></fa-icon>
-                    {{menu.title}}
-                </a>
+                    <a ngbDropdownToggle class="nav-link dropdown-toggle" (click)="openDropdown(menu)">
+                        {{menu.title}}
+                    </a>
+                </div>
+                <ul ngbDropdownMenu class="dropdown-menu" [attr.menuPath]="menu.path">
+                    <li *ngFor="let subMenu of menu.subMenuList" class="ms-4">
+                        <div class="d-flex flex-row align-items-center" (click)="hide()" [routerLinkActive]="['active']"
+                            [routerLinkActiveOptions]="{ exact: true }">
+                            <fa-icon [icon]="subMenu.icon" class="me-2"></fa-icon>
+                            <a ngbDropdownItem class="dropdown-item" [routerLink]="subMenu.path">
+                                {{subMenu.title}}
+                            </a>
+                        </div>
+                    </li>
+                </ul>
             </li>
         </ul>
     </div>

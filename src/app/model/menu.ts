@@ -6,13 +6,21 @@ export interface Menu {
     title: string;
     icon: IconDefinition;
 
+    isOpened?: boolean;
     subMenuList?: Menu[];
+}
+
+export interface MenuConfig {
+    menu: Menu,
+    el: any;
+    parentEl: any;
 }
 
 const DASHBOARD: Menu = {
     path: 'dashboard',
     title: 'Dashboard',
     icon: faChartLine,
+    isOpened: true,
 
     subMenuList: [
         { path: 'dashboard', title: 'Dashboard', icon: faChartLine },
