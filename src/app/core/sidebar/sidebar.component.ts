@@ -1,7 +1,6 @@
 import { ChangeDetectionStrategy, Component, ElementRef, OnInit, Renderer2, ViewChild, ViewEncapsulation } from "@angular/core";
-import { map, Observable, Subject, take } from "rxjs";
-import { Menu, MenuConfig } from "src/app/model/menu";
-import { MenuService } from "src/app/service/menu.service";
+import { BehaviorSubject, map, Observable, Subject, take } from "rxjs";
+import { Menu, MenuConfig, MENU_LIST } from "src/app/model/menu";
 import { SidebarService } from "./sidebar.service";
 import { Offcanvas } from 'bootstrap';
 import { AngularFireAuth } from "@angular/fire/compat/auth";
@@ -33,9 +32,8 @@ export class SidebarComponent implements OnInit {
     constructor(private renderer2: Renderer2,
         private angularFireAuth: AngularFireAuth,
         private router: Router,
-        public sidebarService: SidebarService,
-        menuService: MenuService) {
-        this.menuList$ = menuService.menuList$;
+        public sidebarService: SidebarService) {
+        this.menuList$ = new BehaviorSubject<Menu[]>(MENU_LIST);
         this.toggle$ = sidebarService.toggle$;
     }
 
