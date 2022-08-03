@@ -6,6 +6,7 @@ import { MenuService } from './service/menu.service';
 @Component({
   selector: 'km-root',
   templateUrl: './app.component.html',
+  styleUrls: ['./app.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
   encapsulation: ViewEncapsulation.None
 })

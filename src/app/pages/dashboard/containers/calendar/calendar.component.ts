@@ -2,7 +2,8 @@ import { ChangeDetectionStrategy, Component, ViewEncapsulation } from "@angular/
 
 @Component({
     selector: 'app-calendar',
-    template: 'Hello world from CalendarComponent',
+    templateUrl: './calendar.component.html',
+    styleUrls: ['./calendar.component.scss'],
     changeDetection: ChangeDetectionStrategy.OnPush,
     encapsulation: ViewEncapsulation.None
 })
