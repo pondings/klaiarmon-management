@@ -1,4 +1,6 @@
 import { ChangeDetectionStrategy, Component, ViewEncapsulation } from "@angular/core";
+import { CalendarMomentDateFormatter } from 'angular-calendar';
+import { CustomDateFormatter } from "../../services/calendar-date-formatter.service";
 
 @Component({
     selector: 'app-calendar',
@@ -7,4 +9,8 @@ import { ChangeDetectionStrategy, Component, ViewEncapsulation } from "@angular/
     changeDetection: ChangeDetectionStrategy.OnPush,
     encapsulation: ViewEncapsulation.None
 })
-export class CalendarComponent { }
+export class CalendarComponent { 
+
+    viewDate = new Date();
+
+}
