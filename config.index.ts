@@ -12,6 +12,7 @@ const envConfigFile = `export const environment = {
       authDomain: 'klaiarmon-management.firebaseapp.com',
       messagingSenderId: '870991689767',
       measurementId: 'G-L4BC23E9QC',
+      firestoreHolidaySecret: '${process.env['FIRESTORE_HOLIDAY_SECRET']}'
     },
     production: true
   };`;

@@ -1,6 +1,9 @@
-import { ChangeDetectionStrategy, Component, ViewEncapsulation } from "@angular/core";
-import { CalendarMomentDateFormatter } from 'angular-calendar';
-import { CustomDateFormatter } from "../../services/calendar-date-formatter.service";
+import { ChangeDetectionStrategy, Component, OnInit, ViewEncapsulation } from "@angular/core";
+import { AngularFirestore } from '@angular/fire/compat/firestore';
+import * as moment from 'moment';
+import { finalize, Observable, take, tap } from "rxjs";
+import { SpinnerService } from "src/app/core/spinner/spinner.service";
+import { environment } from "src/environments/environment";
 
 @Component({
     selector: 'app-calendar',
@@ -9,8 +12,19 @@ import { CustomDateFormatter } from "../../services/calendar-date-formatter.serv
     changeDetection: ChangeDetectionStrategy.OnPush,
     encapsulation: ViewEncapsulation.None
 })
-export class CalendarComponent { 
+export class CalendarComponent implements OnInit { 
 
-    viewDate = new Date();
+    viewDate = moment().toDate();
+
+    thailandHoliday$!: Observable<any>;
+
+    constructor(private angularFireStore: AngularFirestore,
+        private spinnerService: SpinnerService) { }
+
+    ngOnInit(): void {
+        this.spinnerService.show();
+        this.thailandHoliday$ = this.angularFireStore.doc(`calendar/${environment.firebase.firestoreHolidaySecret}`)
+            .valueChanges().pipe(tap(() => this.spinnerService.hide()));
+    }
 
 }
