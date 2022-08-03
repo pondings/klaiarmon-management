@@ -1,17 +1,13 @@
 import { Injectable } from "@angular/core";
-import { BehaviorSubject } from "rxjs";
+import { Subject, take } from "rxjs";
 
 @Injectable()
 export class SidebarService {
 
-    isShow$ = new BehaviorSubject(false);
+    toggle$ = new Subject<void>();
 
-    public show(): void {
-        this.isShow$.next(true);
-    }
-
-    public hide(): void {
-        this.isShow$.next(false);
+    public toggle(): void {
+        this.toggle$.next();
     }
 
 }

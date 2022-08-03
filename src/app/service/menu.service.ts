@@ -1,6 +1,6 @@
 import { Injectable } from "@angular/core";
 import { Event, NavigationEnd, Router } from "@angular/router";
-import { BehaviorSubject, filter, map, Observable } from "rxjs";
+import { BehaviorSubject, filter, map, Observable, startWith } from "rxjs";
 import { Menu, MENU_LIST } from "../model/menu";
 
 @Injectable({ providedIn: 'root' })
@@ -12,6 +12,7 @@ export class MenuService {
     constructor(router: Router) {
         this.subMenuList$ = router.events.pipe(filter(this.isNavigationEnd),
             map(this.mapNavigationEndToUrl),
+            startWith('dashboard'),
             map(this.mapUrlToMenu),
             map(this.mapMenuToSubMenuList))
     }
@@ -22,7 +23,6 @@ export class MenuService {
 
     private mapNavigationEndToUrl(event: Event): string {
         const url = (event as NavigationEnd).urlAfterRedirects;
-
         return url.startsWith('/') 
             ? url.replace('/', '').split('/')[0]
             : url.split('/')[0];

@@ -1,19 +1,41 @@
-<button class="btn btn-primary" type="button" data-bs-toggle="offcanvas" data-bs-target="#offcanvasWithBothOptions"
-    aria-controls="offcanvasWithBothOptions" (click)="show()">Test sidebar sub menu list</button>
-
-<div class="offcanvas show offcanvas-start" tabindex="-1" id="offcanvasWithBothOptions"
-    aria-labelledby="offcanvasWithBothOptionsLabel" [ngClass]=" { show: isShow$ | async } ">
-    <div class="offcanvas-header">
-        <h5 class="offcanvas-title" id="offcanvasWithBothOptionsLabel">Sub Menu</h5>
-        <button type="button" class="btn-close" data-bs-dismiss="offcanvas" aria-label="Close"></button>
+<div #offCanvas class="offcanvas offcanvas-end" tabindex="-1" id="offCanvas">
+    <div class="offcanvas-header flex-column">
+        <div class="dropdown d-flex justify-content-center mb-2">
+            <a class="d-flex align-items-center">
+                <img [src]="profilePhoto" alt="" width="104" height="104" class="rounded-circle">
+            </a>
+        </div>
+        <span class="display-name mb-2">{{displayName}}</span>
+        <div class="d-flex justify-content-center w-100">
+            <button class="btn btn-primary btn-circle btn-sm me-3">
+                <fa-icon [icon]="faPenToSquare"></fa-icon>
+            </button>
+            <button class="btn btn-danger btn-circle btn-sm" (click)="logout()">
+                <fa-icon [icon]="faRightFromBracket"></fa-icon>
+            </button>
+        </div>
     </div>
-    <div class="offcanvas-body">
-        <ul class="nav nav-pills flex-column mb-auto">
-            <li *ngFor="let menu of (subMenuList$ | async)" class="nav-item">
-                <a class="nav-link" [routerLink]="menu.path" [routerLinkActive]="['active']" [routerLinkActiveOptions]="{exact: true}">
+    <hr>
+    <div class="offcanvas-body d-flex flex-column">
+        <ul class="navbar-nav justify-content-end pe-3 mb-auto">
+            <li ngbDropdown *ngFor="let menu of (menuList$ | async)" class="nav-item dropdown show">
+                <div class="d-flex flex-row align-items-center" [attr.menuParent]="menu.path">
                     <fa-icon [icon]="menu.icon" class="me-2"></fa-icon>
-                    {{menu.title}}
-                </a>
+                    <a ngbDropdownToggle class="nav-link dropdown-toggle" (click)="openDropdown(menu)">
+                        {{menu.title}}
+                    </a>
+                </div>
+                <ul ngbDropdownMenu class="dropdown-menu" [attr.menuPath]="menu.path">
+                    <li *ngFor="let subMenu of menu.subMenuList" class="ms-4">
+                        <div class="d-flex flex-row align-items-center" (click)="hide()" [routerLinkActive]="['active']"
+                            [routerLinkActiveOptions]="{ exact: true }">
+                            <fa-icon [icon]="subMenu.icon" class="me-2"></fa-icon>
+                            <a ngbDropdownItem class="dropdown-item" [routerLink]="subMenu.path">
+                                {{subMenu.title}}
+                            </a>
+                        </div>
+                    </li>
+                </ul>
             </li>
         </ul>
     </div>
