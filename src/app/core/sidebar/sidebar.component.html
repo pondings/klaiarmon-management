@@ -1,10 +1,23 @@
 <div #offCanvas class="offcanvas offcanvas-end" tabindex="-1" id="offCanvas">
-    <div class="offcanvas-header">
-        <h5 class="offcanvas-title" id="offCanvasLabel">Menu</h5>
-        <button type="button" class="btn-close btn-close-white" (click)="hide()"></button>
+    <div class="offcanvas-header flex-column">
+        <div class="dropdown d-flex justify-content-center mb-2">
+            <a class="d-flex align-items-center">
+                <img [src]="profilePhoto" alt="" width="104" height="104" class="rounded-circle">
+            </a>
+        </div>
+        <span class="display-name mb-2">{{displayName}}</span>
+        <div class="d-flex justify-content-center w-100">
+            <button class="btn btn-primary btn-circle btn-sm me-3">
+                <fa-icon [icon]="faPenToSquare"></fa-icon>
+            </button>
+            <button class="btn btn-danger btn-circle btn-sm" (click)="logout()">
+                <fa-icon [icon]="faRightFromBracket"></fa-icon>
+            </button>
+        </div>
     </div>
-    <div class="offcanvas-body">
-        <ul class="navbar-nav justify-content-end flex-grow-1 pe-3">
+    <hr>
+    <div class="offcanvas-body d-flex flex-column">
+        <ul class="navbar-nav justify-content-end pe-3 mb-auto">
             <li ngbDropdown *ngFor="let menu of (menuList$ | async)" class="nav-item dropdown show">
                 <div class="d-flex flex-row align-items-center" [attr.menuParent]="menu.path">
                     <fa-icon [icon]="menu.icon" class="me-2"></fa-icon>

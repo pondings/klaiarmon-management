@@ -1,43 +1,56 @@
 app-sidebar {
 
-    .dropdown-menu {
-        position: static !important;
-        transform: unset !important;
+    div.offcanvas-header {
+        padding-bottom: 0px;
+
+        span.display-name {
+            font-weight: bolder;
+            font-size: 18px;
+        }
+
+        .btn-circle {
+            width: 30px;
+            height: 30px;
+            text-align: center;
+            padding: 6px 0;
+            font-size: 12px;
+            line-height: 1.428571429;
+            border-radius: 15px;
+        }
     }
 
-    li {
-        cursor: pointer;
+    hr {
+        margin: 1rem 1rem !important;
     }
 
-    fa-icon {
-        width: 18px !important;
-        min-width: 18px !important;
-        max-width: 18px !important;
+    div.offcanvas-body {
+        padding-top: 0px;
     }
 
-    .dropdown-menu {
-        border: unset !important;
-        padding-top: 0px !important;
-    }
+    ul.navbar-nav {
+        .dropdown-menu {
+            position: static !important;
+            transform: unset !important;
+        }
 
-    .dropdown-item {
-        padding-left: 0px !important;
-        padding-right: 0px !important;
-    }
+        li {
+            cursor: pointer;
+        }
 
-    a:active {
-        color: blue !important;
-        background-color: unset !important;
-    }
-
-    a:hover {
-        color: blue !important;
-        background-color: unset !important;
-    }
-
-    .active {
         fa-icon {
-            color: blue !important;
+            width: 18px !important;
+            min-width: 18px !important;
+            max-width: 18px !important;
+        }
+
+        .dropdown-menu {
+            border: unset !important;
+            padding-top: 0px !important;
+        }
+
+        .dropdown-item {
+            padding-left: 0px !important;
+            padding-right: 0px !important;
         }
 
         a:active {
@@ -45,9 +58,25 @@ app-sidebar {
             background-color: unset !important;
         }
 
-        a {
+        a:hover {
             color: blue !important;
             background-color: unset !important;
+        }
+
+        .active {
+            fa-icon {
+                color: blue !important;
+            }
+
+            a:active {
+                color: blue !important;
+                background-color: unset !important;
+            }
+
+            a {
+                color: blue !important;
+                background-color: unset !important;
+            }
         }
     }
 

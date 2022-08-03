@@ -4,6 +4,10 @@ import { Menu, MenuConfig } from "src/app/model/menu";
 import { MenuService } from "src/app/service/menu.service";
 import { SidebarService } from "./sidebar.service";
 import { Offcanvas } from 'bootstrap';
+import { AngularFireAuth } from "@angular/fire/compat/auth";
+import { faPenToSquare } from "@fortawesome/free-regular-svg-icons";
+import { faRightFromBracket } from "@fortawesome/free-solid-svg-icons";
+import { Router } from "@angular/router";
 
 @Component({
     selector: 'app-sidebar',
@@ -20,19 +24,35 @@ export class SidebarComponent implements OnInit {
     toggle$: Subject<void>;
     offCanvas: Offcanvas | undefined;
     menuList$: Observable<Menu[]>;
+    profilePhoto: string | undefined | null = '';
+    displayName: string | undefined | null = '';
+
+    faPenToSquare = faPenToSquare;
+    faRightFromBracket = faRightFromBracket;
 
     constructor(private renderer2: Renderer2,
+        private angularFireAuth: AngularFireAuth,
+        private router: Router,
         public sidebarService: SidebarService,
         menuService: MenuService) {
         this.menuList$ = menuService.menuList$;
         this.toggle$ = sidebarService.toggle$;
     }
 
-    ngOnInit(): void {
+    async ngOnInit(): Promise<void> {
         this.offCanvas = new Offcanvas('#offCanvas');
         this.toggle$.subscribe(() => this.offCanvas?.toggle());
 
         this.offCanvasElem?.nativeElement?.addEventListener('show.bs.offcanvas', () => this.handleMenu());
+
+        const currentUser = await this.angularFireAuth.currentUser;
+        this.profilePhoto = currentUser?.photoURL;
+        this.displayName = currentUser?.displayName;
+    }
+
+    logout(): void {
+        this.angularFireAuth.signOut()
+            .then(() => this.router.navigate(['login']));
     }
 
     handleMenu(): void {
