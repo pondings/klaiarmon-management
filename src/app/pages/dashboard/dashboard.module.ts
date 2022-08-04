@@ -6,13 +6,18 @@ import { DashboardRoutingModule } from "./dashboard-routing.module";
 import { CalendarMonthModule, CalendarCommonModule } from 'angular-calendar';
 import { SharedModule } from "src/app/shared/shared.module";
 import { FontAwesomeModule } from "@fortawesome/angular-fontawesome";
+import { AddEventModalComponent } from "./components/add-event-modal/add-event-modal.component";
 
 @NgModule({
-    declarations: [DashboardComponent, CalendarComponent],
+    declarations: [
+        DashboardComponent,
+        CalendarComponent,
+        AddEventModalComponent
+    ],
     imports: [
-        CommonModule, 
+        CommonModule,
         SharedModule,
-        DashboardRoutingModule, 
+        DashboardRoutingModule,
         CalendarMonthModule,
         CalendarCommonModule,
         FontAwesomeModule

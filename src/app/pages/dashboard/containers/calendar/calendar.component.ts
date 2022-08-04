@@ -5,6 +5,7 @@ import { FirestoreService } from "src/app/shared/services/firestore.service";
 import { CalendarEvent, CalendarView } from 'angular-calendar';
 import { CalendarEventDto } from "../../model/calendar-event";
 import { faChevronLeft, faChevronRight } from "@fortawesome/free-solid-svg-icons";
+import { TimeUnit } from "src/app/shared/model/time-unit";
 
 @Component({
     selector: 'app-calendar',
@@ -28,6 +29,11 @@ export class CalendarComponent implements OnInit {
     ngOnInit(): void {
         this.calendarEvent$ = this.firestoreService.getCollection<CalendarEventDto>('calendar/event/public-holiday')
             .pipe(map(dtoList => this.mapDtoToCalendarEvent(dtoList)));
+    }
+
+    onSwipe(event: any): void {
+        const next = Math.abs(event.deltaX) > 40 ? (event.deltaX > 0 ? -1 : 1) : 0;
+        this.viewDate = moment(this.viewDate).add(next, TimeUnit.month).toDate();
     }
 
     private mapDtoToCalendarEvent(dtoList: CalendarEventDto[]): CalendarEvent[] {
