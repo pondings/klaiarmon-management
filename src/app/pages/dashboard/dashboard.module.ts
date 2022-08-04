@@ -7,12 +7,15 @@ import { CalendarMonthModule, CalendarCommonModule } from 'angular-calendar';
 import { SharedModule } from "src/app/shared/shared.module";
 import { FontAwesomeModule } from "@fortawesome/angular-fontawesome";
 import { AddEventModalComponent } from "./components/add-event-modal/add-event-modal.component";
+import { NgbModalModule } from "@ng-bootstrap/ng-bootstrap";
+import { EventInfoComponent } from "./components/event-info/event-info.component";
 
 @NgModule({
     declarations: [
         DashboardComponent,
         CalendarComponent,
-        AddEventModalComponent
+        AddEventModalComponent,
+        EventInfoComponent
     ],
     imports: [
         CommonModule,

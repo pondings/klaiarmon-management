@@ -37,6 +37,7 @@ export class FirestoreService {
             ? [...localStorageItem.value, ...dataList]
             : dataList;
         this.localStorageService.setItem(path, localStorageItem);
+        this.spinnerService.hide();
     }
 
     private setItemWithEsetItemxpiration<T>(key: string, value: T[]) {
