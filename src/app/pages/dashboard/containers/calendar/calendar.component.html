@@ -1,3 +1,2 @@
-<mwl-calendar-month-view [viewDate]="viewDate">
+<mwl-calendar-month-view [viewDate]="viewDate" [events]="(calendarEvent$ | async) ?? []">
 </mwl-calendar-month-view>
-{{ (thailandHoliday$ | async) | json }}
