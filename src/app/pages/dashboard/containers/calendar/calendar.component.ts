@@ -1,9 +1,7 @@
 import { ChangeDetectionStrategy, Component, OnInit, ViewEncapsulation } from "@angular/core";
-import { AngularFirestore } from '@angular/fire/compat/firestore';
 import * as moment from 'moment';
-import { finalize, Observable, take, tap } from "rxjs";
-import { SpinnerService } from "src/app/core/spinner/spinner.service";
-import { environment } from "src/environments/environment";
+import { Observable } from "rxjs";
+import { FirestoreService } from "src/app/shared/services/firestore.service";
 
 @Component({
     selector: 'app-calendar',
@@ -18,13 +16,10 @@ export class CalendarComponent implements OnInit {
 
     thailandHoliday$!: Observable<any>;
 
-    constructor(private angularFireStore: AngularFirestore,
-        private spinnerService: SpinnerService) { }
+    constructor(private firestoreService: FirestoreService) {}
 
     ngOnInit(): void {
-        this.spinnerService.show();
-        this.thailandHoliday$ = this.angularFireStore.doc(`calendar/${environment.firebase.firestoreHolidaySecret}`)
-            .valueChanges().pipe(tap(() => this.spinnerService.hide()));
+        this.thailandHoliday$ = this.firestoreService.getCollection('calendar/holiday/public-holiday');
     }
 
 }
