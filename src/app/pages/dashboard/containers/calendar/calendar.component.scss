@@ -3,6 +3,11 @@ app-calendar {
     height: 100%;
     width: 100%;
 
+    button.previous-btn, button.next-btn, h5.month-title {
+        flex-grow: 1;
+        text-align: center;
+    }
+
     span.cal-day-badge {
         position: absolute !important;
         margin-top: 4px !important;

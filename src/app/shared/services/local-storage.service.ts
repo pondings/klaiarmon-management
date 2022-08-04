@@ -23,6 +23,10 @@ export class LocalStorageService {
         this.setItemToLocalStorage(key, JSON.stringify(localStorageItem));
     }
 
+    setLocalStorageItem<T>(key: string, value: LocalStorageItem<T>): void {
+        this.setItemToLocalStorage(key, JSON.stringify(value))
+    }
+
     setItem<T>(key: string, value: LocalStorageItemType<T>): void {
         this.setItemToLocalStorage(key, JSON.stringify(value))
     }

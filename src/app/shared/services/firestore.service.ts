@@ -23,6 +23,22 @@ export class FirestoreService {
         return observable.pipe(take(1), finalize(() => this.spinnerService.hide()));
     }
 
+    addToCollection<T>(path: string, dataList: T[]): void {
+        this.spinnerService.show();
+
+        const batch = this.angularFirestore.firestore.batch();
+        const collection = this.angularFirestore.firestore.collection(path);
+        dataList.forEach(data => batch.set(collection.doc(), data));
+
+        batch.commit();
+
+        const localStorageItem = this.localStorageService.getItem<T[]>(path);
+        localStorageItem.value = localStorageItem.value
+            ? [...localStorageItem.value, ...dataList]
+            : dataList;
+        this.localStorageService.setItem(path, localStorageItem);
+    }
+
     private setItemWithEsetItemxpiration<T>(key: string, value: T[]) {
         this.localStorageService.setItemWithEsetItemxpiration(key, value, 30, TimeUnit.minute);
     }

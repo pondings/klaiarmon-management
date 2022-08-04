@@ -3,8 +3,9 @@ import { NgModule } from "@angular/core";
 import { CalendarComponent } from "./containers/calendar/calendar.component";
 import { DashboardComponent } from "./containers/dashboard/dashboard.component";
 import { DashboardRoutingModule } from "./dashboard-routing.module";
-import { CalendarMonthModule } from 'angular-calendar';
+import { CalendarMonthModule, CalendarCommonModule } from 'angular-calendar';
 import { SharedModule } from "src/app/shared/shared.module";
+import { FontAwesomeModule } from "@fortawesome/angular-fontawesome";
 
 @NgModule({
     declarations: [DashboardComponent, CalendarComponent],
@@ -12,7 +13,9 @@ import { SharedModule } from "src/app/shared/shared.module";
         CommonModule, 
         SharedModule,
         DashboardRoutingModule, 
-        CalendarMonthModule
+        CalendarMonthModule,
+        CalendarCommonModule,
+        FontAwesomeModule
     ]
 })
 export class DashboardModule { }

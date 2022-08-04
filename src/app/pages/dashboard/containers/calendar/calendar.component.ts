@@ -2,8 +2,9 @@ import { ChangeDetectionStrategy, Component, OnInit, ViewEncapsulation } from "@
 import * as moment from 'moment';
 import { map, Observable } from "rxjs";
 import { FirestoreService } from "src/app/shared/services/firestore.service";
-import { CalendarEvent } from 'angular-calendar';
+import { CalendarEvent, CalendarView } from 'angular-calendar';
 import { CalendarEventDto } from "../../model/calendar-event";
+import { faChevronLeft, faChevronRight } from "@fortawesome/free-solid-svg-icons";
 
 @Component({
     selector: 'app-calendar',
@@ -14,7 +15,11 @@ import { CalendarEventDto } from "../../model/calendar-event";
 })
 export class CalendarComponent implements OnInit { 
 
+    view = CalendarView.Month;
     viewDate = moment().toDate();
+
+    faChevronLeft = faChevronLeft;
+    faChevronRight = faChevronRight;
 
     calendarEvent$!: Observable<CalendarEvent[]>;
 
