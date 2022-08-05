@@ -1,4 +1,4 @@
-import { NgModule } from '@angular/core';
+import { Injectable, NgModule } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 
@@ -19,10 +19,24 @@ import { CalendarModule, DateAdapter, CalendarDateFormatter } from 'angular-cale
 import { adapterFactory } from 'angular-calendar/date-adapters/moment';
 import * as moment from 'moment';
 import { CustomDateFormatter } from './pages/dashboard/services/calendar-date-formatter.service';
+import { HammerGestureConfig, HammerModule, HAMMER_GESTURE_CONFIG } from "@angular/platform-browser";
+import * as Hammer from 'hammerjs';
+import { FirestoreService } from './core/services/firestore.service';
 
 export function momentAdapterFactory(): DateAdapter {
   return adapterFactory(moment);
 };
+
+@Injectable()
+export class CalendarGestureConfig extends HammerGestureConfig {
+    override overrides = <any>{
+      swipe: { direction: Hammer.DIRECTION_HORIZONTAL }
+    };
+
+    override options = <any> {
+      touchAction: 'pan-y'
+    }
+}
 
 @NgModule({
   declarations: [
@@ -38,6 +52,7 @@ export function momentAdapterFactory(): DateAdapter {
     provideAuth(() => getAuth()),
     provideDatabase(() => getDatabase()),
     NgbModule,
+    HammerModule,
     CoreModule,
     AuthModule,
     FontAwesomeModule,
@@ -45,7 +60,8 @@ export function momentAdapterFactory(): DateAdapter {
       { dateFormatter: { provide: CalendarDateFormatter, useClass: CustomDateFormatter } })
   ],
   providers: [
-    { provide: FIREBASE_OPTIONS, useValue: environment.firebase }
+    { provide: FIREBASE_OPTIONS, useValue: environment.firebase },
+    { provide: HAMMER_GESTURE_CONFIG, useClass: CalendarGestureConfig }
   ],
   bootstrap: [AppComponent]
 })

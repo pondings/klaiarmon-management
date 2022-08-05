@@ -11,8 +11,7 @@ const envConfigFile = `export const environment = {
       apiKey: '${process.env['FIREBASE_API_KEY']}',
       authDomain: 'klaiarmon-management.firebaseapp.com',
       messagingSenderId: '870991689767',
-      measurementId: 'G-L4BC23E9QC',
-      firestoreHolidaySecret: '${process.env['FIRESTORE_HOLIDAY_SECRET']}'
+      measurementId: 'G-L4BC23E9QC'
     },
     production: true
   };`;

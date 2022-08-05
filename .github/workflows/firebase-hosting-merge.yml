@@ -12,7 +12,6 @@ jobs:
     env:
       FIREBASE_API_KEY: '${{ secrets.FIREBASE_API_KEY }}'
       FIREBASE_APP_ID: '${{ secrets.FIREBASE_APP_ID }}'
-      FIRESTORE_HOLIDAY_SECRET: '${{ secrets.FIRESTORE_HOLIDAY_SECRET }}'
     steps:
       - name: Checkout Repo
         uses: actions/checkout@v2

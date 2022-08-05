@@ -1,10 +1,15 @@
 import { ChangeDetectionStrategy, Component, OnInit, ViewEncapsulation } from "@angular/core";
-import { AngularFirestore } from '@angular/fire/compat/firestore';
-import * as moment from 'moment';
-import { finalize, Observable, take, tap } from "rxjs";
-import { SpinnerService } from "src/app/core/spinner/spinner.service";
-import { environment } from "src/environments/environment";
+import { Observable } from "rxjs";
+import { CalendarEvent, CalendarView } from 'angular-calendar';
+import { CalendarDayEvent } from "../../model/calendar";
+import { faArrowsRotate, faChevronLeft, faChevronRight, faFilter, faPlus } from "@fortawesome/free-solid-svg-icons";
+import { TimeUnit } from "src/app/shared/model/time-unit";
+import { UntilDestroy } from '@ngneat/until-destroy';
+import { MetaData } from "src/app/model/meta-data";
+import { CalendarService } from "../../services/calendar.service";
+import { addDate, getDate } from "src/app/common/utils/date.util";
 
+@UntilDestroy({ checkProperties: true })
 @Component({
     selector: 'app-calendar',
     templateUrl: './calendar.component.html',
@@ -12,19 +17,42 @@ import { environment } from "src/environments/environment";
     changeDetection: ChangeDetectionStrategy.OnPush,
     encapsulation: ViewEncapsulation.None
 })
-export class CalendarComponent implements OnInit { 
+export class CalendarComponent implements OnInit {
 
-    viewDate = moment().toDate();
+    readonly PUBLIC_HOLIDAT = 'calendar/event/public-holiday';
 
-    thailandHoliday$!: Observable<any>;
+    view = CalendarView.Month;
+    viewDate = getDate();
 
-    constructor(private angularFireStore: AngularFirestore,
-        private spinnerService: SpinnerService) { }
+    faChevronLeft = faChevronLeft;
+    faChevronRight = faChevronRight;
+    faPlus = faPlus;
+    faArrowsRotate = faArrowsRotate;
+    faFilter = faFilter;
+
+    calendarEvent$!: Observable<CalendarEvent<MetaData>[]>;
+
+    constructor(private calendarService: CalendarService) { }
 
     ngOnInit(): void {
-        this.spinnerService.show();
-        this.thailandHoliday$ = this.angularFireStore.doc(`calendar/${environment.firebase.firestoreHolidaySecret}`)
-            .valueChanges().pipe(tap(() => this.spinnerService.hide()));
+        this.calendarEvent$ = this.calendarService.getCalendarEvents();
+    }
+
+    onSwipe(event: any): void {
+        const next = Math.abs(event.deltaX) > 40 ? (event.deltaX > 0 ? -1 : 1) : 0;
+        this.viewDate = addDate(this.viewDate, next, TimeUnit.month);
+    }
+
+    showEvent(events: CalendarDayEvent): void {
+        console.log('Show events', events);
+    }
+
+    updateEvent(event: CalendarEvent): void {
+        this.calendarService.updateEvent(event);
+    }
+
+    addEvent(): void {
+        this.calendarService.addEvent();
     }
 
 }

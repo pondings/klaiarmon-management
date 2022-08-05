@@ -1,3 +1,40 @@
-<mwl-calendar-month-view [viewDate]="viewDate">
-</mwl-calendar-month-view>
-{{ (thailandHoliday$ | async) | json }}
+<div class="d-flex flex-column">
+
+    <div class="d-flex justify-content-between mb-2">
+        <button mwlCalendarPreviousView class="previous-btn btn btn-primary btn-sm d-none d-md-inline-block" [view]="view"
+            [(viewDate)]="viewDate!">
+            <fa-icon [icon]="faChevronLeft"></fa-icon>
+        </button>
+
+        <h5 class="month-title">{{ viewDate! | calendarDate:(view + 'ViewTitle'):'en' }}</h5>
+
+        <button mwlCalendarNextView class="next-btn btn btn-primary btn-sm d-none d-md-inline-block" [view]="view" [(viewDate)]="viewDate!">
+            <fa-icon [icon]="faChevronRight"></fa-icon>
+        </button>
+    </div>
+
+    <div (swipe)="onSwipe($event)">
+        <mwl-calendar-month-view [viewDate]="viewDate!" [events]="(calendarEvent$ | async)!"
+            (dayClicked)="showEvent($event)">
+        </mwl-calendar-month-view>
+    </div>
+
+    <div class="event-command mt-2 mb-2 d-flex flex-row justify-content-center">
+        <div class="btn-group btn-group-demium w-50" role="group">
+            <button type="button" class="btn btn-outline-primary" (click)="addEvent()">
+                <fa-icon [icon]="faPlus"></fa-icon>
+            </button>
+
+            <button type="button" class="btn btn-outline-primary">
+                <fa-icon [icon]="faArrowsRotate"></fa-icon>
+            </button>
+
+            <button type="button" class="btn btn-outline-primary">
+                <fa-icon [icon]="faFilter"></fa-icon>
+            </button>
+        </div>
+    </div>
+
+    <app-event-info></app-event-info>
+
+</div>

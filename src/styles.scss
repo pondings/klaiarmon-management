@@ -10,6 +10,11 @@ body {
     background-color: lightcyan;
 }
 
+.required:after {
+    content: " *";
+    color: red;
+}
+
 @include media-breakpoint-down(sm) {
     app-auth > form.card {
         width: 90vw;
@@ -18,4 +23,19 @@ body {
     app-sidebar > div.offcanvas {
         max-width: 60% !important;
     }
+
+    app-calendar {
+        mwl-calendar-month-cell {
+            min-height: unset !important;
+        }
+
+        span.cal-day-badge {
+            font-size: 8px !important;
+        }
+
+        div.cal-cell-top {
+            min-height: unset !important;
+        }
+    }
+
 }

@@ -1,0 +1,55 @@
+<form [formGroup]="calendarEventForm">
+    <div class="modal-header">
+        <h4 class="modal-title" *ngIf="isCreate">Add Event</h4>
+        <h4 class="modal-title" *ngIf="isUpdate">Update Event</h4>
+        <button type="button" class="btn-close" aria-label="Close" (click)="activeModal.dismiss()"></button>
+    </div>
+    <div class="modal-body">
+
+        <div class="form-floating mb-3">
+            <input class="form-control" placeholder="Title" formControlName="title" required>
+            <label for="title" class="required">Title</label>
+        </div>
+
+        <div class="input-group mb-2">
+            <div class="form-floating">
+                <input ngbDatepicker readonly formControlName="start" class="form-control" placeholder="Start Date"
+                    #sd="ngbDatepicker" [maxDate]="(endValue$ | async)!">
+                <label for="startDate">Start Date</label>
+            </div>
+            <button class="btn btn-outline-secondary" (click)="sd.toggle()" type="button">
+                <fa-icon [icon]="faCalendar"></fa-icon>
+            </button>
+        </div>
+
+        <div class="mb-2 d-flex align-items-center">
+            <input #hasEndDateCheckedBox class="form-check-input me-1" type="checkbox" placeholder="Has End Date"
+                checked="false" [formControl]="hasEndDateCtrl">
+            <label for="title" (click)="hasEndDateCheckedBox.click()">Has End Date</label>
+        </div>
+
+        <div *ngIf="hasEndDate$ | async" class="input-group">
+            <div class="form-floating">
+                <input ngbDatepicker readonly formControlName="end" class="form-control" placeholder="End Date"
+                    #ed="ngbDatepicker" [minDate]="(startValue$ | async)!">
+                <label for="startDate">End Date</label>
+            </div>
+            <button class="btn btn-outline-secondary" (click)="ed.toggle()" type="button">
+                <fa-icon [icon]="faCalendar"></fa-icon>
+            </button>
+        </div>
+    </div>
+    <div class="modal-footer">
+        <button *ngIf="isCreate" type="button" class="btn btn-primary" [disabled]="!(isFormValid$ | async)"
+            (click)="submit()">
+            Add
+        </button>
+
+        <button *ngIf="isUpdate" type="button" class="btn btn-primary" (click)="submit()"
+            [disabled]="!(isFormValid$ | async)">
+            Update
+        </button>
+
+        <button type="button" class="btn btn-danger" (click)="activeModal.dismiss()">Close</button>
+    </div>
+</form>
