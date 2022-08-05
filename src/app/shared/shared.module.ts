@@ -1,11 +1,10 @@
 import { NgModule } from "@angular/core";
 import { ReactiveFormsModule } from "@angular/forms";
 import { NgbDatepickerModule } from "@ng-bootstrap/ng-bootstrap";
-import { FirestoreService } from "./services/firestore.service";
-import { LocalStorageService } from "./services/local-storage.service";
+import { LocalStorageService } from "../core/services/local-storage.service";
 
 @NgModule({
-    providers: [LocalStorageService, FirestoreService],
+    providers: [LocalStorageService],
     exports: [ReactiveFormsModule, NgbDatepickerModule]
 })
 export class SharedModule { }

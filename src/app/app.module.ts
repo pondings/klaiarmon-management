@@ -21,6 +21,7 @@ import * as moment from 'moment';
 import { CustomDateFormatter } from './pages/dashboard/services/calendar-date-formatter.service';
 import { HammerGestureConfig, HammerModule, HAMMER_GESTURE_CONFIG } from "@angular/platform-browser";
 import * as Hammer from 'hammerjs';
+import { FirestoreService } from './core/services/firestore.service';
 
 export function momentAdapterFactory(): DateAdapter {
   return adapterFactory(moment);

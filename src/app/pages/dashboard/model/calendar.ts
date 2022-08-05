@@ -1,19 +1,17 @@
-import { FormBuilder, FormControl } from "@angular/forms";
+import { FormControl } from "@angular/forms";
 import { NgbDateStruct } from "@ng-bootstrap/ng-bootstrap";
 import { CalendarMonthViewDay } from "angular-calendar";
+import { Timestamp } from "firebase/firestore";
+import { MetaData } from "src/app/model/meta-data";
 
-export type CalendarDayEvent = { day: CalendarMonthViewDay<EventCreatedBy>; sourceEvent: MouseEvent | KeyboardEvent; };
+export type CalendarDayEvent = { day: CalendarMonthViewDay<MetaData>; sourceEvent: MouseEvent | KeyboardEvent; };
 
 export interface CalendarEventDto {
     title: string;
     start: string;
+    end?: string;
     allDay: boolean;
-    meta?: EventCreatedBy;
-}
-
-export interface EventCreatedBy {
-    createdBy: string;
-    createdDate: Date;
+    meta: MetaData;
 }
 
 export interface AddCalendarEventForm {

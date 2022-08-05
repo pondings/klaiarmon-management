@@ -1,16 +1,20 @@
 import { ChangeDetectionStrategy, Component, Input, OnInit, ViewEncapsulation } from "@angular/core";
 import { FormBuilder, FormControl, FormGroup, Validators } from "@angular/forms";
 import { NgbActiveModal, NgbDateStruct } from "@ng-bootstrap/ng-bootstrap";
-import * as moment from 'moment';
-import { TimeUnit } from "src/app/shared/model/time-unit";
 import { CalendarEvent } from "angular-calendar";
 import { faCalendar } from "@fortawesome/free-solid-svg-icons";
-import { Observable, startWith } from "rxjs";
+import { map, Observable, startWith } from "rxjs";
 import { AddCalendarEventForm } from "../../model/calendar";
+import { Action } from "src/app/common/enum/action";
+import { getDateStructFromDate } from "src/app/common/utils/date-struct.util";
+import { addDate, getDate } from "src/app/common/utils/date.util";
+import { UntilDestroy } from "@ngneat/until-destroy";
+import { TimeUnit } from "src/app/shared/model/time-unit";
 
+@UntilDestroy({ checkProperties: true })
 @Component({
     selector: 'app-add-event-modal',
-    templateUrl: './add-event-modal.component.html',
+    templateUrl: './calendar-event-modal.component.html',
     changeDetection: ChangeDetectionStrategy.OnPush,
     encapsulation: ViewEncapsulation.None
 })
@@ -19,28 +23,36 @@ export class AddEventModalComponent implements OnInit {
     @Input()
     event!: CalendarEvent;
 
+    @Input()
+    action!: Action;
+
     faCalendar = faCalendar;
 
-    addEventForm: FormGroup<AddCalendarEventForm>;
+    calendarEventForm: FormGroup<AddCalendarEventForm>;
     hasEndDateCtrl = new FormControl();
 
     constructor(public activeModal: NgbActiveModal,
         private fb: FormBuilder) {
-        this.addEventForm = this.createAddEventForm();
+        this.calendarEventForm = this.createCalendarEventForm();
     }
 
     ngOnInit(): void {
         this.patchFormValue();
+        this.hasEndDateCtrl.valueChanges.subscribe(checked => !checked && this.endCtrl.reset());
     }
 
-    addEvent(): void {
-        const formValue = this.addEventForm.getRawValue();
-        this.activeModal.close({
-            ...formValue,
-            start: this.convertNgbDateStructToDate(formValue.start!),
-            end: this.convertNgbDateStructToDate(formValue.end!),
-            allDay: true
+    submit(): void {
+        const { start, end, ...formValue } = this.calendarEventForm.getRawValue();
+        this.activeModal.close({ 
+            ...formValue, 
+            start: addDate(start!, -1, TimeUnit.month), 
+            end: end ? addDate(end!, -1, TimeUnit.month) : null , 
+            meta: this.event.meta
         });
+    }
+
+    get isFormValid$(): Observable<boolean> {
+        return this.calendarEventForm.statusChanges.pipe(map(status => status === 'VALID'));
     }
 
     get startValue$(): Observable<NgbDateStruct | null> {
@@ -56,37 +68,30 @@ export class AddEventModalComponent implements OnInit {
     }
 
     get startCtrl(): FormControl<NgbDateStruct | null> {
-        return this.addEventForm.controls.start!;
+        return this.calendarEventForm.controls.start!;
     }
 
     get endCtrl(): FormControl<NgbDateStruct | null> {
-        return this.addEventForm.controls.end!;
+        return this.calendarEventForm.controls.end!;
     }
 
-    private convertDateToNgbDate(date: Date): NgbDateStruct {
-        if (!date) return null!;
-        const dateMoment = moment(date).toObject();
-        return { day: dateMoment.date, month: dateMoment.months + 1, year: dateMoment.years };
+    get isCreate(): boolean {
+        return this.action === Action.CREATE;
     }
 
-    private convertNgbDateStructToDate(ngbDateStruct: NgbDateStruct): Date {
-        if (!ngbDateStruct) return null!;
-        return moment(ngbDateStruct).toDate();
+    get isUpdate(): boolean {
+        return this.action === Action.UPDATE;
     }
 
     private patchFormValue(): void {
-        const { start, end } = this.event || {};
-        this.addEventForm.patchValue({
-            ...this.event,
-            start: this.convertDateToNgbDate(start),
-            end: this.convertDateToNgbDate(end!)
-        });
+        const { title, start, end } = this.event;
+        this.calendarEventForm.patchValue({ title, start: getDateStructFromDate(start), end: getDateStructFromDate(end) });
     }
 
-    private createAddEventForm(): FormGroup<AddCalendarEventForm> {
+    private createCalendarEventForm(): FormGroup<AddCalendarEventForm> {
         return this.fb.group<AddCalendarEventForm>({
             title: this.fb.control({ value: null, disabled: false }, { validators: [Validators.required] }),
-            start: this.fb.control({ value: this.convertDateToNgbDate(moment().startOf(TimeUnit.day).toDate()), disabled: false }),
+            start: this.fb.control({ value: null, disabled: false }),
             end: this.fb.control({ value: null, disabled: false })
         });
     }

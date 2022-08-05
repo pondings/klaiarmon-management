@@ -1,9 +1,10 @@
 <div class="modal-header">
-    <h4 class="modal-title">Add Event To Calendar</h4>
+    <h4 class="modal-title" *ngIf="isCreate">Add Event Calendar</h4>
+    <h4 class="modal-title" *ngIf="isUpdate">Update Event Calendar</h4>
     <button type="button" class="btn-close" aria-label="Close" (click)="activeModal.dismiss()"></button>
 </div>
 <div class="modal-body">
-    <form [formGroup]="addEventForm">
+    <form [formGroup]="calendarEventForm">
 
         <div class="form-floating mb-3">
             <input class="form-control" placeholder="Title" formControlName="title">
@@ -22,12 +23,12 @@
         </div>
 
         <div class="mb-2 d-flex align-items-center">
-            <input class="form-check-input me-1" type="checkbox" placeholder="Has End Date" checked="false" 
+            <input #hasEndDateCheckedBox class="form-check-input me-1" type="checkbox" placeholder="Has End Date" checked="false" 
                 [formControl]="hasEndDateCtrl">
-            <label for="title">Has End Date</label>
+            <label for="title" (click)="hasEndDateCheckedBox.click()">Has End Date</label>
         </div>
 
-        <div *ngIf="hasEndDate$ | async" class="input-group mb-3">
+        <div *ngIf="hasEndDate$ | async" class="input-group">
             <div class="form-floating">
                 <input ngbDatepicker readonly formControlName="end" class="form-control" placeholder="End Date"
                     #ed="ngbDatepicker" [minDate]="(startValue$ | async)!">
@@ -41,6 +42,7 @@
     </form>
 </div>
 <div class="modal-footer">
-    <button type="button" class="btn btn-primary" (click)="addEvent()">Add</button>
-    <button type="button" class="btn btn-danger" (click)="activeModal.close()">Close</button>
+    <button type="button" class="btn btn-primary" (click)="submit()" *ngIf="isCreate" [disabled]="isFormValid$ | async">Add</button>
+    <button type="button" class="btn btn-primary" (click)="submit()" *ngIf="isUpdate" [disabled]="isFormValid$ | async">Update</button>
+    <button type="button" class="btn btn-danger" (click)="activeModal.dismiss()">Close</button>
 </div>

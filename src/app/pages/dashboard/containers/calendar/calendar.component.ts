@@ -1,14 +1,15 @@
 import { ChangeDetectionStrategy, Component, OnInit, ViewEncapsulation } from "@angular/core";
-import * as moment from 'moment';
-import { map, Observable } from "rxjs";
-import { FirestoreService } from "src/app/shared/services/firestore.service";
+import { Observable } from "rxjs";
 import { CalendarEvent, CalendarView } from 'angular-calendar';
-import { CalendarDayEvent, CalendarEventDto, EventCreatedBy } from "../../model/calendar";
+import { CalendarDayEvent } from "../../model/calendar";
 import { faChevronLeft, faChevronRight, faPlus } from "@fortawesome/free-solid-svg-icons";
 import { TimeUnit } from "src/app/shared/model/time-unit";
-import { NgbModal } from "@ng-bootstrap/ng-bootstrap";
-import { AddEventModalComponent } from "../../components/add-event-modal/add-event-modal.component";
+import { UntilDestroy } from '@ngneat/until-destroy';
+import { MetaData } from "src/app/model/meta-data";
+import { CalendarService } from "../../services/calendar.service";
+import { addDate, getDate } from "src/app/common/utils/date.util";
 
+@UntilDestroy({ checkProperties: true })
 @Component({
     selector: 'app-calendar',
     templateUrl: './calendar.component.html',
@@ -16,47 +17,40 @@ import { AddEventModalComponent } from "../../components/add-event-modal/add-eve
     changeDetection: ChangeDetectionStrategy.OnPush,
     encapsulation: ViewEncapsulation.None
 })
-export class CalendarComponent implements OnInit { 
+export class CalendarComponent implements OnInit {
+
+    readonly PUBLIC_HOLIDAT = 'calendar/event/public-holiday';
 
     view = CalendarView.Month;
-    viewDate = moment().toDate();
+    viewDate = getDate();
 
     faChevronLeft = faChevronLeft;
     faChevronRight = faChevronRight;
     faPlus = faPlus;
 
-    calendarEvent$!: Observable<CalendarEvent<EventCreatedBy>[]>;
+    calendarEvent$!: Observable<CalendarEvent<MetaData>[]>;
 
-    constructor(private firestoreService: FirestoreService,
-        private ngbModalService: NgbModal) {}
+    constructor(private calendarService: CalendarService) { }
 
-    async ngOnInit(): Promise<void> {
-        this.calendarEvent$ = this.firestoreService.getCollection<CalendarEventDto>('calendar/event/public-holiday')
-            .pipe(map(dtoList => this.mapDtoToCalendarEvent(dtoList)));
+    ngOnInit(): void {
+        this.calendarEvent$ = this.calendarService.getCalendarEvents();
     }
 
     onSwipe(event: any): void {
         const next = Math.abs(event.deltaX) > 40 ? (event.deltaX > 0 ? -1 : 1) : 0;
-        this.viewDate = moment(this.viewDate).add(next, TimeUnit.month).toDate();
+        this.viewDate = addDate(this.viewDate, next, TimeUnit.month);
     }
 
-    viewEvent(event: CalendarDayEvent): void {
-        const modalRef = this.ngbModalService.open(AddEventModalComponent, { centered: true });
-        modalRef.componentInstance.event = event.day.events[0];
+    showEvent(events: CalendarDayEvent): void {
+        console.log('Show events', events);
     }
 
-    addEvent(event?: CalendarEvent): void {
-        const modalRef = this.ngbModalService.open(AddEventModalComponent, { centered: true });
-        modalRef.componentInstance.event = { start: moment().toDate() };
-        modalRef.result.then(console.log, console.error);
+    updateEvent(event: CalendarEvent): void {
+        this.calendarService.updateEvent(event);
     }
 
-    private mapDtoToCalendarEvent(dtoList: CalendarEventDto[]): CalendarEvent[] {
-        return dtoList.map(dto => ({ ...dto, start: this.mapStringToDate(dto.start) }));
-    }
-
-    private mapStringToDate(dateString: string): Date {
-        return moment(dateString).toDate();
+    addEvent(): void {
+        this.calendarService.addEvent();
     }
 
 }
