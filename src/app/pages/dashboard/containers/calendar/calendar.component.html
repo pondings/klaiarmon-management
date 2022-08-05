@@ -1,14 +1,14 @@
 <div class="d-flex flex-column">
 
     <div class="d-flex justify-content-between mb-2">
-        <button mwlCalendarPreviousView class="previous-btn btn btn-primary btn-sm" [view]="view"
+        <button mwlCalendarPreviousView class="previous-btn btn btn-primary btn-sm d-none d-md-inline-block" [view]="view"
             [(viewDate)]="viewDate!">
             <fa-icon [icon]="faChevronLeft"></fa-icon>
         </button>
 
         <h5 class="month-title">{{ viewDate! | calendarDate:(view + 'ViewTitle'):'en' }}</h5>
 
-        <button mwlCalendarNextView class="next-btn btn btn-primary btn-sm" [view]="view" [(viewDate)]="viewDate!">
+        <button mwlCalendarNextView class="next-btn btn btn-primary btn-sm d-none d-md-inline-block" [view]="view" [(viewDate)]="viewDate!">
             <fa-icon [icon]="faChevronRight"></fa-icon>
         </button>
     </div>
