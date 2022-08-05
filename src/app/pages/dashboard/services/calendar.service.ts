@@ -1,13 +1,15 @@
 import { Injectable } from "@angular/core";
 import { NgbModal } from "@ng-bootstrap/ng-bootstrap";
-import { forkJoin, map, Observable } from "rxjs";
+import { BehaviorSubject, forkJoin, map, Observable, take } from "rxjs";
 import { FirestoreService } from "src/app/core/services/firestore.service";
 import { CalendarEventDto } from "../model/calendar";
 import { CalendarEvent } from "angular-calendar";
 import { MetaData } from "src/app/model/meta-data";
 import { AddEventModalComponent } from "../components/calendar-event-modal/calendar-event-modal.component";
 import { Action } from "src/app/common/enum/action";
-import { getDateStartOfDay, parseDate } from "src/app/common/utils/date.util";
+import { getDateStartOfDay } from "src/app/common/utils/date.util";
+import { Timestamp } from "firebase/firestore";
+import { ToastService } from "src/app/core/toast/toast.service";
 
 @Injectable()
 export class CalendarService {
@@ -15,15 +17,19 @@ export class CalendarService {
     private static readonly PUBLIC_HOLIDAY_COLLECTION = 'calendar/event/public-holiday';
     private static readonly CUSTOM_EVENT_COLLECTION = 'calendar/event/custom-event';
 
+    private calendarEvent$ = new BehaviorSubject<CalendarEvent<MetaData>[]>([]);
+
     constructor(private firestoreService: FirestoreService,
-        private ngbModalService: NgbModal) { }
+        private ngbModalService: NgbModal,
+        private toastService: ToastService) { }
 
     getCalendarEvents(): Observable<CalendarEvent<MetaData>[]> {
         const holidayEvents = this.firestoreService.getCollection<CalendarEventDto>(CalendarService.PUBLIC_HOLIDAY_COLLECTION);
         const customEvents = this.firestoreService.getCollection<CalendarEventDto>(CalendarService.CUSTOM_EVENT_COLLECTION);
 
-        return forkJoin([holidayEvents, customEvents]).pipe(map(([he, ce]) => [...he, ...ce]),
-            map(events => this.mapCalendarDtoToEvents(events)));
+        forkJoin([holidayEvents, customEvents]).pipe(map(this.mergeForkArray), take(1), map(this.mapCalendarDtoToEvents))
+            .subscribe(events => this.calendarEvent$.next(events));
+        return this.calendarEvent$.asObservable();
     }
 
     updateEvent(event: CalendarEvent<MetaData>): void {
@@ -36,21 +42,39 @@ export class CalendarService {
         modalRef.componentInstance.action = Action.CREATE;
         modalRef.result.then(async (calendarEvent: CalendarEvent<MetaData>) => {
             const dto = this.mapCalendarEventToDto(calendarEvent);
-            await this.firestoreService.addToCollection(CalendarService.CUSTOM_EVENT_COLLECTION, dto);
+            const addedEvent = await this.firestoreService.addToCollection(CalendarService.CUSTOM_EVENT_COLLECTION, [dto]);
+            this.updateCalendarEventSubscribe(this.mapCalendarDtoToEvents(addedEvent)[0]);
+            this.toastService.showSuccess('Add event successfully');
         }, () => { });
+    }
+
+    private updateCalendarEventSubscribe(calendarEvent: CalendarEvent<MetaData>): void {
+        this.calendarEvent$.pipe(take(1)).subscribe(events => this.calendarEvent$.next(events.concat(calendarEvent)));
     }
 
     private mapCalendarEventToDto(calendarEvent: CalendarEvent<MetaData>): CalendarEventDto {
         const { title, start, end, meta } = calendarEvent;
-        return { title, start: start.toISOString(), end: end?.toISOString()!, meta: meta || {}, allDay: true };
+        return { 
+            title, 
+            start: Timestamp.fromDate(start), 
+            end: (end ? Timestamp.fromDate(end) : null)!, 
+            meta: meta || {}, 
+            allDay: true 
+        };
     }
 
     private mapCalendarDtoToEvents(events: CalendarEventDto[]): CalendarEvent<MetaData>[] {
         return events.map(event => ({
             ...event,
-            start: parseDate(event.start)!,
-            end: event.end ? parseDate(event.end)! : null!
+            start: event.start?.toDate(),
+            end: event.end?.toDate()
         }));
+    }
+
+    private mergeForkArray<T>(arr: [T[], T[]]): T[] {
+        const arr1 = arr[0] || [];
+        const arr2 = arr[1] || [];
+        return arr1.concat(arr2);
     }
 
 }

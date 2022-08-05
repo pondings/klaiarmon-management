@@ -1,7 +1,7 @@
 import * as moment from 'moment';
 import { TimeUnit } from 'src/app/shared/model/time-unit';
 
-export type Dateable = Date | string | moment.MomentInputObject | null | undefined;
+export type Dateable = Date | string | moment.MomentInputObject | null | undefined | number;
 export type NullableMoment = moment.Moment | null | undefined;
 
 export const getMoment = (date?: Dateable, format?: string): NullableMoment => moment(date, format);

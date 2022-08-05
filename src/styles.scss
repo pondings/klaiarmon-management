@@ -10,6 +10,11 @@ body {
     background-color: lightcyan;
 }
 
+.required:after {
+    content: " *";
+    color: red;
+}
+
 @include media-breakpoint-down(sm) {
     app-auth > form.card {
         width: 90vw;

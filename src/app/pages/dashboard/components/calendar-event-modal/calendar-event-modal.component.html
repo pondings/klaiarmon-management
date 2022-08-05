@@ -1,14 +1,14 @@
-<div class="modal-header">
-    <h4 class="modal-title" *ngIf="isCreate">Add Event Calendar</h4>
-    <h4 class="modal-title" *ngIf="isUpdate">Update Event Calendar</h4>
-    <button type="button" class="btn-close" aria-label="Close" (click)="activeModal.dismiss()"></button>
-</div>
-<div class="modal-body">
-    <form [formGroup]="calendarEventForm">
+<form [formGroup]="calendarEventForm">
+    <div class="modal-header">
+        <h4 class="modal-title" *ngIf="isCreate">Add Event</h4>
+        <h4 class="modal-title" *ngIf="isUpdate">Update Event</h4>
+        <button type="button" class="btn-close" aria-label="Close" (click)="activeModal.dismiss()"></button>
+    </div>
+    <div class="modal-body">
 
         <div class="form-floating mb-3">
-            <input class="form-control" placeholder="Title" formControlName="title">
-            <label for="title">Title</label>
+            <input class="form-control" placeholder="Title" formControlName="title" required>
+            <label for="title" class="required">Title</label>
         </div>
 
         <div class="input-group mb-2">
@@ -23,8 +23,8 @@
         </div>
 
         <div class="mb-2 d-flex align-items-center">
-            <input #hasEndDateCheckedBox class="form-check-input me-1" type="checkbox" placeholder="Has End Date" checked="false" 
-                [formControl]="hasEndDateCtrl">
+            <input #hasEndDateCheckedBox class="form-check-input me-1" type="checkbox" placeholder="Has End Date"
+                checked="false" [formControl]="hasEndDateCtrl">
             <label for="title" (click)="hasEndDateCheckedBox.click()">Has End Date</label>
         </div>
 
@@ -38,11 +38,18 @@
                 <fa-icon [icon]="faCalendar"></fa-icon>
             </button>
         </div>
+    </div>
+    <div class="modal-footer">
+        <button *ngIf="isCreate" type="button" class="btn btn-primary" [disabled]="!(isFormValid$ | async)"
+            (click)="submit()">
+            Add
+        </button>
 
-    </form>
-</div>
-<div class="modal-footer">
-    <button type="button" class="btn btn-primary" (click)="submit()" *ngIf="isCreate" [disabled]="isFormValid$ | async">Add</button>
-    <button type="button" class="btn btn-primary" (click)="submit()" *ngIf="isUpdate" [disabled]="isFormValid$ | async">Update</button>
-    <button type="button" class="btn btn-danger" (click)="activeModal.dismiss()">Close</button>
-</div>
+        <button *ngIf="isUpdate" type="button" class="btn btn-primary" (click)="submit()"
+            [disabled]="!(isFormValid$ | async)">
+            Update
+        </button>
+
+        <button type="button" class="btn btn-danger" (click)="activeModal.dismiss()">Close</button>
+    </div>
+</form>

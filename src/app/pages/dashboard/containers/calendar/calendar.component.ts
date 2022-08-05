@@ -2,7 +2,7 @@ import { ChangeDetectionStrategy, Component, OnInit, ViewEncapsulation } from "@
 import { Observable } from "rxjs";
 import { CalendarEvent, CalendarView } from 'angular-calendar';
 import { CalendarDayEvent } from "../../model/calendar";
-import { faChevronLeft, faChevronRight, faPlus } from "@fortawesome/free-solid-svg-icons";
+import { faArrowsRotate, faChevronLeft, faChevronRight, faFilter, faPlus } from "@fortawesome/free-solid-svg-icons";
 import { TimeUnit } from "src/app/shared/model/time-unit";
 import { UntilDestroy } from '@ngneat/until-destroy';
 import { MetaData } from "src/app/model/meta-data";
@@ -27,6 +27,8 @@ export class CalendarComponent implements OnInit {
     faChevronLeft = faChevronLeft;
     faChevronRight = faChevronRight;
     faPlus = faPlus;
+    faArrowsRotate = faArrowsRotate;
+    faFilter = faFilter;
 
     calendarEvent$!: Observable<CalendarEvent<MetaData>[]>;
 
