@@ -30,8 +30,12 @@ export function momentAdapterFactory(): DateAdapter {
 @Injectable()
 export class CalendarGestureConfig extends HammerGestureConfig {
     override overrides = <any>{
-        swipe: { direction: Hammer.DIRECTION_ALL }
+      swipe: { direction: Hammer.DIRECTION_HORIZONTAL }
     };
+
+    override options = <any> {
+      touchAction: 'pan-y'
+    }
 }
 
 @NgModule({
