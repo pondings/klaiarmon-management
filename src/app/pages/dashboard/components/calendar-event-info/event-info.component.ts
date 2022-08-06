@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, Input, ViewEncapsulation } from "@angular/core";
+import { ChangeDetectionStrategy, Component, EventEmitter, Input, OnInit, Output, ViewEncapsulation } from "@angular/core";
 import { faPen, faTrash } from "@fortawesome/free-solid-svg-icons";
 import { CalendarEvent } from "angular-calendar";
 import { MetaData } from "src/app/model/meta-data";
@@ -15,9 +15,16 @@ export class EventInfoComponent {
     @Input()
     event!: CalendarEvent<MetaData>;
 
+    @Output()
+    onDelete = new EventEmitter<string>();
+
     faPen = faPen;
     faTrash = faTrash;
 
     isCollapsed = true;
+
+    deleteEvent(): void {
+        this.onDelete.emit(this.event.meta?.documentId);
+    }
 
 }

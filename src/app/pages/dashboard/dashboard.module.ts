@@ -10,6 +10,7 @@ import { AddEventModalComponent } from "./components/calendar-event-modal/calend
 import { EventInfoComponent } from "./components/calendar-event-info/event-info.component";
 import { CalendarService } from "./services/calendar.service";
 import { NgbCollapseModule } from "@ng-bootstrap/ng-bootstrap";
+import { ConfirmModalModule } from "src/app/shared/components/confirm-modal/confirm-modal.module";
 
 @NgModule({
     declarations: [
@@ -25,7 +26,8 @@ import { NgbCollapseModule } from "@ng-bootstrap/ng-bootstrap";
         CalendarMonthModule,
         CalendarCommonModule,
         FontAwesomeModule,
-        NgbCollapseModule
+        NgbCollapseModule,
+        ConfirmModalModule
     ],
     providers: [
         CalendarService

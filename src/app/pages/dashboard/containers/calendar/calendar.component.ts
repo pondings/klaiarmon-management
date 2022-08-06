@@ -1,5 +1,5 @@
 import { ChangeDetectionStrategy, Component, OnInit, ViewEncapsulation } from "@angular/core";
-import { BehaviorSubject, Observable, Subject } from "rxjs";
+import { BehaviorSubject, Observable, Subject, take, tap } from "rxjs";
 import { CalendarEvent, CalendarView } from 'angular-calendar';
 import { CalendarDayEvent } from "../../model/calendar";
 import { faArrowsRotate, faChevronLeft, faChevronRight, faFilter, faPlus } from "@fortawesome/free-solid-svg-icons";
@@ -54,8 +54,13 @@ export class CalendarComponent implements OnInit {
         this.calendarService.updateEvent(event);
     }
 
-    addEvent(): void {
-        this.calendarService.addEvent(this.viewDate);
+    async addEvent(): Promise<void> {
+        const addedEvent = await this.calendarService.addEvent(this.viewDate);
+        this.dayEvents$.pipe(take(1)).subscribe(events => this.dayEvents$.next([...events, addedEvent]));
+    }
+
+    deleteEvent(documentId: String): void {
+        console.log(documentId);
     }
 
 }

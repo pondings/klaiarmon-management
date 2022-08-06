@@ -1,4 +1,5 @@
 export enum Action {
     CREATE,
-    UPDATE
+    UPDATE,
+    DELETE
 }

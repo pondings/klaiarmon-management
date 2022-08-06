@@ -7,7 +7,7 @@ import { CalendarEvent } from "angular-calendar";
 import { MetaData } from "src/app/model/meta-data";
 import { AddEventModalComponent } from "../components/calendar-event-modal/calendar-event-modal.component";
 import { Action } from "src/app/common/enum/action";
-import { getDateStartOfDay, NullableDate } from "src/app/common/utils/date.util";
+import { NullableDate } from "src/app/common/utils/date.util";
 import { Timestamp } from "firebase/firestore";
 import { ToastService } from "src/app/core/toast/toast.service";
 
@@ -33,19 +33,25 @@ export class CalendarService {
     }
 
     updateEvent(event: CalendarEvent<MetaData>): void {
-        
+
     }
 
-    addEvent(startDate: NullableDate): void {
+    async addEvent(startDate: NullableDate): Promise<CalendarEvent<MetaData>> {
         const modalRef = this.ngbModalService.open(AddEventModalComponent, { centered: true });
         modalRef.componentInstance.event = { start: startDate };
         modalRef.componentInstance.action = Action.CREATE;
-        modalRef.result.then(async (calendarEvent: CalendarEvent<MetaData>) => {
-            const dto = this.mapCalendarEventToDto(calendarEvent);
-            const addedEvent = await this.firestoreService.addToCollection(CalendarService.CUSTOM_EVENT_COLLECTION, [dto]);
-            this.updateCalendarEventSubscribe(this.mapCalendarDtoToEvents(addedEvent)[0]);
-            this.toastService.showSuccess('Add event successfully');
-        }, () => { });
+
+        return new Promise(async (resolve) => {
+            modalRef.result.then(async (result: CalendarEvent<MetaData>) => {
+                const dto = this.mapCalendarEventToDto(result);
+                const addedEvent = await this.firestoreService.addToCollection(CalendarService.CUSTOM_EVENT_COLLECTION, [dto]);
+                const calendarEvent = this.mapCalendarDtoToEvents(addedEvent)[0];
+                this.updateCalendarEventSubscribe(calendarEvent);
+                this.toastService.showSuccess('Add event successfully');
+
+                return resolve(calendarEvent);
+            }, err => {});
+        });
     }
 
     private updateCalendarEventSubscribe(calendarEvent: CalendarEvent<MetaData>): void {
@@ -54,12 +60,12 @@ export class CalendarService {
 
     private mapCalendarEventToDto(calendarEvent: CalendarEvent<MetaData>): CalendarEventDto {
         const { title, start, end, meta } = calendarEvent;
-        return { 
-            title, 
-            start: Timestamp.fromDate(start), 
-            end: (end ? Timestamp.fromDate(end) : null)!, 
-            meta: meta || {}, 
-            allDay: true 
+        return {
+            title,
+            start: Timestamp.fromDate(start),
+            end: (end ? Timestamp.fromDate(end) : null)!,
+            meta: meta || {},
+            allDay: true
         };
     }
 

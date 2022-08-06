@@ -7,8 +7,14 @@ app-event-info {
         background-color: beige !important;
     }
 
-    .title {
-        font-size: 14px !important;
+    span.title {
+        font-size: 12px !important;
+        font-weight: bold;
+        flex-grow: 1;
+    }
+
+    div.card-text {
+        font-size: 12px !important;
     }
 
     .command-btn {
@@ -17,7 +23,6 @@ app-event-info {
 
     .hide-overflow {
         max-height: 28px !important;
-        font-weight: bold;
         white-space: nowrap;
         text-overflow: ellipsis;
         overflow: hidden;

@@ -1,10 +1,14 @@
-<div class="card mb-3" (click)="collapse.toggle()">
+<div class="card mb-3">
     <div class="card-body p-2">
         <div class="card-title d-flex flex-row justify-content-between align-items-center m-0">
-            <span class="title hide-overflow m-0">{{event.title}}</span>
+            <span class="title hide-overflow m-0" (click)="collapse.toggle()">
+                {{event.title}}
+            </span>
             <div class="d-flex">
-                <fa-icon [icon]="faPen" class="command-bt"></fa-icon>
-                <fa-icon [icon]="faTrash" class="command-bt ms-2"></fa-icon>
+                <fa-icon class="command-bt" [icon]="faPen"></fa-icon>
+                <fa-icon class="command-bt ms-2" [icon]="faTrash" 
+                    (click)="deleteEvent()">
+                </fa-icon>
             </div>
         </div>
         <div class="card-text mt-2" #collapse="ngbCollapse" [(ngbCollapse)]="isCollapsed">

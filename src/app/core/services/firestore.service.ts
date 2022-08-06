@@ -9,7 +9,6 @@ import { LocalStorageService } from "./local-storage.service";
 import * as firebase from 'firebase/firestore';
 
 import * as firestoreUtils from 'src/app/common/utils/firestore.util';
-import { isArray } from "src/app/common/utils/common-util";
 
 @Injectable({ providedIn: 'root' })
 export class FirestoreService {
@@ -33,7 +32,7 @@ export class FirestoreService {
         const localStorageItem = this.localStorageService.getItem<T[]>(path);
         const observable: Observable<HasMetaData<T>[]> = localStorageItem.isExpired
             ? this.angularFirestore.collection<HasMetaData<T>>(path).valueChanges({ idField: FirestoreService.DOCUMENT_ID_KEY })
-                .pipe(tap(dataList => this.setItemWithExpiration(path, dataList)))
+                .pipe(map(this.assignDocumentId), tap(dataList => this.setItemWithExpiration(path, dataList)))
             : new BehaviorSubject<HasMetaData<T>[]>(localStorageItem.value as HasMetaData<T>[]).asObservable()
                 .pipe(map(dataList => dataList.map(firestoreUtils.convertFirestoreTimestampProperties)));
 
@@ -42,13 +41,19 @@ export class FirestoreService {
 
     async addToCollection<T>(path: string, data: HasMetaData<T>[]): Promise<HasMetaData<T>[]> {
         const dataWithoutId = await this.setMetaData(data);
-        const cleanedData = dataWithoutId.map(d => firestoreUtils.cleanData(d));
+        let cleanedData = dataWithoutId.map(d => firestoreUtils.cleanData(d));
 
         this.spinnerService.show();
 
         const batch = this.angularFirestore.firestore.batch();
         const collection = this.angularFirestore.firestore.collection(path);
-        cleanedData.forEach(d => batch.set(collection.doc(), d));
+
+        cleanedData = cleanedData.map((d: HasMetaData<T>) => {
+            const doc = collection.doc();
+            batch.set(doc, d);
+            d.meta.documentId = doc.id;
+            return d;
+        })
 
         await batch.commit();
 
@@ -75,6 +80,14 @@ export class FirestoreService {
                     updatedDate: currentDate
                 }
             };
+        });
+    }
+
+    private assignDocumentId<T>(dataList: HasMetaData<T>[]): HasMetaData<T>[] {
+        return dataList.map(data => {
+            data.meta.documentId = data._documentId; 
+            delete data._documentId;
+            return data;
         });
     }
 
