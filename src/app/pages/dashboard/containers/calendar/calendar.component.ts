@@ -61,4 +61,8 @@ export class CalendarComponent implements OnInit {
         this.calendarService.deleteEvent(documentId);
     }
 
+    reload(): void {
+        this.calendarEvent$ = this.calendarService.reload();
+    }
+
 }

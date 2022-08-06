@@ -8,6 +8,7 @@ import { Action } from "src/app/common/enum/action";
 import { NullableDate } from "src/app/common/utils/date.util";
 import { mergeForkArrays } from "src/app/common/utils/common-util";
 import { mapCalendarDtoToEvents, mapCalendarEventToDto, mapToEditable, mapToUneditable } from "../utils/calendar.util";
+import { LocalStorageService } from "src/app/core/services/local-storage.service";
 
 @Injectable()
 export class CalendarService {
@@ -19,7 +20,8 @@ export class CalendarService {
     private dayEvent$ = new BehaviorSubject<CalendarEventWithMeta[]>([]);
 
     constructor(private firestoreService: FirestoreService,
-        private ngbModalService: NgbModal) { }
+        private ngbModalService: NgbModal,
+        private localStoreageService: LocalStorageService) { }
 
     getCalendarEvents(): Observable<CalendarEventWithMeta[]> {
         const holidayEvents = this.firestoreService.getCollection<CalendarEventDto>(CalendarService.PUBLIC_HOLIDAY_COLLECTION)
@@ -71,6 +73,13 @@ export class CalendarService {
             this.addToDayEvents(calendarEvent);
             transactionsSuccess.toast.showSuccess('Added event');
         }, err => { });
+    }
+
+    reload(): Observable<CalendarEventWithMeta[]> {
+        this.localStoreageService.clear(CalendarService.CUSTOM_EVENT_COLLECTION);
+        this.localStoreageService.clear(CalendarService.PUBLIC_HOLIDAY_COLLECTION);
+
+        return this.getCalendarEvents();
     }
 
     private addToCalendarEvents(calendarEvent: CalendarEventWithMeta): void {
