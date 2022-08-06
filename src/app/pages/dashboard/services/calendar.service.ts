@@ -36,6 +36,12 @@ export class CalendarService {
 
     }
 
+    async deleteEvent(documentId: string): Promise<void> {
+        await this.firestoreService.deleteDocument(CalendarService.CUSTOM_EVENT_COLLECTION, documentId)
+            .then(toast => toast.showSuccess('Deleted'));
+        this.calendarEvent$.pipe(take(1)).subscribe(events => this.calendarEvent$.next(events.filter(event => event.meta?.documentId !== documentId)));
+    }
+
     async addEvent(startDate: NullableDate): Promise<CalendarEvent<MetaData>> {
         const modalRef = this.ngbModalService.open(AddEventModalComponent, { centered: true });
         modalRef.componentInstance.event = { start: startDate };

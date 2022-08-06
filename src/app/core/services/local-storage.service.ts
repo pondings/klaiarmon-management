@@ -4,6 +4,7 @@ import * as moment from 'moment';
 import { TimeUnit } from "../../shared/model/time-unit";
 import { LocalStorageItem, LocalStorageItemType } from "../../shared/model/local-storage";
 import { isArray, isNotNullOrUndefined } from "src/app/common/utils/common-util";
+import { HasMetaData } from "src/app/model/meta-data";
 
 @Injectable({ providedIn: 'root' })
 export class LocalStorageService {
@@ -44,6 +45,12 @@ export class LocalStorageService {
                 this.setItem(key, item);
             }
         }
+    }
+
+    deleteItem(key: string, documentId: string): void {
+        const item = this.getItem<HasMetaData<any>>(key);
+        item.value = item.value.filter((val: any) => val.meta.documentId !== documentId);
+        this.setItem(key, item)
     }
 
     private setItemToLocalStorage(key: string, value: string): void {

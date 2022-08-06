@@ -9,6 +9,7 @@ import { LocalStorageService } from "./local-storage.service";
 import * as firebase from 'firebase/firestore';
 
 import * as firestoreUtils from 'src/app/common/utils/firestore.util';
+import { ToastService } from "../toast/toast.service";
 
 @Injectable({ providedIn: 'root' })
 export class FirestoreService {
@@ -18,6 +19,7 @@ export class FirestoreService {
     constructor(private angularFirestore: AngularFirestore,
         private angularFireAuth: AngularFireAuth,
         private spinnerService: SpinnerService,
+        private toastService: ToastService,
         private localStorageService: LocalStorageService) { }
 
     subscribeCollection<T>(path: string): Observable<HasMetaData<T>[]> {
@@ -37,6 +39,17 @@ export class FirestoreService {
                 .pipe(map(dataList => dataList.map(firestoreUtils.convertFirestoreTimestampProperties)));
 
         return observable.pipe(take(1), finalize(() => this.spinnerService.hide()));
+    }
+
+    async deleteDocument(path: string, documentId: string): Promise<ToastService> {
+        this.spinnerService.show();
+        
+        const doc = this.angularFirestore.doc(`${path}/${documentId}`);
+        await doc.delete();
+        
+        this.localStorageService.deleteItem(path, documentId);
+        this.spinnerService.hide();
+        return this.toastService;
     }
 
     async addToCollection<T>(path: string, data: HasMetaData<T>[]): Promise<HasMetaData<T>[]> {

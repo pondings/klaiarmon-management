@@ -59,8 +59,9 @@ export class CalendarComponent implements OnInit {
         this.dayEvents$.pipe(take(1)).subscribe(events => this.dayEvents$.next([...events, addedEvent]));
     }
 
-    deleteEvent(documentId: String): void {
-        console.log(documentId);
+    async deleteEvent(documentId: string): Promise<void> {
+        await this.calendarService.deleteEvent(documentId);
+        this.dayEvents$.pipe(take(1)).subscribe(events => this.dayEvents$.next(events.filter(e => e.meta?.documentId !== documentId)));
     }
 
 }
