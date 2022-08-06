@@ -1,5 +1,11 @@
 app-sidebar {
 
+    background-color: beige !important;
+
+    div.offcanvas, ul {
+        background-color: beige !important;
+    }
+
     div.offcanvas-header {
         padding-bottom: 0px;
 

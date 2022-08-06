@@ -1,5 +1,5 @@
 import { ChangeDetectionStrategy, Component, OnInit, ViewEncapsulation } from "@angular/core";
-import { Observable } from "rxjs";
+import { BehaviorSubject, Observable, Subject } from "rxjs";
 import { CalendarEvent, CalendarView } from 'angular-calendar';
 import { CalendarDayEvent } from "../../model/calendar";
 import { faArrowsRotate, faChevronLeft, faChevronRight, faFilter, faPlus } from "@fortawesome/free-solid-svg-icons";
@@ -21,6 +21,8 @@ export class CalendarComponent implements OnInit {
 
     readonly PUBLIC_HOLIDAT = 'calendar/event/public-holiday';
 
+    dayEvents$ = new BehaviorSubject<CalendarEvent<MetaData>[]>([]);
+
     view = CalendarView.Month;
     viewDate = getDate();
 
@@ -32,7 +34,7 @@ export class CalendarComponent implements OnInit {
 
     calendarEvent$!: Observable<CalendarEvent<MetaData>[]>;
 
-    constructor(private calendarService: CalendarService) { }
+    constructor(private calendarService: CalendarService) {}
 
     ngOnInit(): void {
         this.calendarEvent$ = this.calendarService.getCalendarEvents();
@@ -44,7 +46,8 @@ export class CalendarComponent implements OnInit {
     }
 
     showEvent(events: CalendarDayEvent): void {
-        console.log('Show events', events);
+        this.viewDate = events.day.date;
+        this.dayEvents$.next(events.day.events);
     }
 
     updateEvent(event: CalendarEvent): void {
@@ -52,7 +55,7 @@ export class CalendarComponent implements OnInit {
     }
 
     addEvent(): void {
-        this.calendarService.addEvent();
+        this.calendarService.addEvent(this.viewDate);
     }
 
 }

@@ -13,14 +13,14 @@
         </button>
     </div>
 
-    <div (swipe)="onSwipe($event)">
+    <div (swipe)="onSwipe($event)" (doubletap)="addEvent()">
         <mwl-calendar-month-view [viewDate]="viewDate!" [events]="(calendarEvent$ | async)!"
             (dayClicked)="showEvent($event)">
         </mwl-calendar-month-view>
     </div>
 
     <div class="event-command mt-2 mb-2 d-flex flex-row justify-content-center">
-        <div class="btn-group btn-group-demium w-50" role="group">
+        <div class="btn-group btn-group-medium w-50" role="group">
             <button type="button" class="btn btn-outline-primary" (click)="addEvent()">
                 <fa-icon [icon]="faPlus"></fa-icon>
             </button>
@@ -35,6 +35,10 @@
         </div>
     </div>
 
-    <app-event-info></app-event-info>
+    <div>
+        <app-event-info *ngFor="let event of (dayEvents$ | async)"
+            [event]="event">
+        </app-event-info>
+    </div>
 
 </div>

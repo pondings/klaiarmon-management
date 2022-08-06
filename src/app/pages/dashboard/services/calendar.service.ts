@@ -7,7 +7,7 @@ import { CalendarEvent } from "angular-calendar";
 import { MetaData } from "src/app/model/meta-data";
 import { AddEventModalComponent } from "../components/calendar-event-modal/calendar-event-modal.component";
 import { Action } from "src/app/common/enum/action";
-import { getDateStartOfDay } from "src/app/common/utils/date.util";
+import { getDateStartOfDay, NullableDate } from "src/app/common/utils/date.util";
 import { Timestamp } from "firebase/firestore";
 import { ToastService } from "src/app/core/toast/toast.service";
 
@@ -36,9 +36,9 @@ export class CalendarService {
         
     }
 
-    addEvent(): void {
+    addEvent(startDate: NullableDate): void {
         const modalRef = this.ngbModalService.open(AddEventModalComponent, { centered: true });
-        modalRef.componentInstance.event = { start: getDateStartOfDay() };
+        modalRef.componentInstance.event = { start: startDate };
         modalRef.componentInstance.action = Action.CREATE;
         modalRef.result.then(async (calendarEvent: CalendarEvent<MetaData>) => {
             const dto = this.mapCalendarEventToDto(calendarEvent);
