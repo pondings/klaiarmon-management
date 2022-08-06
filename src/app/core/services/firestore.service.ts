@@ -3,13 +3,13 @@ import { AngularFireAuth } from "@angular/fire/compat/auth";
 import { AngularFirestore } from "@angular/fire/compat/firestore";
 import { BehaviorSubject, finalize, map, Observable, take, tap } from "rxjs";
 import { SpinnerService } from "src/app/core/spinner/spinner.service";
-import { HasMetaData } from "src/app/model/meta-data";
+import { HasMetaData, TransactionsSuccess } from "src/app/model/meta-data";
 import { TimeUnit } from "../../shared/model/time-unit";
 import { LocalStorageService } from "./local-storage.service";
 import * as firebase from 'firebase/firestore';
 
 import * as firestoreUtils from 'src/app/common/utils/firestore.util';
-import { isArray } from "src/app/common/utils/common-util";
+import { ToastService } from "../toast/toast.service";
 
 @Injectable({ providedIn: 'root' })
 export class FirestoreService {
@@ -19,6 +19,7 @@ export class FirestoreService {
     constructor(private angularFirestore: AngularFirestore,
         private angularFireAuth: AngularFireAuth,
         private spinnerService: SpinnerService,
+        private toastService: ToastService,
         private localStorageService: LocalStorageService) { }
 
     subscribeCollection<T>(path: string): Observable<HasMetaData<T>[]> {
@@ -33,29 +34,46 @@ export class FirestoreService {
         const localStorageItem = this.localStorageService.getItem<T[]>(path);
         const observable: Observable<HasMetaData<T>[]> = localStorageItem.isExpired
             ? this.angularFirestore.collection<HasMetaData<T>>(path).valueChanges({ idField: FirestoreService.DOCUMENT_ID_KEY })
-                .pipe(tap(dataList => this.setItemWithExpiration(path, dataList)))
+                .pipe(map(this.assignDocumentId), tap(dataList => this.setItemWithExpiration(path, dataList)))
             : new BehaviorSubject<HasMetaData<T>[]>(localStorageItem.value as HasMetaData<T>[]).asObservable()
                 .pipe(map(dataList => dataList.map(firestoreUtils.convertFirestoreTimestampProperties)));
 
         return observable.pipe(take(1), finalize(() => this.spinnerService.hide()));
     }
 
-    async addToCollection<T>(path: string, data: HasMetaData<T>[]): Promise<HasMetaData<T>[]> {
+    async deleteDocument(path: string, documentId: string): Promise<ToastService> {
+        this.spinnerService.show();
+        
+        const doc = this.angularFirestore.doc(`${path}/${documentId}`);
+        await doc.delete();
+        
+        this.localStorageService.deleteItem(path, documentId);
+        this.spinnerService.hide();
+        return this.toastService;
+    }
+
+    async addToCollection<T>(path: string, data: HasMetaData<T>[]): Promise<TransactionsSuccess<T>> {
         const dataWithoutId = await this.setMetaData(data);
-        const cleanedData = dataWithoutId.map(d => firestoreUtils.cleanData(d));
+        let cleanedData = dataWithoutId.map(d => firestoreUtils.cleanData(d));
 
         this.spinnerService.show();
 
         const batch = this.angularFirestore.firestore.batch();
         const collection = this.angularFirestore.firestore.collection(path);
-        cleanedData.forEach(d => batch.set(collection.doc(), d));
+
+        cleanedData = cleanedData.map((d: HasMetaData<T>) => {
+            const doc = collection.doc();
+            batch.set(doc, d);
+            d.meta.documentId = doc.id;
+            return d;
+        })
 
         await batch.commit();
 
         this.localStorageService.updateItem(path, cleanedData);
         this.spinnerService.hide();
 
-        return cleanedData;
+        return { data: cleanedData, toast: this.toastService };
     }
 
     private async setMetaData<T>(dataList: HasMetaData<T>[]): Promise<HasMetaData<T>[]> {
@@ -78,8 +96,16 @@ export class FirestoreService {
         });
     }
 
+    private assignDocumentId<T>(dataList: HasMetaData<T>[]): HasMetaData<T>[] {
+        return dataList.map(data => {
+            data.meta.documentId = data._documentId; 
+            delete data._documentId;
+            return data;
+        });
+    }
+
     private setItemWithExpiration<T>(key: string, value: T[]) {
-        this.localStorageService.setItemWithExpiration(key, value, 30, TimeUnit.minute);
+        this.localStorageService.setItemWithExpiration(key, value, 5, TimeUnit.minute);
     }
 
 }

@@ -7,8 +7,10 @@ import { CalendarMonthModule, CalendarCommonModule } from 'angular-calendar';
 import { SharedModule } from "src/app/shared/shared.module";
 import { FontAwesomeModule } from "@fortawesome/angular-fontawesome";
 import { AddEventModalComponent } from "./components/calendar-event-modal/calendar-event-modal.component";
-import { EventInfoComponent } from "./components/event-info/event-info.component";
+import { EventInfoComponent } from "./components/calendar-event-info/event-info.component";
 import { CalendarService } from "./services/calendar.service";
+import { NgbCollapseModule } from "@ng-bootstrap/ng-bootstrap";
+import { ConfirmModalModule } from "src/app/shared/components/modal/confirm-modal.module";
 
 @NgModule({
     declarations: [
@@ -23,7 +25,9 @@ import { CalendarService } from "./services/calendar.service";
         DashboardRoutingModule,
         CalendarMonthModule,
         CalendarCommonModule,
-        FontAwesomeModule
+        FontAwesomeModule,
+        NgbCollapseModule,
+        ConfirmModalModule
     ],
     providers: [
         CalendarService

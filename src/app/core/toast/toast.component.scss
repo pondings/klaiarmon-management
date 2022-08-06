@@ -1,9 +1,13 @@
 app-toast {
+    text-align: center;
+
     ngb-toast {
-        position: fixed;
+        transform: translateX(-4%);
+        position: fixed !important;
+        width: 90% !important;
         bottom: 0;
         right: 0;
-        margin-bottom: 8px;
+        margin-bottom: 18px;
         margin-right: 8px;
         z-index: 9999;
     }

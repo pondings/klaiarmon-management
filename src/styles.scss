@@ -6,8 +6,17 @@ $enable-cssgrid: true;
 @import '~bootstrap/scss/bootstrap';
 @import "../node_modules/angular-calendar/css/angular-calendar.css";
 
+
+.btn-outline-primary {
+    --bs-btn-border-color: grey !important;
+}
+
+fa-icon {
+    color: grey;
+}
+
 body {
-    background-color: lightcyan;
+    background-color: beige !important;
 }
 
 .required:after {
@@ -26,7 +35,7 @@ body {
 
     app-calendar {
         mwl-calendar-month-cell {
-            min-height: unset !important;
+            min-height: 48.79px !important;
         }
 
         span.cal-day-badge {

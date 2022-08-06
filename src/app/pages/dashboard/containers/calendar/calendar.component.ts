@@ -1,11 +1,10 @@
 import { ChangeDetectionStrategy, Component, OnInit, ViewEncapsulation } from "@angular/core";
 import { Observable } from "rxjs";
-import { CalendarEvent, CalendarView } from 'angular-calendar';
-import { CalendarDayEvent } from "../../model/calendar";
+import { CalendarView } from 'angular-calendar';
+import { CalendarDayEvent, CalendarEventWithMeta } from "../../model/calendar";
 import { faArrowsRotate, faChevronLeft, faChevronRight, faFilter, faPlus } from "@fortawesome/free-solid-svg-icons";
 import { TimeUnit } from "src/app/shared/model/time-unit";
 import { UntilDestroy } from '@ngneat/until-destroy';
-import { MetaData } from "src/app/model/meta-data";
 import { CalendarService } from "../../services/calendar.service";
 import { addDate, getDate } from "src/app/common/utils/date.util";
 
@@ -30,12 +29,14 @@ export class CalendarComponent implements OnInit {
     faArrowsRotate = faArrowsRotate;
     faFilter = faFilter;
 
-    calendarEvent$!: Observable<CalendarEvent<MetaData>[]>;
+    calendarEvent$!: Observable<CalendarEventWithMeta[]>;
+    dayEvents$!: Observable<CalendarEventWithMeta[]>;
 
-    constructor(private calendarService: CalendarService) { }
+    constructor(private calendarService: CalendarService) {}
 
     ngOnInit(): void {
         this.calendarEvent$ = this.calendarService.getCalendarEvents();
+        this.dayEvents$ = this.calendarService.getDayEvents();
     }
 
     onSwipe(event: any): void {
@@ -44,15 +45,24 @@ export class CalendarComponent implements OnInit {
     }
 
     showEvent(events: CalendarDayEvent): void {
-        console.log('Show events', events);
+        this.viewDate = events.day.date;
+        this.calendarService.showEvents(events.day.events);
     }
 
-    updateEvent(event: CalendarEvent): void {
+    updateEvent(event: CalendarEventWithMeta): void {
         this.calendarService.updateEvent(event);
     }
 
-    addEvent(): void {
-        this.calendarService.addEvent();
+    async addEvent(): Promise<void> {
+        this.calendarService.addEvent(this.viewDate);
+    }
+
+    async deleteEvent(documentId: string): Promise<void> {
+        this.calendarService.deleteEvent(documentId);
+    }
+
+    reload(): void {
+        this.calendarEvent$ = this.calendarService.reload();
     }
 
 }

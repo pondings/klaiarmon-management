@@ -1,0 +1,32 @@
+app-event-info {
+    display: flex;
+    justify-content: center;
+    flex-flow: column;
+
+    div.card {
+        background-color: beige !important;
+    }
+
+    span.title {
+        font-size: 12px !important;
+        font-weight: bold;
+        flex-grow: 1;
+        cursor: pointer;
+    }
+
+    div.card-text {
+        font-size: 12px !important;
+    }
+
+    .command-btn {
+        color: grey;
+    }
+
+    .hide-overflow {
+        max-height: 28px !important;
+        white-space: nowrap;
+        text-overflow: ellipsis;
+        overflow: hidden;
+    }
+
+}

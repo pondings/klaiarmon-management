@@ -7,12 +7,8 @@
         </div>
         <span class="display-name mb-2">{{displayName}}</span>
         <div class="d-flex justify-content-center w-100">
-            <button class="btn btn-primary btn-circle btn-sm me-3">
-                <fa-icon [icon]="faPenToSquare"></fa-icon>
-            </button>
-            <button class="btn btn-danger btn-circle btn-sm" (click)="logout()">
-                <fa-icon [icon]="faRightFromBracket"></fa-icon>
-            </button>
+            <fa-icon [icon]="faPenToSquare" class="me-3"></fa-icon>
+            <fa-icon [icon]="faRightFromBracket" (click)="logout()"></fa-icon>
         </div>
     </div>
     <hr>
