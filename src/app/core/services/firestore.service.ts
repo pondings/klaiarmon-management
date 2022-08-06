@@ -3,7 +3,7 @@ import { AngularFireAuth } from "@angular/fire/compat/auth";
 import { AngularFirestore } from "@angular/fire/compat/firestore";
 import { BehaviorSubject, finalize, map, Observable, take, tap } from "rxjs";
 import { SpinnerService } from "src/app/core/spinner/spinner.service";
-import { HasMetaData } from "src/app/model/meta-data";
+import { HasMetaData, TransactionsSuccess } from "src/app/model/meta-data";
 import { TimeUnit } from "../../shared/model/time-unit";
 import { LocalStorageService } from "./local-storage.service";
 import * as firebase from 'firebase/firestore';
@@ -52,7 +52,7 @@ export class FirestoreService {
         return this.toastService;
     }
 
-    async addToCollection<T>(path: string, data: HasMetaData<T>[]): Promise<HasMetaData<T>[]> {
+    async addToCollection<T>(path: string, data: HasMetaData<T>[]): Promise<TransactionsSuccess<T>> {
         const dataWithoutId = await this.setMetaData(data);
         let cleanedData = dataWithoutId.map(d => firestoreUtils.cleanData(d));
 
@@ -73,7 +73,7 @@ export class FirestoreService {
         this.localStorageService.updateItem(path, cleanedData);
         this.spinnerService.hide();
 
-        return cleanedData;
+        return { data: cleanedData, toast: this.toastService };
     }
 
     private async setMetaData<T>(dataList: HasMetaData<T>[]): Promise<HasMetaData<T>[]> {

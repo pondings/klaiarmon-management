@@ -1,10 +1,9 @@
 import { ChangeDetectionStrategy, Component, Input, OnInit, ViewEncapsulation } from "@angular/core";
 import { FormBuilder, FormControl, FormControlStatus, FormGroup, Validators } from "@angular/forms";
 import { NgbActiveModal, NgbDateStruct } from "@ng-bootstrap/ng-bootstrap";
-import { CalendarEvent } from "angular-calendar";
 import { faCalendar } from "@fortawesome/free-solid-svg-icons";
 import { map, Observable, startWith, tap } from "rxjs";
-import { AddCalendarEventForm } from "../../model/calendar";
+import { AddCalendarEventForm, CalendarEventWithMeta } from "../../model/calendar";
 import { Action } from "src/app/common/enum/action";
 import { getDateStructFromDate } from "src/app/common/utils/date-struct.util";
 import { addDate } from "src/app/common/utils/date.util";
@@ -22,7 +21,7 @@ import { Nullable } from "src/app/common/types/common.type";
 export class AddEventModalComponent implements OnInit {
 
     @Input()
-    event!: CalendarEvent;
+    event!: CalendarEventWithMeta;
 
     @Input()
     action!: Action;

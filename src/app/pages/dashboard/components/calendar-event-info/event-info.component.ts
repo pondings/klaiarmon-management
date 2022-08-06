@@ -2,6 +2,7 @@ import { ChangeDetectionStrategy, Component, EventEmitter, Input, OnInit, Output
 import { faPen, faTrash } from "@fortawesome/free-solid-svg-icons";
 import { CalendarEvent } from "angular-calendar";
 import { MetaData } from "src/app/model/meta-data";
+import { CalendarEventWithMeta } from "../../model/calendar";
 
 @Component({
     selector: 'app-event-info',
@@ -13,7 +14,7 @@ import { MetaData } from "src/app/model/meta-data";
 export class EventInfoComponent {
 
     @Input()
-    event!: CalendarEvent<MetaData>;
+    event!: CalendarEventWithMeta;
 
     @Output()
     onDelete = new EventEmitter<string>();

@@ -1,11 +1,10 @@
 import { ChangeDetectionStrategy, Component, OnInit, ViewEncapsulation } from "@angular/core";
-import { BehaviorSubject, Observable, Subject, take, tap } from "rxjs";
-import { CalendarEvent, CalendarView } from 'angular-calendar';
-import { CalendarDayEvent } from "../../model/calendar";
+import { Observable } from "rxjs";
+import { CalendarView } from 'angular-calendar';
+import { CalendarDayEvent, CalendarEventWithMeta } from "../../model/calendar";
 import { faArrowsRotate, faChevronLeft, faChevronRight, faFilter, faPlus } from "@fortawesome/free-solid-svg-icons";
 import { TimeUnit } from "src/app/shared/model/time-unit";
 import { UntilDestroy } from '@ngneat/until-destroy';
-import { MetaData } from "src/app/model/meta-data";
 import { CalendarService } from "../../services/calendar.service";
 import { addDate, getDate } from "src/app/common/utils/date.util";
 
@@ -21,8 +20,6 @@ export class CalendarComponent implements OnInit {
 
     readonly PUBLIC_HOLIDAT = 'calendar/event/public-holiday';
 
-    dayEvents$ = new BehaviorSubject<CalendarEvent<MetaData>[]>([]);
-
     view = CalendarView.Month;
     viewDate = getDate();
 
@@ -32,12 +29,14 @@ export class CalendarComponent implements OnInit {
     faArrowsRotate = faArrowsRotate;
     faFilter = faFilter;
 
-    calendarEvent$!: Observable<CalendarEvent<MetaData>[]>;
+    calendarEvent$!: Observable<CalendarEventWithMeta[]>;
+    dayEvents$!: Observable<CalendarEventWithMeta[]>;
 
     constructor(private calendarService: CalendarService) {}
 
     ngOnInit(): void {
         this.calendarEvent$ = this.calendarService.getCalendarEvents();
+        this.dayEvents$ = this.calendarService.getDayEvents();
     }
 
     onSwipe(event: any): void {
@@ -47,21 +46,19 @@ export class CalendarComponent implements OnInit {
 
     showEvent(events: CalendarDayEvent): void {
         this.viewDate = events.day.date;
-        this.dayEvents$.next(events.day.events);
+        this.calendarService.showEvents(events.day.events);
     }
 
-    updateEvent(event: CalendarEvent): void {
+    updateEvent(event: CalendarEventWithMeta): void {
         this.calendarService.updateEvent(event);
     }
 
     async addEvent(): Promise<void> {
-        const addedEvent = await this.calendarService.addEvent(this.viewDate);
-        this.dayEvents$.pipe(take(1)).subscribe(events => this.dayEvents$.next([...events, addedEvent]));
+        this.calendarService.addEvent(this.viewDate);
     }
 
     async deleteEvent(documentId: string): Promise<void> {
-        await this.calendarService.deleteEvent(documentId);
-        this.dayEvents$.pipe(take(1)).subscribe(events => this.dayEvents$.next(events.filter(e => e.meta?.documentId !== documentId)));
+        this.calendarService.deleteEvent(documentId);
     }
 
 }
