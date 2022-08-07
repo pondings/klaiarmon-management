@@ -45,16 +45,16 @@
         </div>
     </div>
     <div class="modal-footer">
-        <button *ngIf="isCreate" type="button" class="btn btn-sm btn-primary" [disabled]="!(isFormValid$ | async)"
+        <button *ngIf="isCreate" type="button" class="btn btn-sm btn-outline-dark" [disabled]="!(isFormValid$ | async)"
             (click)="submit()">
             Add
         </button>
 
-        <button *ngIf="isUpdate" type="button" class="btn btn-sm btn-primary" (click)="submit()"
+        <button *ngIf="isUpdate" type="button" class="btn btn-sm btn-outline-dark" (click)="submit()"
             [disabled]="!(isFormValid$ | async)">
             Update
         </button>
 
-        <button type="button" class="btn btn-sm btn-danger" (click)="activeModal.dismiss()">Close</button>
+        <button type="button" class="btn btn-sm btn-outline-danger" (click)="activeModal.dismiss()">Close</button>
     </div>
 </form>

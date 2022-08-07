@@ -1,8 +1,8 @@
 import { ChangeDetectionStrategy, Component, OnInit, ViewEncapsulation } from "@angular/core";
-import { Observable } from "rxjs";
+import { map, Observable } from "rxjs";
 import { CalendarView } from 'angular-calendar';
 import { CalendarDayEvent, CalendarEventWithMeta } from "../../model/calendar";
-import { faArrowsRotate, faChevronLeft, faChevronRight, faFilter, faPlus } from "@fortawesome/free-solid-svg-icons";
+import { faArrowsRotate, faBan, faChevronLeft, faChevronRight, faPlus, faReplyAll } from "@fortawesome/free-solid-svg-icons";
 import { TimeUnit } from "src/app/shared/model/time-unit";
 import { UntilDestroy } from '@ngneat/until-destroy';
 import { CalendarService } from "../../services/calendar.service";
@@ -22,21 +22,25 @@ export class CalendarComponent implements OnInit {
 
     view = CalendarView.Month;
     viewDate = getDate();
+    viewEventDate!: Date | null;
 
     faChevronLeft = faChevronLeft;
     faChevronRight = faChevronRight;
     faPlus = faPlus;
     faArrowsRotate = faArrowsRotate;
-    faFilter = faFilter;
+    faReplyAll = faReplyAll;
+    faBan = faBan;
 
     calendarEvent$!: Observable<CalendarEventWithMeta[]>;
     dayEvents$!: Observable<CalendarEventWithMeta[]>;
+    viewEventDate$!: Observable<Date>;
 
     constructor(private calendarService: CalendarService) {}
 
     ngOnInit(): void {
         this.calendarEvent$ = this.calendarService.getCalendarEvents();
         this.dayEvents$ = this.calendarService.getDayEvents();
+        this.viewEventDate$ = this.dayEvents$.pipe(map(events => (events || [])[0]), map(event => (event || {}).start));
     }
 
     onSwipe(event: any): void {
@@ -46,6 +50,7 @@ export class CalendarComponent implements OnInit {
 
     showEvent(events: CalendarDayEvent): void {
         this.viewDate = events.day.date;
+        this.viewEventDate = events.day.date;
         this.calendarService.showEvents(events.day.events);
     }
 
@@ -63,6 +68,10 @@ export class CalendarComponent implements OnInit {
 
     reload(): void {
         this.calendarEvent$ = this.calendarService.reload();
+    }
+
+    clearEvents(): void {
+        this.calendarService.clearEvents();
     }
 
 }

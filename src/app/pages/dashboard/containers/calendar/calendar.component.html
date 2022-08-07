@@ -25,17 +25,21 @@
                 <fa-icon [icon]="faPlus"></fa-icon>
             </button>
 
-            <button type="button" class="btn btn-outline-primary" (click)="reload()">
-                <fa-icon [icon]="faArrowsRotate"></fa-icon>
+            <button mwlCalendarToday type="button" class="btn btn-outline-primary" [(viewDate)]="viewDate!">
+                <fa-icon [icon]="faReplyAll"></fa-icon>
             </button>
 
-            <button type="button" class="btn btn-outline-primary">
-                <fa-icon [icon]="faFilter"></fa-icon>
+            <button type="button" class="btn btn-outline-primary" (click)="reload()">
+                <fa-icon [icon]="faArrowsRotate"></fa-icon>
             </button>
         </div>
     </div>
 
     <div>
+        <div *ngIf="viewEventDate$ | async" class="d-flex justify-content-between">
+            <fa-icon [icon]="faBan" (click)="clearEvents()"></fa-icon>
+            <span class="view-event-date">{{ (viewEventDate$ | async) | date:'dd/MM/YYYY' }}</span>
+        </div>
         <app-event-info *ngFor="let event of (dayEvents$ | async)"
             [event]="event" (onDelete)="deleteEvent($event)" (onEdit)="editEvent($event)">
         </app-event-info>

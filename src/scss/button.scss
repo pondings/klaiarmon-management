@@ -1,0 +1,17 @@
+@import './var.scss';
+
+.btn-outline-primary {
+    --bs-btn-border-color: #495664 !important;
+}
+
+.btn:focus {
+    background-color: lightgray !important;
+    border-color: #495664 !important;
+    box-shadow: unset !important;
+}
+
+.btn:hover {
+    background-color: lightgray !important;
+    border-color: unset !important;
+    color: #495664 !important;
+}

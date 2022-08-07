@@ -1,20 +1,44 @@
-<div class="card mb-3">
+<div class="card mb-2">
     <div class="card-body p-2">
         <div class="card-title d-flex flex-row justify-content-between align-items-center m-0">
             <span class="title hide-overflow m-0" (click)="collapse.toggle()">
                 {{event.title}}
             </span>
             <div class="d-flex">
-                <fa-icon *ngIf="event.meta?.editable" class="command-bt" [icon]="faPen"
+                <fa-icon *ngIf="event.meta?.editable" [icon]="faPen"
                     (click)="editEvent()">
                 </fa-icon>
-                <fa-icon *ngIf="event.meta?.editable" class="command-bt ms-2" [icon]="faTrash" 
+                <fa-icon *ngIf="event.meta?.editable" class="ms-2" [icon]="faTrash" 
                     (click)="deleteEvent()">
                 </fa-icon>
             </div>
         </div>
         <div class="card-text mt-2" #collapse="ngbCollapse" [(ngbCollapse)]="isCollapsed">
-            You can collapse this card by clicking Toggle
+            <span *ngIf="event.meta?.description; else defaultDescription">{{event.meta?.description }}</span>
+            <ng-template #defaultDescription><span style="font-style: italic; opacity: 0.7;">No Description</span></ng-template>
+            <hr>
+            <div class="grid bs-rows-2 bs-columns-1 row-gap-0">
+                <div class="grid g-col-1 bs-rows-1 bs-columns-2 column-gap-0">
+                    <div class="grid g-col-1 bs-rows-1 bs-columns-2 column-gap-0">
+                        <span class="g-col-1 text-bold">Created By: </span>
+                        <span class="g-col-1">{{event.meta?.createdBy}}</span>
+                    </div>
+                    <div class="grid g-col-1 bs-rows-1 bs-columns-4 column-gap-0">
+                        <span class="g-col-1 text-bold">Date: </span>
+                        <span class="g-col-3">{{event.meta?.createdDate?.toDate() | date:'dd/MM/YYYY HH:mm'}}</span>
+                    </div>
+                </div>
+                <div class="grid g-col-1 bs-rows-1 bs-columns-2 column-gap-0">
+                    <div class="grid g-col-1 bs-rows-1 bs-columns-2 column-gap-0">
+                        <span class="g-col-1 text-bold">Updated By: </span>
+                        <span class="g-col-1">{{event.meta?.updatedBy}}</span>
+                    </div>
+                    <div class="grid g-col-1 bs-rows-1 bs-columns-4 column-gap-0">
+                        <span class="g-col-1 text-bold">Date: </span>
+                        <span class="g-col-3">{{event.meta?.updatedDate?.toDate() | date:'dd/MM/YYYY HH:mm'}}</span>
+                    </div>
+                </div>
+            </div>
         </div>
     </div>
 </div>

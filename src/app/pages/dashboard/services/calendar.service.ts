@@ -9,6 +9,8 @@ import { NullableDate } from "src/app/common/utils/date.util";
 import { mergeForkArrays } from "src/app/common/utils/common-util";
 import { mapCalendarDtoToEvents, mapCalendarEventToDto, mapToEditable, mapToUneditable } from "../utils/calendar.util";
 import { LocalStorageService } from "src/app/core/services/local-storage.service";
+import * as moment from "moment";
+import { TimeUnit } from "src/app/shared/model/time-unit";
 
 @Injectable()
 export class CalendarService {
@@ -54,7 +56,7 @@ export class CalendarService {
 
             this.updateToEventsDisplay(calendarEvent, currentViewDate);
             transactionsSuccess.toast.showSuccess('Event updated');
-        }, err => {});
+        }, err => { });
     }
 
     async deleteEvent(documentId: string): Promise<void> {
@@ -63,9 +65,9 @@ export class CalendarService {
 
         await this.firestoreService.deleteDocument(CalendarService.CUSTOM_EVENT_COLLECTION, documentId)
             .then(toast => toast.showSuccess('Event deleted'));
-        this.calendarEvent$.pipe(take(1)).subscribe(events => 
+        this.calendarEvent$.pipe(take(1)).subscribe(events =>
             this.calendarEvent$.next(events.filter(event => event.meta?.documentId !== documentId)));
-        this.dayEvent$.pipe(take(1)).subscribe(events => 
+        this.dayEvent$.pipe(take(1)).subscribe(events =>
             this.dayEvent$.next(events.filter(event => event.meta?.documentId !== documentId)));
     }
 
@@ -92,6 +94,10 @@ export class CalendarService {
         return this.getCalendarEvents();
     }
 
+    clearEvents(): void {
+        this.dayEvent$.next([]);
+    }
+
     private addToEventsDisplay(event: CalendarEventWithMeta): void {
         const calendarEvents = this.calendarEvent$.getValue();
         const dayEvents = this.dayEvent$.getValue();
@@ -101,15 +107,21 @@ export class CalendarService {
     }
 
     private updateToEventsDisplay(event: CalendarEventWithMeta, currentViewDate: NullableDate): void {
-        const calendarEvents = this.calendarEvent$.getValue().map(existingEvent => 
+        const calendarEvents = this.calendarEvent$.getValue().map(existingEvent =>
             existingEvent.meta?.documentId === event.meta?.documentId ? event : existingEvent);
         this.calendarEvent$.next(calendarEvents);
 
         let dayEvents = this.dayEvent$.getValue();
-        if (event.start === currentViewDate) {
+
+        const eventStart = moment(event.start).startOf(TimeUnit.day);
+        const eventEnd = moment(event.end || currentViewDate).startOf(TimeUnit.day);
+        const currentDate = moment(currentViewDate).startOf(TimeUnit.day);
+
+        if (currentDate.isBetween(eventStart, eventEnd) || currentDate.isSame(eventStart)) {
             dayEvents = dayEvents.map(existingEvent => existingEvent.meta?.documentId === event.meta?.documentId ? event : existingEvent);
         } else {
             dayEvents = dayEvents.filter(existingEvent => existingEvent.meta?.documentId !== event.meta?.documentId);
+
         }
         this.dayEvent$.next(dayEvents);
     }

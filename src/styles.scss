@@ -6,22 +6,16 @@ $enable-cssgrid: true;
 @import '~bootstrap/scss/bootstrap';
 @import "../node_modules/angular-calendar/css/angular-calendar.css";
 
-
-.btn-outline-primary {
-    --bs-btn-border-color: grey !important;
-}
-
-fa-icon {
-    color: grey;
-}
-
-body {
-    background-color: beige !important;
-}
+@import './scss/button.scss';
+@import './scss/theme.scss';
 
 .required:after {
     content: " *";
     color: red;
+}
+
+.text-bold {
+    font-weight: 700;
 }
 
 @include media-breakpoint-down(sm) {
@@ -74,7 +68,9 @@ body {
         }
 
         .input-checkbox {
-            input, label {
+
+            input,
+            label {
                 font-size: 14px !important;
             }
 
@@ -100,3 +96,41 @@ body {
     }
 
 }
+
+@mixin bs-rows-x {
+    @for $i from 1 through 12 {
+        .bs-rows-#{$i} {
+            --bs-rows: #{$i};
+        }
+    }
+}
+
+@mixin bs-columns-x {
+    @for $i from 1 through 12 {
+        .bs-columns-#{$i} {
+            --bs-columns: #{$i};
+        }
+    }
+}
+
+@mixin row-gap-x {
+    @for $i from 0 through 5 {
+        .row-gap-#{$i} {
+            row-gap: #{$i};
+        }
+    }
+}
+
+@mixin column-gap-x {
+    @for $i from 0 through 5 {
+        .column-gap-#{$i} {
+            column-gap: #{$i};
+        }
+    }
+}
+
+
+@include bs-rows-x;
+@include bs-columns-x;
+@include row-gap-x;
+@include column-gap-x;

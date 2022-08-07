@@ -122,7 +122,7 @@ export class FirestoreService {
     }
 
     private setItemWithExpiration<T>(key: string, value: T[]) {
-        this.localStorageService.setItemWithExpiration(key, value, 5, TimeUnit.minute);
+        this.localStorageService.setItemWithExpiration(key, value, 10, TimeUnit.minute);
     }
 
 }
