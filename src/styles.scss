@@ -25,11 +25,11 @@ body {
 }
 
 @include media-breakpoint-down(sm) {
-    app-auth > form.card {
+    app-auth>form.card {
         width: 90vw;
     }
 
-    app-sidebar > div.offcanvas {
+    app-sidebar>div.offcanvas {
         max-width: 60% !important;
     }
 
@@ -44,6 +44,58 @@ body {
 
         div.cal-cell-top {
             min-height: unset !important;
+        }
+    }
+
+    form {
+        input.form-control {
+            min-height: calc(2rem + 2px) !important;
+            height: calc(2rem + 2px) !important;
+            font-size: 16px;
+            padding-top: unset !important;
+            padding-bottom: unset !important;
+        }
+
+        .form-control:focus {
+            box-shadow: unset !important;
+        }
+
+        .form-floating>.form-control:focus~label,
+        .form-floating>.form-control:not(:placeholder-shown)~label,
+        .form-floating>.form-control-plaintext~label,
+        .form-floating>.form-select~label {
+            opacity: unset !important;
+            transform: scale(0.75) translateY(-1.85rem) translateX(-0.75rem) !important;
+        }
+
+        label {
+            font-size: 14px !important;
+            padding: 0.4rem 0.75rem !important;
+        }
+
+        .input-checkbox {
+            input, label {
+                font-size: 14px !important;
+            }
+
+            label {
+                font-size: 12px !important;
+                padding-left: 8px !important;
+                padding-bottom: 3px !important;
+            }
+        }
+
+        .input-group {
+            button {
+                height: 34px !important;
+                padding-top: 3px !important;
+                border: 1px solid #ced4da !important;
+            }
+        }
+
+        textarea {
+            padding-top: 0.5rem !important;
+            padding-bottom: unset !important;
         }
     }
 

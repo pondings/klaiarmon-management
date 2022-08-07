@@ -37,7 +37,7 @@
 
     <div>
         <app-event-info *ngFor="let event of (dayEvents$ | async)"
-            [event]="event" (onDelete)="deleteEvent($event)">
+            [event]="event" (onDelete)="deleteEvent($event)" (onEdit)="editEvent($event)">
         </app-event-info>
     </div>
 

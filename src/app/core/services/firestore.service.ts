@@ -41,6 +41,23 @@ export class FirestoreService {
         return observable.pipe(take(1), finalize(() => this.spinnerService.hide()));
     }
 
+    async updateDocument<T>(path: string, data: HasMetaData<T>[]): Promise<TransactionsSuccess<T>> {
+        this.spinnerService.show();
+        const cleanedData = (await this.setMetaData(data)).map(firestoreUtils.cleanData);
+
+        const batch = this.angularFirestore.firestore.batch();
+        cleanedData.forEach((d: HasMetaData<T>) => {
+            const doc = this.angularFirestore.firestore.doc(`${path}/${d.meta.documentId}`);
+            batch.update(doc, d);
+        });
+
+        await batch.commit();
+
+        this.localStorageService.updateItem(path, cleanedData);
+        this.spinnerService.hide();
+        return { data: cleanedData, toast: this.toastService };
+    }
+
     async deleteDocument(path: string, documentId: string): Promise<ToastService> {
         this.spinnerService.show();
         
@@ -70,7 +87,7 @@ export class FirestoreService {
 
         await batch.commit();
 
-        this.localStorageService.updateItem(path, cleanedData);
+        this.localStorageService.addItem(path, cleanedData);
         this.spinnerService.hide();
 
         return { data: cleanedData, toast: this.toastService };

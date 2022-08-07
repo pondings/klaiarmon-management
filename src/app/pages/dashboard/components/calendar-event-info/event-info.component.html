@@ -5,7 +5,9 @@
                 {{event.title}}
             </span>
             <div class="d-flex">
-                <fa-icon *ngIf="event.meta?.editable" class="command-bt" [icon]="faPen"></fa-icon>
+                <fa-icon *ngIf="event.meta?.editable" class="command-bt" [icon]="faPen"
+                    (click)="editEvent()">
+                </fa-icon>
                 <fa-icon *ngIf="event.meta?.editable" class="command-bt ms-2" [icon]="faTrash" 
                     (click)="deleteEvent()">
                 </fa-icon>

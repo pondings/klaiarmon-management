@@ -49,8 +49,8 @@ export class CalendarComponent implements OnInit {
         this.calendarService.showEvents(events.day.events);
     }
 
-    updateEvent(event: CalendarEventWithMeta): void {
-        this.calendarService.updateEvent(event);
+    editEvent(event: CalendarEventWithMeta): void {
+        this.calendarService.editEvent(event, this.viewDate);
     }
 
     async addEvent(): Promise<void> {

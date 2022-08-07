@@ -33,18 +33,23 @@ export class LocalStorageService {
         this.setItemToLocalStorage(key, JSON.stringify(value))
     }
 
-    updateItem<T>(key: string, value: LocalStorageItemType<T>): void {
-        if (isNotNullOrUndefined(value) && isArray(value)) {
-            if (isArray(value)) {
-                const item = this.getItem<T[]>(key);
-                item.value = item.value ? [...item.value, ...value as any] : value as any;
-                this.setItem(key, item);
-            } else {
-                const item = this.getItem<T[]>(key);
-                item.value = item.value ? [...item.value, value] : [value];
-                this.setItem(key, item);
-            }
-        }
+    addItem(key: string, value: any): void {
+        if (isNotNullOrUndefined(value) && !isArray(value)) value = [value];
+        const item = this.getItem<any>(key);
+        item.value = item.value ? [...item.value, ...value] : [value];
+        this.setItem(key, item);
+    }
+
+    updateItem(key: string, value: any): void {
+        if (isNotNullOrUndefined(value) && !isArray(value)) value = [value];
+        const item = this.getItem<any>(key);
+        item.value = item.value 
+            ? item.value.map((i: any) => {
+                const updateValue = value.find((v: any) => v.meta.documentId === i.meta.documentId);
+                return updateValue ? updateValue : i;
+            })
+            : value;
+        this.setItem(key, item);
     }
 
     deleteItem(key: string, documentId: string): void {
