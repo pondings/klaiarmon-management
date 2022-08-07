@@ -13,12 +13,13 @@ import { Nullable } from "src/app/common/types/common.type";
 
 @UntilDestroy({ checkProperties: true })
 @Component({
-    selector: 'app-add-event-modal',
+    selector: 'app-calendar-event-modal',
     templateUrl: './calendar-event-modal.component.html',
+    styles: ['div.input-checkbox { margin-bottom: 0.75rem !important; }'],
     changeDetection: ChangeDetectionStrategy.OnPush,
     encapsulation: ViewEncapsulation.None
 })
-export class AddEventModalComponent implements OnInit {
+export class CalendarEventModalComponent implements OnInit {
 
     @Input()
     event!: CalendarEventWithMeta;
@@ -31,10 +32,10 @@ export class AddEventModalComponent implements OnInit {
     isFormValid$!: Observable<boolean>;
     startValue$!: Observable<Nullable<NgbDateStruct>>
     endValue$!: Observable<Nullable<NgbDateStruct>>
-    hasEndDate$!: Observable<boolean>
+    withEndDate$!: Observable<boolean>
 
     calendarEventForm: FormGroup<AddCalendarEventForm>;
-    hasEndDateCtrl = new FormControl();
+    withEndDateCtrl = new FormControl();
 
     constructor(public activeModal: NgbActiveModal,
         private fb: FormBuilder) {
@@ -47,12 +48,15 @@ export class AddEventModalComponent implements OnInit {
     }
 
     submit(): void {
-        const { start, end, ...formValue } = this.calendarEventForm.getRawValue();
+        const formValue = this.calendarEventForm.getRawValue();
         this.activeModal.close({
-            ...formValue,
-            start: addDate(start!, -1, TimeUnit.month),
-            end: end ? addDate(end!, -1, TimeUnit.month) : null,
-            meta: this.event.meta
+            title: formValue.title,
+            start: addDate(formValue.start!, -1, TimeUnit.month),
+            end: formValue.end ? addDate(formValue.end!, -1, TimeUnit.month) : null,
+            meta: {
+                ...this.event.meta,
+                description: formValue.description
+            }
         });
     }
 
@@ -77,11 +81,11 @@ export class AddEventModalComponent implements OnInit {
     }
 
     private initSubscribe(): void {
-        this.hasEndDateCtrl.valueChanges.subscribe(checked => !checked && this.endCtrl.reset());
+        this.withEndDateCtrl.valueChanges.subscribe(checked => !checked && this.endCtrl.reset());
         this.isFormValid$ = this.calendarEventForm.statusChanges.pipe(map(this.isValid));
         this.startValue$ = this.startCtrl.valueChanges.pipe(startWith(this.startCtrl.value));
         this.endValue$ = this.endCtrl.valueChanges.pipe(startWith(this.endCtrl.value));
-        this.hasEndDate$ = this.hasEndDateCtrl.valueChanges.pipe(startWith(this.hasEndDateCtrl.value));
+        this.withEndDate$ = this.withEndDateCtrl.valueChanges.pipe(startWith(this.withEndDateCtrl.value));
     }
 
     private isValid(status: FormControlStatus): boolean {
@@ -90,14 +94,17 @@ export class AddEventModalComponent implements OnInit {
 
     private patchFormValue(): void {
         const { title, start, end } = this.event;
-        this.calendarEventForm.patchValue({ title, start: getDateStructFromDate(start), end: getDateStructFromDate(end) });
+        
+        if (end) this.withEndDateCtrl.setValue(true);
+        this.calendarEventForm.patchValue({ title, start: getDateStructFromDate(start), end: getDateStructFromDate(end), description: this.event.meta?.description });
     }
 
     private createCalendarEventForm(): FormGroup<AddCalendarEventForm> {
         return this.fb.group<AddCalendarEventForm>({
             title: this.fb.control({ value: null, disabled: false }, [Validators.required]),
             start: this.fb.control({ value: null, disabled: false }),
-            end: this.fb.control({ value: null, disabled: false })
+            end: this.fb.control({ value: null, disabled: false }),
+            description: this.fb.control({ value: null, disabled: false })
         });
     }
 

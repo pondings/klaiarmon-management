@@ -1,4 +1,5 @@
 import { ChangeDetectionStrategy, Component, ViewEncapsulation } from "@angular/core";
+import { faBars } from "@fortawesome/free-solid-svg-icons";
 import { SidebarService } from "../sidebar/sidebar.service";
 
 @Component({
@@ -9,6 +10,8 @@ import { SidebarService } from "../sidebar/sidebar.service";
     encapsulation: ViewEncapsulation.None
 })
 export class HeaderComponent {
+
+    faBars = faBars;
 
     constructor(public sidebarService: SidebarService) { }
 

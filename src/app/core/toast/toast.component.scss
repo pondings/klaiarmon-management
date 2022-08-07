@@ -2,13 +2,18 @@ app-toast {
     text-align: center;
 
     ngb-toast {
-        transform: translateX(-4%);
+        transform: translateX(34%);
         position: fixed !important;
-        width: 90% !important;
-        bottom: 0;
-        right: 0;
-        margin-bottom: 18px;
-        margin-right: 8px;
+        width: 60% !important;
+        top: 15%;
+        left: 0;
         z-index: 9999;
+    }
+
+    .toast-body {
+        height: 100%;
+        padding: unset !important;
+        overflow: hidden;
+        text-overflow: ellipsis;
     }
 }

@@ -1,7 +1,5 @@
-import { ChangeDetectionStrategy, Component, EventEmitter, Input, OnInit, Output, ViewEncapsulation } from "@angular/core";
+import { ChangeDetectionStrategy, Component, EventEmitter, Input, Output, ViewEncapsulation } from "@angular/core";
 import { faPen, faTrash } from "@fortawesome/free-solid-svg-icons";
-import { CalendarEvent } from "angular-calendar";
-import { MetaData } from "src/app/model/meta-data";
 import { CalendarEventWithMeta } from "../../model/calendar";
 
 @Component({
@@ -19,6 +17,9 @@ export class EventInfoComponent {
     @Output()
     onDelete = new EventEmitter<string>();
 
+    @Output()
+    onEdit = new EventEmitter<CalendarEventWithMeta>;
+
     faPen = faPen;
     faTrash = faTrash;
 
@@ -26,6 +27,10 @@ export class EventInfoComponent {
 
     deleteEvent(): void {
         this.onDelete.emit(this.event.meta?.documentId);
+    }
+
+    editEvent(): void {
+        this.onEdit.emit(this.event);
     }
 
 }

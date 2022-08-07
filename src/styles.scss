@@ -6,30 +6,24 @@ $enable-cssgrid: true;
 @import '~bootstrap/scss/bootstrap';
 @import "../node_modules/angular-calendar/css/angular-calendar.css";
 
-
-.btn-outline-primary {
-    --bs-btn-border-color: grey !important;
-}
-
-fa-icon {
-    color: grey;
-}
-
-body {
-    background-color: beige !important;
-}
+@import './scss/button.scss';
+@import './scss/theme.scss';
 
 .required:after {
     content: " *";
     color: red;
 }
 
+.text-bold {
+    font-weight: 700;
+}
+
 @include media-breakpoint-down(sm) {
-    app-auth > form.card {
+    app-auth>form.card {
         width: 90vw;
     }
 
-    app-sidebar > div.offcanvas {
+    app-sidebar>div.offcanvas {
         max-width: 60% !important;
     }
 
@@ -47,4 +41,96 @@ body {
         }
     }
 
+    form {
+        input.form-control {
+            min-height: calc(2rem + 2px) !important;
+            height: calc(2rem + 2px) !important;
+            font-size: 16px;
+            padding-top: unset !important;
+            padding-bottom: unset !important;
+        }
+
+        .form-control:focus {
+            box-shadow: unset !important;
+        }
+
+        .form-floating>.form-control:focus~label,
+        .form-floating>.form-control:not(:placeholder-shown)~label,
+        .form-floating>.form-control-plaintext~label,
+        .form-floating>.form-select~label {
+            opacity: unset !important;
+            transform: scale(0.75) translateY(-1.85rem) translateX(-0.75rem) !important;
+        }
+
+        label {
+            font-size: 14px !important;
+            padding: 0.4rem 0.75rem !important;
+        }
+
+        .input-checkbox {
+
+            input,
+            label {
+                font-size: 14px !important;
+            }
+
+            label {
+                font-size: 12px !important;
+                padding-left: 8px !important;
+                padding-bottom: 3px !important;
+            }
+        }
+
+        .input-group {
+            button {
+                height: 34px !important;
+                padding-top: 3px !important;
+                border: 1px solid #ced4da !important;
+            }
+        }
+
+        textarea {
+            padding-top: 0.5rem !important;
+            padding-bottom: unset !important;
+        }
+    }
+
 }
+
+@mixin bs-rows-x {
+    @for $i from 1 through 12 {
+        .bs-rows-#{$i} {
+            --bs-rows: #{$i};
+        }
+    }
+}
+
+@mixin bs-columns-x {
+    @for $i from 1 through 12 {
+        .bs-columns-#{$i} {
+            --bs-columns: #{$i};
+        }
+    }
+}
+
+@mixin row-gap-x {
+    @for $i from 0 through 5 {
+        .row-gap-#{$i} {
+            row-gap: #{$i};
+        }
+    }
+}
+
+@mixin column-gap-x {
+    @for $i from 0 through 5 {
+        .column-gap-#{$i} {
+            column-gap: #{$i};
+        }
+    }
+}
+
+
+@include bs-rows-x;
+@include bs-columns-x;
+@include row-gap-x;
+@include column-gap-x;

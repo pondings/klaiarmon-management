@@ -1,0 +1,38 @@
+@import './var.scss';
+
+app-header {
+
+    nav.navbar,
+    div.container-fluid {
+        background-color: $header-color  !important;
+
+        button.sidebar-toggle {
+            --bs-navbar-toggler-border-color: white;
+
+            fa-icon {
+                color: white !important;
+            }
+        }
+    }
+}
+
+app-sidebar {
+    background-color: $page-color  !important;
+
+    div.offcanvas,
+    ul {
+        background-color: $page-color  !important;
+    }
+}
+
+.card {
+    background-color: $page-color;
+}
+
+fa-icon {
+    color: $item-color  !important
+}
+
+body {
+    background-color: $page-color  !important;
+}

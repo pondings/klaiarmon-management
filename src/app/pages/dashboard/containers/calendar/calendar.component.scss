@@ -1,31 +1,52 @@
+@import  '/src/scss/var.scss';
+
 app-calendar {
 
     height: 100%;
     width: 100%;
-
-    div.cal-cell-row {
-        background-color: beige !important;
-    }
 
     button.previous-btn, button.next-btn, h5.month-title {
         flex-grow: 1;
         text-align: center;
     }
 
-    span.cal-day-badge {
+    div.cal-events {
         display: none !important;
     }
 
-    span.cal-day-number {
-        margin-top: 0px !important;
+    div.cal-cell-top {
+        justify-content: center;
+        align-items: center;
+
+        span[aria-hidden="true"] {
+            position: sticky;
+        }
+    }
+
+    span.cal-day-badge {
+        background-color: $item-color !important;
+        position: absolute !important;
         margin-bottom: 0px !important;
+        margin-right: 0px !important;
+        margin-top: 2px !important;
+        margin-left: 2px !important;
+    }
+
+    span.cal-day-number {
+        padding-top: 0px !important;
+        margin: 0px !important;
+        opacity: 0.7 !important;
+        display: flex;
+        width: 100%;
+        height: 100%;
+        justify-content: center;
+        align-items: center;
     }
 
     mwl-calendar-month-cell.cal-today {
-        background-color: #ffe5b4 !important;
-
         span.cal-day-number {
             font-size: 1.2rem !important;
+            font-weight: 700 !important;
         }
     }
 
@@ -35,6 +56,12 @@ app-calendar {
 
     mwl-calendar-month-cell.cal-out-month span.cal-day-number {
         opacity: 0.3 !important;
+    }
+
+    span.view-event-date {
+        font-size: 12px;
+        font-weight: 700;
+        padding-left: 4px;
     }
     
 }
