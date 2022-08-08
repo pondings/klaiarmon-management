@@ -4,6 +4,7 @@ import { ChangeDetectionStrategy, Component, ViewEncapsulation } from "@angular/
     selector: 'app-home-layout',
     template: `
         <app-header></app-header>
+        <app-toast></app-toast>
         <div class="overflow-auto pt-2">
             <div class="container">
                 <router-outlet></router-outlet>
