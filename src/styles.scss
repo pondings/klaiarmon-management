@@ -9,6 +9,11 @@ $enable-cssgrid: true;
 @import './scss/button.scss';
 @import './scss/theme.scss';
 
+html, body {
+    height: 100%;
+    width: 100%;
+}
+
 .required:after {
     content: " *";
     color: red;
