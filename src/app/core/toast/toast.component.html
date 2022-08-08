@@ -1,11 +1,10 @@
-<ngb-toast  
+<ngb-toast *ngIf="toastMessage$ | async"
     [autohide]="true" 
-    [delay]="500000"
+    [delay]="5000"
     [ngClass]="toastClass$ | async"
     (hidden)="hide()" 
     (click)="hide()">
 
-    Hello
     {{toastMessage$ | async}}
 
 </ngb-toast>
