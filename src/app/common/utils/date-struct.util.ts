@@ -5,13 +5,15 @@ import { addDate, getMoment, getMomentStartOfDay } from "./moment.util";
 export type NullableDateStruct = NgbDateStruct | null | undefined;
 
 export const getDateStruct = (): NullableDateStruct => {
-    const { date: day, months: month, years: year } = addDate(null, 1, TimeUnit.month)?.toObject()!;
+    let { date: day, months: month, years: year } = getMoment()?.toObject()!;
+    month = month + 1;
     return { day, month, year };
 };
 
 export const getDateStructFromDate = (date?: Date): NullableDateStruct => {
     if (!date) return null;
 
-    const { date: day, months: month, years: year } = addDate(date, 1, TimeUnit.month)?.toObject()!;
+    let { date: day, months: month, years: year } = getMoment(date)?.toObject()!;
+    month = month + 1;
     return { day, month, year };
 }

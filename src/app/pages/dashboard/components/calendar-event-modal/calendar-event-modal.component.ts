@@ -6,7 +6,7 @@ import { map, Observable, startWith, tap } from "rxjs";
 import { AddCalendarEventForm, CalendarEventWithMeta } from "../../model/calendar";
 import { Action } from "src/app/common/enum/action";
 import { getDateStructFromDate } from "src/app/common/utils/date-struct.util";
-import { addDate } from "src/app/common/utils/date.util";
+import { addDate, getDateFromDateStruct } from "src/app/common/utils/date.util";
 import { UntilDestroy } from "@ngneat/until-destroy";
 import { TimeUnit } from "src/app/shared/model/time-unit";
 import { Nullable } from "src/app/common/types/common.type";
@@ -51,8 +51,8 @@ export class CalendarEventModalComponent implements OnInit {
         const formValue = this.calendarEventForm.getRawValue();
         this.activeModal.close({
             title: formValue.title,
-            start: addDate(formValue.start!, -1, TimeUnit.month),
-            end: formValue.end ? addDate(formValue.end!, -1, TimeUnit.month) : null,
+            start: getDateFromDateStruct(formValue.start!),
+            end: getDateFromDateStruct(formValue.end!),
             meta: {
                 ...this.event.meta,
                 description: formValue.description

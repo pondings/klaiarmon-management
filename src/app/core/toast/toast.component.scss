@@ -3,10 +3,9 @@ app-toast {
 
     ngb-toast {
         transform: translateX(34%);
-        position: fixed !important;
+        position: absolute !important;
         width: 60% !important;
-        top: 15%;
-        left: 0;
+        margin-top: 1rem !important;
         z-index: 9999;
     }
 
