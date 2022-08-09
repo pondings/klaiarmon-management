@@ -13,6 +13,9 @@ const envConfigFile = `export const environment = {
       messagingSenderId: '870991689767',
       measurementId: 'G-L4BC23E9QC'
     },
+    google: {
+      mapApiKey: '${process.env['GOOGLE_MAP_API_KEY']}'
+    }
     production: true
   };`;
 
