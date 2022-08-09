@@ -1,6 +1,6 @@
-import { firebase } from './firebase-environment';
+import { env } from './environment-overrider';
 
 export const environment = {
-  ...firebase,
+  ...env,
   production: true
 };

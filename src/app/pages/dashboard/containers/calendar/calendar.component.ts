@@ -1,5 +1,5 @@
 import { ChangeDetectionStrategy, Component, OnInit, ViewEncapsulation } from "@angular/core";
-import { map, Observable } from "rxjs";
+import { catchError, map, Observable, of } from "rxjs";
 import { CalendarView } from 'angular-calendar';
 import { CalendarDayEvent, CalendarEventWithMeta } from "../../model/calendar";
 import { faArrowsRotate, faBan, faChevronLeft, faChevronRight, faPlus, faReplyAll } from "@fortawesome/free-solid-svg-icons";
@@ -7,6 +7,8 @@ import { TimeUnit } from "src/app/shared/model/time-unit";
 import { UntilDestroy } from '@ngneat/until-destroy';
 import { CalendarService } from "../../services/calendar.service";
 import { addDate, getDate } from "src/app/common/utils/date.util";
+import { HttpService } from "src/app/shared/services/http.service";
+import { environment } from "src/environments/environment";
 
 @UntilDestroy({ checkProperties: true })
 @Component({
@@ -34,13 +36,16 @@ export class CalendarComponent implements OnInit {
     calendarEvent$!: Observable<CalendarEventWithMeta[]>;
     dayEvents$!: Observable<CalendarEventWithMeta[]>;
     viewEventDate$!: Observable<Date>;
+    isMapLoaded$!: Observable<boolean>;
 
-    constructor(private calendarService: CalendarService) {}
+    constructor(private calendarService: CalendarService, private httpService: HttpService) { }
 
     ngOnInit(): void {
         this.calendarEvent$ = this.calendarService.getCalendarEvents();
         this.dayEvents$ = this.calendarService.getDayEvents();
         this.viewEventDate$ = this.dayEvents$.pipe(map(events => (events || [])[0]), map(event => (event || {}).start));
+        this.isMapLoaded$ = this.httpService.jsonp(`https://maps.googleapis.com/maps/api/js?key=${environment.google.mapApiKey}&libraries=places`, 'callback')
+            .pipe(map(() => true), catchError(() => of(false)));
     }
 
     onSwipe(event: any): void {

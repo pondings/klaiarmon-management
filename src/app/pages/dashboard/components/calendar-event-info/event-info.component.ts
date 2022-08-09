@@ -1,5 +1,5 @@
 import { ChangeDetectionStrategy, Component, EventEmitter, Input, Output, ViewEncapsulation } from "@angular/core";
-import { faPen, faTrash } from "@fortawesome/free-solid-svg-icons";
+import { faArrowUpRightFromSquare, faPen, faTrash } from "@fortawesome/free-solid-svg-icons";
 import { CalendarEventWithMeta } from "../../model/calendar";
 
 @Component({
@@ -22,6 +22,7 @@ export class EventInfoComponent {
 
     faPen = faPen;
     faTrash = faTrash;
+    faArrowUpRightFromSquare = faArrowUpRightFromSquare;
 
     isCollapsed = true;
 
@@ -31,6 +32,11 @@ export class EventInfoComponent {
 
     editEvent(): void {
         this.onEdit.emit(this.event);
+    }
+
+    getDirectionLink(): string {
+        const placeId = this.event.meta?.place?.placeId;
+        return `https://www.google.com/maps/dir/?api=1&destination=${placeId}&destination_place_id=${placeId}&travelmode=driving`;
     }
 
 }

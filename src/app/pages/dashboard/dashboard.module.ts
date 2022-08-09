@@ -9,8 +9,9 @@ import { FontAwesomeModule } from "@fortawesome/angular-fontawesome";
 import { CalendarEventModalComponent } from "./components/calendar-event-modal/calendar-event-modal.component";
 import { EventInfoComponent } from "./components/calendar-event-info/event-info.component";
 import { CalendarService } from "./services/calendar.service";
-import { NgbCollapseModule } from "@ng-bootstrap/ng-bootstrap";
+import { NgbCollapseModule, NgbDateParserFormatter, NgbTypeaheadModule } from "@ng-bootstrap/ng-bootstrap";
 import { ConfirmModalModule } from "src/app/shared/components/modal/confirm-modal.module";
+import { GoogleMapsModule } from "@angular/google-maps";
 
 @NgModule({
     declarations: [
@@ -27,7 +28,9 @@ import { ConfirmModalModule } from "src/app/shared/components/modal/confirm-moda
         CalendarCommonModule,
         FontAwesomeModule,
         NgbCollapseModule,
-        ConfirmModalModule
+        ConfirmModalModule,
+        GoogleMapsModule,
+        NgbTypeaheadModule
     ],
     providers: [
         CalendarService
