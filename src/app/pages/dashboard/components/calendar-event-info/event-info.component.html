@@ -17,8 +17,9 @@
             <div>
                 <span *ngIf="event.meta?.description; else defaultDescription">{{event.meta?.description }}</span>
             </div>
-            <div *ngIf="event.meta?.location" class="location mt-2">
-                <a target="_blank" [href]="event.meta?.location">Open in map 
+            <div *ngIf="event.meta?.place?.placeId" class="location mt-2">
+                <a target="_blank" [href]="getDirectionLink()">
+                    {{event.meta?.place?.placeName}}
                     <fa-icon [icon]="faArrowUpRightFromSquare"></fa-icon>
                 </a>
             </div>

@@ -34,4 +34,9 @@ export class EventInfoComponent {
         this.onEdit.emit(this.event);
     }
 
+    getDirectionLink(): string {
+        const placeId = this.event.meta?.place?.placeId;
+        return `https://www.google.com/maps/dir/?api=1&destination=${placeId}&destination_place_id=${placeId}&travelmode=driving`;
+    }
+
 }

@@ -5,8 +5,9 @@ import { Timestamp } from "firebase/firestore";
 import { MetaData } from "src/app/model/meta-data";
 import { Nullable } from 'src/app/common/types/common.type';
 
+export type Place = { placeId?: string, placeName?: string, placeLatLng?: google.maps.LatLngLiteral };
 export type CalendarDayEvent = { day: CalendarMonthViewDay<CalendarMeta>; sourceEvent: MouseEvent | KeyboardEvent; };
-export type CalendarMeta = MetaData & { editable?: boolean, description?: string, location?: string };
+export type CalendarMeta = MetaData & { editable?: boolean, description?: string, place?: Place };
 export type CalendarEventWithMeta = CalendarEvent<CalendarMeta>;
 
 export interface CalendarEventDto {
@@ -22,5 +23,5 @@ export interface AddCalendarEventForm {
     start: FormControl<Nullable<NgbDateStruct>>,
     end: FormControl<Nullable<NgbDateStruct>>,
     description: FormControl<Nullable<string>>,
-    location: FormControl<Nullable<string>>
+    location: FormControl<Nullable<google.maps.places.PlaceResult>>
 }

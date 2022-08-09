@@ -22,6 +22,7 @@ import { CustomCalendarDateFormatter } from './core/providers/calendar-date-form
 import { HammerModule, HAMMER_GESTURE_CONFIG } from "@angular/platform-browser";
 import { AppHammerGestureConfig } from './core/providers/hammer-gesture.provider';
 import { CustomDateFormatter } from './core/providers/custom-date-formatter.provider';
+import { GoogleMapsModule } from '@angular/google-maps';
 
 export function momentAdapterFactory(): DateAdapter {
   return adapterFactory(moment);

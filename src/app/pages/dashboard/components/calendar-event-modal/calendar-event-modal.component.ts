@@ -1,24 +1,28 @@
-import { ChangeDetectionStrategy, Component, Input, OnInit, ViewEncapsulation } from "@angular/core";
+import { AfterViewInit, ChangeDetectionStrategy, Component, Input, OnInit, ViewChild, ViewEncapsulation } from "@angular/core";
 import { FormBuilder, FormControl, FormControlStatus, FormGroup, Validators } from "@angular/forms";
 import { NgbActiveModal, NgbDateStruct } from "@ng-bootstrap/ng-bootstrap";
 import { faCalendar } from "@fortawesome/free-solid-svg-icons";
-import { map, Observable, startWith, tap } from "rxjs";
-import { AddCalendarEventForm, CalendarEventWithMeta } from "../../model/calendar";
+import { BehaviorSubject, debounceTime, distinctUntilChanged, filter, map, Observable, OperatorFunction, skip, startWith, Subject, switchMap, tap } from "rxjs";
+import { AddCalendarEventForm, CalendarEventWithMeta, Place } from "../../model/calendar";
 import { Action } from "src/app/common/enum/action";
 import { getDateStructFromDate } from "src/app/common/utils/date-struct.util";
-import { addDate, getDateFromDateStruct } from "src/app/common/utils/date.util";
+import { getDateFromDateStruct } from "src/app/common/utils/date.util";
 import { UntilDestroy } from "@ngneat/until-destroy";
 import { Nullable } from "src/app/common/types/common.type";
+import { GoogleMap } from "@angular/google-maps";
 
 @UntilDestroy({ checkProperties: true })
 @Component({
     selector: 'app-calendar-event-modal',
     templateUrl: './calendar-event-modal.component.html',
-    styles: ['div.input-checkbox { margin-bottom: 0.75rem !important; }'],
+    styleUrls: ['./calendar-event-modal.component.scss'],
     changeDetection: ChangeDetectionStrategy.OnPush,
     encapsulation: ViewEncapsulation.None
 })
-export class CalendarEventModalComponent implements OnInit {
+export class CalendarEventModalComponent implements OnInit, AfterViewInit {
+
+    @ViewChild(GoogleMap)
+    googleMap!: GoogleMap;
 
     @Input()
     event!: CalendarEventWithMeta;
@@ -26,12 +30,22 @@ export class CalendarEventModalComponent implements OnInit {
     @Input()
     action!: Action;
 
+    readonly googleMapOptions: google.maps.MapOptions = {
+        gestureHandling: 'cooperative',
+        disableDefaultUI: true,
+        scaleControl: true,
+        streetViewControl: true,
+        zoomControl: true
+    }
+
     faCalendar = faCalendar;
 
     isFormValid$!: Observable<boolean>;
     startValue$!: Observable<Nullable<NgbDateStruct>>
     endValue$!: Observable<Nullable<NgbDateStruct>>
-    withEndDate$!: Observable<boolean>
+    withEndDate$!: Observable<boolean>;
+    placeSearchResult$ = new BehaviorSubject<google.maps.places.PlaceResult[]>([]);
+    mapCenter$ = new Subject<google.maps.LatLngLiteral>();
 
     calendarEventForm: FormGroup<AddCalendarEventForm>;
     withEndDateCtrl = new FormControl();
@@ -46,8 +60,21 @@ export class CalendarEventModalComponent implements OnInit {
         this.initSubscribe();
     }
 
+    ngAfterViewInit(): void {
+        navigator.geolocation.getCurrentPosition(pos => {
+            this.mapCenter$.next({
+                lat: pos.coords.latitude!,
+                lng: pos.coords.longitude
+            });
+        });
+        setTimeout(() => this.setGoogleMapsForm(), 500);
+    }
+
     submit(): void {
         const formValue = this.calendarEventForm.getRawValue();
+        const { name: placeName, place_id: placeId, geometry } = formValue.location!;
+        const place: Place = { placeName, placeId, placeLatLng: geometry?.location?.toJSON() };
+
         this.activeModal.close({
             title: formValue.title,
             start: getDateFromDateStruct(formValue.start!),
@@ -55,9 +82,28 @@ export class CalendarEventModalComponent implements OnInit {
             meta: {
                 ...this.event.meta,
                 description: formValue.description,
-                location: formValue.location
+                place
             }
         });
+    }
+
+    searchPlaceFormatter(result: google.maps.places.PlaceResult): string {
+        return result.name!;
+    }
+
+    searchPlace: OperatorFunction<string, readonly google.maps.places.PlaceResult[]> = (term$: Observable<string>) => term$.pipe(
+        debounceTime(500),
+        distinctUntilChanged(),
+        filter(term => !!term.trim()),
+        switchMap(term => {
+            this.findGooglePlace(term);
+            return this.placeSearchResult$.pipe(map(places => places.slice(0, 5)));
+        })
+    );
+
+    private findGooglePlace(query?: string) {
+        new google.maps.places.PlacesService(document.createElement('div')).textSearch({ query: query || '' },
+            (result) => this.placeSearchResult$.next(result!));
     }
 
     get titleCtrl(): FormControl<Nullable<string>> {
@@ -70,6 +116,10 @@ export class CalendarEventModalComponent implements OnInit {
 
     get endCtrl(): FormControl<Nullable<NgbDateStruct>> {
         return this.calendarEventForm.controls.end;
+    }
+
+    get locationCtrl(): FormControl<Nullable<google.maps.places.PlaceResult>> {
+        return this.calendarEventForm.controls.location;
     }
 
     get isCreate(): boolean {
@@ -86,6 +136,8 @@ export class CalendarEventModalComponent implements OnInit {
         this.startValue$ = this.startCtrl.valueChanges.pipe(startWith(this.startCtrl.value));
         this.endValue$ = this.endCtrl.valueChanges.pipe(startWith(this.endCtrl.value));
         this.withEndDate$ = this.withEndDateCtrl.valueChanges.pipe(startWith(this.withEndDateCtrl.value));
+        this.locationCtrl.valueChanges.pipe(filter(val => typeof val !== 'string')).subscribe(result =>
+            this.setGoogleMapsLocation(result?.geometry?.location?.toJSON()!));
     }
 
     private isValid(status: FormControlStatus): boolean {
@@ -94,15 +146,28 @@ export class CalendarEventModalComponent implements OnInit {
 
     private patchFormValue(): void {
         const { title, start, end } = this.event;
-        
+
         if (end) this.withEndDateCtrl.setValue(true);
-        this.calendarEventForm.patchValue({ 
-            title, 
-            start: getDateStructFromDate(start), 
-            end: getDateStructFromDate(end), 
-            description: this.event.meta?.description,
-            location: this.event.meta?.location
+        this.calendarEventForm.patchValue({
+            title,
+            start: getDateStructFromDate(start),
+            end: getDateStructFromDate(end),
+            description: this.event.meta?.description
         });
+    }
+
+    private setGoogleMapsForm(): void {
+        const { placeName, placeLatLng, placeId } = this.event.meta?.place! || {};
+        if (!placeName || !placeLatLng) return;
+
+        const location = { name: placeName, place_id: placeId, geometry: { location: new google.maps.LatLng(placeLatLng!) } }
+        this.locationCtrl.patchValue(location);
+        this.setGoogleMapsLocation(location.geometry.location.toJSON());
+    }
+
+    private setGoogleMapsLocation(latlng: google.maps.LatLngLiteral) {
+        this.mapCenter$.next(latlng);
+        new google.maps.Marker({ position: latlng, map: this.googleMap.googleMap, animation: google.maps.Animation.DROP })
     }
 
     private createCalendarEventForm(): FormGroup<AddCalendarEventForm> {

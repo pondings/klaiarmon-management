@@ -40,13 +40,19 @@
         </div>
 
         <div class="form-floating mb-3">
-            <input class="form-control form-control-sm" type="url" placeholder="Location" formControlName="location">
-            <label for="location">Location</label>
+            <textarea class="form-control form-control-sm" placeholder="Description (Optional)" formControlName="description"></textarea>
+            <label for="description">Description (Optional)</label>
         </div>
 
         <div class="form-floating mb-3">
-            <textarea class="form-control form-control-sm" placeholder="Description" formControlName="description"></textarea>
-            <label for="description">Description</label>
+            <input #inputLocation class="form-control form-control-sm" placeholder="Location (Optional)" formControlName="location"
+                [ngbTypeahead]="searchPlace" [resultFormatter]="searchPlaceFormatter" [inputFormatter]="searchPlaceFormatter">
+            <label for="location">Location (Optional)</label>
+        </div>
+
+        <div class="map-view d-flex">
+            <google-map width="100%" height="100%" [options]="googleMapOptions" [zoom]="15" [center]="(mapCenter$ | async)!">
+            </google-map>
         </div>
     </div>
     <div class="modal-footer">

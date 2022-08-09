@@ -1,5 +1,4 @@
-<div class="d-flex flex-column">
-
+<div *ngIf="isMapLoaded$ | async" class="d-flex flex-column">
     <div class="d-flex justify-content-between mb-2">
         <button mwlCalendarPreviousView class="previous-btn btn btn-primary btn-sm d-none d-md-inline-block" [view]="view"
             [(viewDate)]="viewDate!">
