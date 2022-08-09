@@ -9,7 +9,7 @@ import { FontAwesomeModule } from "@fortawesome/angular-fontawesome";
 import { CalendarEventModalComponent } from "./components/calendar-event-modal/calendar-event-modal.component";
 import { EventInfoComponent } from "./components/calendar-event-info/event-info.component";
 import { CalendarService } from "./services/calendar.service";
-import { NgbCollapseModule } from "@ng-bootstrap/ng-bootstrap";
+import { NgbCollapseModule, NgbDateParserFormatter } from "@ng-bootstrap/ng-bootstrap";
 import { ConfirmModalModule } from "src/app/shared/components/modal/confirm-modal.module";
 
 @NgModule({
