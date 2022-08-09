@@ -7,7 +7,7 @@ export const env = {
     apiKey: '',
     authDomain: 'klaiarmon-management.firebaseapp.com',
     messagingSenderId: '870991689767',
-    measurementId: 'G-L4BC23E9QC',
+    measurementId: 'G-L4BC23E9QC'
   },
   google: {
     mapApiKey: ''

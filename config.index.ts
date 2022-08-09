@@ -15,7 +15,7 @@ const envConfigFile = `export const environment = {
     },
     google: {
       mapApiKey: '${process.env['GOOGLE_MAP_API_KEY']}'
-    }
+    },
     production: true
   };`;
 
