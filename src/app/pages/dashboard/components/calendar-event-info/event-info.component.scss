@@ -20,6 +20,10 @@ app-event-info {
         font-size: 12px !important;
     }
 
+    div.location a fa-icon {
+        color: var(--bs-link-color) !important;
+    }
+
     .hide-overflow {
         max-height: 28px !important;
         white-space: nowrap;

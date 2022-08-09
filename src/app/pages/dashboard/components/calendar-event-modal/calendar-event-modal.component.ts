@@ -54,7 +54,8 @@ export class CalendarEventModalComponent implements OnInit {
             end: getDateFromDateStruct(formValue.end!),
             meta: {
                 ...this.event.meta,
-                description: formValue.description
+                description: formValue.description,
+                location: formValue.location
             }
         });
     }
@@ -95,7 +96,13 @@ export class CalendarEventModalComponent implements OnInit {
         const { title, start, end } = this.event;
         
         if (end) this.withEndDateCtrl.setValue(true);
-        this.calendarEventForm.patchValue({ title, start: getDateStructFromDate(start), end: getDateStructFromDate(end), description: this.event.meta?.description });
+        this.calendarEventForm.patchValue({ 
+            title, 
+            start: getDateStructFromDate(start), 
+            end: getDateStructFromDate(end), 
+            description: this.event.meta?.description,
+            location: this.event.meta?.location
+        });
     }
 
     private createCalendarEventForm(): FormGroup<AddCalendarEventForm> {
@@ -103,7 +110,8 @@ export class CalendarEventModalComponent implements OnInit {
             title: this.fb.control({ value: null, disabled: false }, [Validators.required]),
             start: this.fb.control({ value: null, disabled: false }),
             end: this.fb.control({ value: null, disabled: false }),
-            description: this.fb.control({ value: null, disabled: false })
+            description: this.fb.control({ value: null, disabled: false }),
+            location: this.fb.control({ value: null, disabled: false })
         });
     }
 
