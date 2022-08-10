@@ -35,8 +35,7 @@
     </div>
 
     <div>
-        <div *ngIf="viewEventDate$ | async" class="d-flex justify-content-between">
-            <fa-icon [icon]="faBan" (click)="clearEvents()"></fa-icon>
+        <div *ngIf="viewEventDate$ | async" class="d-flex justify-content-end">
             <span class="view-event-date">{{ (viewEventDate$ | async) | date:'dd/MM/YYYY' }}</span>
         </div>
         <app-event-info *ngFor="let event of (dayEvents$ | async)"
