@@ -11,7 +11,7 @@ export class CustomDateFormatter extends NgbDateParserFormatter {
 
     format(date: NgbDateStruct): string {
         if (!date) return null!;
-        return moment(date).format('DD/MM/YYYY');
+        return moment({ date: date.day, month: date.month - 1, year: date.year }).format('DD/MM/YYYY');
     }
 
 }
