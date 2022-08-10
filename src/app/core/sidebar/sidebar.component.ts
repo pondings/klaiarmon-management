@@ -7,6 +7,7 @@ import { AngularFireAuth } from "@angular/fire/compat/auth";
 import { faPenToSquare } from "@fortawesome/free-regular-svg-icons";
 import { faRightFromBracket } from "@fortawesome/free-solid-svg-icons";
 import { Router } from "@angular/router";
+import { EditProfileService } from "../edit-profile/edit-profile.service";
 
 @Component({
     selector: 'app-sidebar',
@@ -32,6 +33,7 @@ export class SidebarComponent implements OnInit {
     constructor(private renderer2: Renderer2,
         private angularFireAuth: AngularFireAuth,
         private router: Router,
+        private editProfileService: EditProfileService,
         public sidebarService: SidebarService) {
         this.menuList$ = new BehaviorSubject<Menu[]>(MENU_LIST);
         this.toggle$ = sidebarService.toggle$;
@@ -46,6 +48,10 @@ export class SidebarComponent implements OnInit {
         const currentUser = await this.angularFireAuth.currentUser;
         this.profilePhoto = currentUser?.photoURL;
         this.displayName = currentUser?.displayName;
+    }
+
+    editProfile(): void {
+        this.editProfileService.editProfile();
     }
 
     logout(): void {

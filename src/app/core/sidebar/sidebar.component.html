@@ -7,7 +7,7 @@
         </div>
         <span class="display-name mb-2">{{displayName}}</span>
         <div class="d-flex justify-content-center w-100">
-            <fa-icon [icon]="faPenToSquare" class="me-3"></fa-icon>
+            <fa-icon [icon]="faPenToSquare" class="me-3" (click)="editProfile()"></fa-icon>
             <fa-icon [icon]="faRightFromBracket" (click)="logout()"></fa-icon>
         </div>
     </div>
