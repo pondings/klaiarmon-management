@@ -61,19 +61,13 @@ export class CalendarEventModalComponent implements OnInit, AfterViewInit {
     }
 
     ngAfterViewInit(): void {
-        navigator.geolocation.getCurrentPosition(pos => {
-            this.mapCenter$.next({
-                lat: pos.coords.latitude!,
-                lng: pos.coords.longitude
-            });
-        });
-        setTimeout(() => this.setGoogleMapsForm(), 500);
+        this.setGoogleMapsForm();
     }
 
     submit(): void {
         const formValue = this.calendarEventForm.getRawValue();
-        const { name: placeName, place_id: placeId, geometry } = formValue.location!;
-        const place: Place = { placeName, placeId, placeLatLng: geometry?.location?.toJSON() };
+        const { name: placeName, place_id: placeId, geometry } = formValue.location || {};
+        const place = placeId ? { placeName, placeId, placeLatLng: geometry?.location?.toJSON() } : undefined;
 
         this.activeModal.close({
             title: formValue.title,
@@ -158,16 +152,25 @@ export class CalendarEventModalComponent implements OnInit, AfterViewInit {
 
     private setGoogleMapsForm(): void {
         const { placeName, placeLatLng, placeId } = this.event.meta?.place! || {};
-        if (!placeName || !placeLatLng) return;
+        if (!placeName || !placeLatLng) {
+            this.setToCurrentPosition();
+            return;
+        };
 
         const location = { name: placeName, place_id: placeId, geometry: { location: new google.maps.LatLng(placeLatLng!) } }
-        this.locationCtrl.patchValue(location);
+        this.locationCtrl.setValue(location);
         this.setGoogleMapsLocation(location.geometry.location.toJSON());
     }
 
-    private setGoogleMapsLocation(latlng: google.maps.LatLngLiteral) {
+    private setGoogleMapsLocation(latlng: google.maps.LatLngLiteral): void {
         this.mapCenter$.next(latlng);
         new google.maps.Marker({ position: latlng, map: this.googleMap.googleMap, animation: google.maps.Animation.DROP })
+    }
+
+    private setToCurrentPosition(): void {
+        navigator.geolocation.getCurrentPosition((position) => {
+            this.setGoogleMapsLocation({ lat: position.coords.latitude, lng: position.coords.longitude });
+        });
     }
 
     private createCalendarEventForm(): FormGroup<AddCalendarEventForm> {
