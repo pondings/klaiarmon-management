@@ -2,10 +2,10 @@
     <div class="offcanvas-header flex-column">
         <div class="dropdown d-flex justify-content-center mb-2">
             <a class="d-flex align-items-center">
-                <img [src]="profilePhoto" alt="" width="104" height="104" class="rounded-circle">
+                <img [src]="(userInfo$ | async)?.photoURL" alt="" width="104" height="104" class="rounded-circle">
             </a>
         </div>
-        <span class="display-name mb-2">{{displayName}}</span>
+        <span class="display-name mb-2">{{(userInfo$ | async)?.displayName}}</span>
         <div class="d-flex justify-content-center w-100">
             <fa-icon [icon]="faPenToSquare" class="me-3" (click)="editProfile()"></fa-icon>
             <fa-icon [icon]="faRightFromBracket" (click)="logout()"></fa-icon>

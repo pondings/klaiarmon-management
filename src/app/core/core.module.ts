@@ -1,6 +1,8 @@
 import { NgModule } from "@angular/core";
+import { FontAwesomeModule } from "@fortawesome/angular-fontawesome";
 import { EditProfileModule } from "./edit-profile/edit-profile.module";
 import { HeaderModule } from "./header/header.module";
+import { FireAuthService } from "./services/fire-auth.service";
 import { FirestoreService } from "./services/firestore.service";
 import { LocalStorageService } from "./services/local-storage.service";
 import { SidebarModule } from "./sidebar/sidebar.module";
@@ -21,6 +23,10 @@ import { ToastModule } from "./toast/toast.module";
         ToastModule,
         SidebarModule
     ],
-    providers: [FirestoreService, LocalStorageService]
+    providers: [
+        FirestoreService, 
+        LocalStorageService,
+        FireAuthService
+    ]
 })
 export class CoreModule {}

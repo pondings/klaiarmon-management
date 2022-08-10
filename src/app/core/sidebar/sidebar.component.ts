@@ -3,11 +3,10 @@ import { BehaviorSubject, map, Observable, Subject, take } from "rxjs";
 import { Menu, MenuConfig, MENU_LIST } from "src/app/model/menu";
 import { SidebarService } from "./sidebar.service";
 import { Offcanvas } from 'bootstrap';
-import { AngularFireAuth } from "@angular/fire/compat/auth";
 import { faPenToSquare } from "@fortawesome/free-regular-svg-icons";
 import { faRightFromBracket } from "@fortawesome/free-solid-svg-icons";
-import { Router } from "@angular/router";
 import { EditProfileService } from "../edit-profile/edit-profile.service";
+import { FireAuthService } from "../services/fire-auth.service";
 
 @Component({
     selector: 'app-sidebar',
@@ -22,17 +21,15 @@ export class SidebarComponent implements OnInit {
     offCanvasElem: ElementRef | undefined;
 
     toggle$: Subject<void>;
-    offCanvas: Offcanvas | undefined;
     menuList$: Observable<Menu[]>;
-    profilePhoto: string | undefined | null = '';
-    displayName: string | undefined | null = '';
+    userInfo$!: Observable<Partial<firebase.default.UserInfo>>;
 
+    offCanvas: Offcanvas | undefined;
     faPenToSquare = faPenToSquare;
     faRightFromBracket = faRightFromBracket;
 
     constructor(private renderer2: Renderer2,
-        private angularFireAuth: AngularFireAuth,
-        private router: Router,
+        private fireAuthService: FireAuthService,
         private editProfileService: EditProfileService,
         public sidebarService: SidebarService) {
         this.menuList$ = new BehaviorSubject<Menu[]>(MENU_LIST);
@@ -41,13 +38,10 @@ export class SidebarComponent implements OnInit {
 
     async ngOnInit(): Promise<void> {
         this.offCanvas = new Offcanvas('#offCanvas');
-        this.toggle$.subscribe(() => this.offCanvas?.toggle());
-
         this.offCanvasElem?.nativeElement?.addEventListener('show.bs.offcanvas', () => this.handleMenu());
 
-        const currentUser = await this.angularFireAuth.currentUser;
-        this.profilePhoto = currentUser?.photoURL;
-        this.displayName = currentUser?.displayName;
+        this.toggle$.subscribe(() => this.offCanvas?.toggle());
+        this.userInfo$ = this.fireAuthService.subscribeUserInfo();
     }
 
     editProfile(): void {
@@ -55,8 +49,7 @@ export class SidebarComponent implements OnInit {
     }
 
     logout(): void {
-        this.angularFireAuth.signOut()
-            .then(() => this.router.navigate(['login']));
+        this.fireAuthService.signout();
     }
 
     handleMenu(): void {
