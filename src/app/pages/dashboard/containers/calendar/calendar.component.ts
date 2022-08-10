@@ -36,7 +36,6 @@ export class CalendarComponent implements OnInit {
     calendarEvent$!: Observable<CalendarEventWithMeta[]>;
     dayEvents$!: Observable<CalendarEventWithMeta[]>;
     viewEventDate$!: Observable<Date>;
-    isMapLoaded$!: Observable<boolean>;
 
     constructor(private calendarService: CalendarService, private httpService: HttpService) { }
 
@@ -44,8 +43,6 @@ export class CalendarComponent implements OnInit {
         this.calendarEvent$ = this.calendarService.getCalendarEvents();
         this.dayEvents$ = this.calendarService.getDayEvents();
         this.viewEventDate$ = this.dayEvents$.pipe(map(events => (events || [])[0]), map(event => (event || {}).start));
-        this.isMapLoaded$ = this.httpService.jsonp(`https://maps.googleapis.com/maps/api/js?key=${environment.google.mapApiKey}&libraries=places`, 'callback')
-            .pipe(map(() => true), catchError(() => of(false)));
     }
 
     onSwipe(event: any): void {

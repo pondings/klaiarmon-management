@@ -1,3 +1,5 @@
-<router-outlet></router-outlet>
+<ng-template *ngIf="isMapLoaded$ | async" >
+    <router-outlet></router-outlet>
+</ng-template>
 
 <app-spinner *ngIf="isShowSpinner$ | async"></app-spinner>
