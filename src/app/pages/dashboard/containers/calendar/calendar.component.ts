@@ -7,8 +7,7 @@ import { TimeUnit } from "src/app/shared/model/time-unit";
 import { UntilDestroy } from '@ngneat/until-destroy';
 import { CalendarService } from "../../services/calendar.service";
 import { addDate, getDate } from "src/app/common/utils/date.util";
-import { HttpService } from "src/app/shared/services/http.service";
-import { environment } from "src/environments/environment";
+import { GoogleMapsLoaderService } from "src/app/shared/services/google-maps-loader.service";
 
 @UntilDestroy({ checkProperties: true })
 @Component({
@@ -36,13 +35,18 @@ export class CalendarComponent implements OnInit {
     calendarEvent$!: Observable<CalendarEventWithMeta[]>;
     dayEvents$!: Observable<CalendarEventWithMeta[]>;
     viewEventDate$!: Observable<Date>;
+    isMapLoaded$!: Observable<boolean>;
 
-    constructor(private calendarService: CalendarService, private httpService: HttpService) { }
+    constructor(private calendarService: CalendarService,
+        private googleMapsLoaderService: GoogleMapsLoaderService) { }
 
     ngOnInit(): void {
         this.calendarEvent$ = this.calendarService.getCalendarEvents();
         this.dayEvents$ = this.calendarService.getDayEvents();
         this.viewEventDate$ = this.dayEvents$.pipe(map(events => (events || [])[0]), map(event => (event || {}).start));
+
+        this.isMapLoaded$ = this.googleMapsLoaderService.subscribeIsLoaded();
+        this.googleMapsLoaderService.load();
     }
 
     onSwipe(event: any): void {
