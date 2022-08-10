@@ -75,8 +75,4 @@ export class CalendarComponent implements OnInit {
         this.calendarEvent$ = this.calendarService.reload();
     }
 
-    clearEvents(): void {
-        this.calendarService.clearEvents();
-    }
-
 }
