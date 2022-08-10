@@ -13,6 +13,7 @@ import { CoreModule } from './core/core.module';
 import { AuthLayoutComponent } from './layout/auth-layout.component';
 import { HomeLayoutComponent } from './layout/home-layout.component';
 import { FIREBASE_OPTIONS } from '@angular/fire/compat';
+import { BUCKET } from '@angular/fire/compat/storage';
 import { AuthModule } from './auth/auth.module';
 import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
 import { CalendarModule, DateAdapter, CalendarDateFormatter } from 'angular-calendar';
@@ -22,7 +23,6 @@ import { CustomCalendarDateFormatter } from './core/providers/calendar-date-form
 import { HammerModule, HAMMER_GESTURE_CONFIG } from "@angular/platform-browser";
 import { AppHammerGestureConfig } from './core/providers/hammer-gesture.provider';
 import { CustomDateFormatter } from './core/providers/custom-date-formatter.provider';
-import { GoogleMapsModule } from '@angular/google-maps';
 
 export function momentAdapterFactory(): DateAdapter {
   return adapterFactory(moment);
@@ -52,6 +52,7 @@ export function momentAdapterFactory(): DateAdapter {
   providers: [
     { provide: FIREBASE_OPTIONS, useValue: environment.firebase },
     { provide: HAMMER_GESTURE_CONFIG, useClass: AppHammerGestureConfig },
+    { provide: BUCKET, useValue: 'gs://klaiarmon-management.appspot.com' },
     { provide: NgbDateParserFormatter, useClass: CustomDateFormatter }
   ],
   bootstrap: [AppComponent]

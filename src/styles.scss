@@ -28,6 +28,10 @@ html, body {
     overflow: auto !important;
 }
 
+.cursor-pointer {
+    cursor: pointer;
+}
+
 @include media-breakpoint-down(sm) {
     app-auth>form.card {
         width: 90vw;
