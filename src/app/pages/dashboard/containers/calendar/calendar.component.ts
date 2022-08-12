@@ -41,12 +41,10 @@ export class CalendarComponent implements OnInit {
         private googleMapsLoaderService: GoogleMapsLoaderService) { }
 
     ngOnInit(): void {
-        this.calendarEvent$ = this.calendarService.getCalendarEvents();
-        this.dayEvents$ = this.calendarService.getDayEvents();
-        this.viewEventDate$ = this.dayEvents$.pipe(map(events => (events || [])[0]), map(event => (event || {}).start));
-
-        this.isMapLoaded$ = this.googleMapsLoaderService.subscribeIsLoaded();
+        this.initialSubscribes();
+        
         this.googleMapsLoaderService.load();
+        this.calendarService.getCalendarEvents();
     }
 
     onSwipe(event: any): void {
@@ -73,7 +71,14 @@ export class CalendarComponent implements OnInit {
     }
 
     reload(): void {
-        this.calendarEvent$ = this.calendarService.reload();
+        this.calendarService.reload();
+    }
+
+    private initialSubscribes(): void {
+        this.calendarEvent$ = this.calendarService.subscribeCalendarEvents();
+        this.dayEvents$ = this.calendarService.subscribeDayEvents();
+        this.viewEventDate$ = this.dayEvents$.pipe(map(events => (events || [])[0]), map(event => (event || {}).start));
+        this.isMapLoaded$ = this.googleMapsLoaderService.subscribeIsLoaded();
     }
 
 }

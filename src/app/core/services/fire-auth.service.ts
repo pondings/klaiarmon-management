@@ -9,7 +9,8 @@ export class FireAuthService {
     private userInfo$ = new Subject<Partial<firebase.default.UserInfo>>();
 
     constructor(private angularFireAuth: AngularFireAuth,
-        private router: Router) { }
+        private router: Router) {
+    }
 
     subscribeUserInfo(): Observable<Partial<firebase.default.UserInfo>> {
         this.getCurrentUser().then(userInfo => this.userInfo$.next(userInfo!));
