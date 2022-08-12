@@ -1,6 +1,5 @@
 import { Injectable } from "@angular/core";
 import { map, Observable } from "rxjs";
-import { takeOnce } from "src/app/common/utils/rxjs-util";
 import { HasMetaData } from "src/app/model/meta-data";
 import { SpinnerService } from "../spinner/spinner.service";
 import { ToastService } from "../toast/toast.service";
@@ -16,7 +15,7 @@ export class DataService {
     getCollection<T>(path: string): Observable<T[]> {
         try {
             this.spinnerService.show();
-            return this.firestoreService.getCollection<HasMetaData<T>>(path).pipe(takeOnce(), map(this.mapMeta));
+            return this.firestoreService.getCollection<HasMetaData<T>>(path).pipe(map(this.mapMeta));
         } catch (error) {
             this.toastService.showError('Error while get collection, Please contact Pondi!');
             throw error;

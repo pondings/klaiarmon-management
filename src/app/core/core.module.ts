@@ -1,5 +1,4 @@
 import { NgModule } from "@angular/core";
-import { FontAwesomeModule } from "@fortawesome/angular-fontawesome";
 import { EditProfileModule } from "./edit-profile/edit-profile.module";
 import { HeaderModule } from "./header/header.module";
 import { DataService } from "./services/data-service";
