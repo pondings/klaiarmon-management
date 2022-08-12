@@ -1,36 +1,55 @@
 import { Injectable } from "@angular/core";
 import { AngularFireAuth } from "@angular/fire/compat/auth";
 import { Router } from "@angular/router";
-import { Observable, Subject } from "rxjs";
+import { UntilDestroy } from "@ngneat/until-destroy";
+import { BehaviorSubject, firstValueFrom, Observable } from "rxjs";
+import { takeOnce } from "src/app/common/utils/rxjs-util";
+import { FirestoreService } from "./firestore.service";
+
+type UserInfo = Partial<firebase.default.UserInfo>;
 
 @Injectable()
+@UntilDestroy({ checkProperties: true })
 export class FireAuthService {
 
-    private userInfo$ = new Subject<Partial<firebase.default.UserInfo>>();
+    private userInfo$ = new BehaviorSubject<UserInfo>({});
+    private allUsers$ = new BehaviorSubject<UserInfo[]>([]);
 
     constructor(private angularFireAuth: AngularFireAuth,
-        private router: Router) { }
+        private firestoreService: FirestoreService,
+        private router: Router) {
+        firestoreService.getCollection<UserInfo>('users').pipe(takeOnce()).subscribe(userInfos => 
+            this.allUsers$.next(userInfos!));
+    }
 
-    subscribeUserInfo(): Observable<Partial<firebase.default.UserInfo>> {
-        this.getCurrentUser().then(userInfo => this.userInfo$.next(userInfo!));
+    subscribeUserInfo(): Observable<UserInfo> {
+        this.angularFireAuth.currentUser.then(userInfo =>
+            this.firestoreService.subscribeDocument<UserInfo>(`users/${userInfo?.uid}`).subscribe(user =>
+                this.userInfo$.next(user!)));
         return this.userInfo$.asObservable();
     }
 
-    triggerSubscribedUserInfo(userInfo: Partial<firebase.default.UserInfo>): void {
+    triggerSubscribedUserInfo(userInfo: UserInfo): void {
         this.userInfo$.next({ displayName: userInfo?.displayName!, photoURL: userInfo?.photoURL });
     }
 
-    getCurrentUser(): Promise<firebase.default.UserInfo | null> {
-        return this.angularFireAuth.currentUser;
+    getCurrentUser(): UserInfo {
+        return this.userInfo$.getValue();
     }
 
-    async updateUserInfo(userInfo: Partial<firebase.default.UserInfo>): Promise<void> {
+    async updateUserInfo(userInfo: UserInfo): Promise<void> {
         const currentUser = await this.angularFireAuth.currentUser;
         currentUser?.updateProfile(userInfo);
+        this.firestoreService.updateDocument(`users/${currentUser?.uid}`, userInfo);
     }
 
     signout(): void {
         this.angularFireAuth.signOut().then(_ => this.router.navigate(['login']));
+    }
+
+    async getUsernameByUid(uid: string): Promise<string> {
+        const users = this.allUsers$.getValue();
+        return users.find(user => user.uid === uid)?.displayName!;
     }
 
 }

@@ -7,8 +7,7 @@ import { TimeUnit } from "src/app/shared/model/time-unit";
 import { UntilDestroy } from '@ngneat/until-destroy';
 import { CalendarService } from "../../services/calendar.service";
 import { addDate, getDate } from "src/app/common/utils/date.util";
-import { HttpService } from "src/app/shared/services/http.service";
-import { environment } from "src/environments/environment";
+import { GoogleMapsLoaderService } from "src/app/shared/services/google-maps-loader.service";
 
 @UntilDestroy({ checkProperties: true })
 @Component({
@@ -38,14 +37,14 @@ export class CalendarComponent implements OnInit {
     viewEventDate$!: Observable<Date>;
     isMapLoaded$!: Observable<boolean>;
 
-    constructor(private calendarService: CalendarService, private httpService: HttpService) { }
+    constructor(private calendarService: CalendarService,
+        private googleMapsLoaderService: GoogleMapsLoaderService) { }
 
     ngOnInit(): void {
-        this.calendarEvent$ = this.calendarService.getCalendarEvents();
-        this.dayEvents$ = this.calendarService.getDayEvents();
-        this.viewEventDate$ = this.dayEvents$.pipe(map(events => (events || [])[0]), map(event => (event || {}).start));
-        this.isMapLoaded$ = this.httpService.jsonp(`https://maps.googleapis.com/maps/api/js?key=${environment.google.mapApiKey}&libraries=places`, 'callback')
-            .pipe(map(() => true), catchError(() => of(false)));
+        this.initialSubscribes();
+        
+        this.googleMapsLoaderService.load();
+        this.calendarService.getCalendarEvents();
     }
 
     onSwipe(event: any): void {
@@ -72,7 +71,14 @@ export class CalendarComponent implements OnInit {
     }
 
     reload(): void {
-        this.calendarEvent$ = this.calendarService.reload();
+        this.calendarService.reload();
+    }
+
+    private initialSubscribes(): void {
+        this.calendarEvent$ = this.calendarService.subscribeCalendarEvents();
+        this.dayEvents$ = this.calendarService.subscribeDayEvents();
+        this.viewEventDate$ = this.dayEvents$.pipe(map(events => (events || [])[0]), map(event => (event || {}).start));
+        this.isMapLoaded$ = this.googleMapsLoaderService.subscribeIsLoaded();
     }
 
 }

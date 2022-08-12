@@ -1,16 +1,15 @@
 import { Injectable } from "@angular/core";
 import { NgbModal } from "@ng-bootstrap/ng-bootstrap";
-import { BehaviorSubject, filter, forkJoin, map, Observable, take } from "rxjs";
-import { FirestoreService } from "src/app/core/services/firestore.service";
+import { BehaviorSubject, forkJoin, Observable, take, tap } from "rxjs";
 import { CalendarEventDto, CalendarEventWithMeta } from "../model/calendar";
 import { CalendarEventModalComponent } from "../components/calendar-event-modal/calendar-event-modal.component";
 import { Action } from "src/app/common/enum/action";
 import { NullableDate } from "src/app/common/utils/date.util";
-import { mergeForkArrays } from "src/app/common/utils/common-util";
-import { mapCalendarDtoToEvents, mapCalendarEventToDto, mapToEditable, mapToUneditable } from "../utils/calendar.util";
-import { LocalStorageService } from "src/app/core/services/local-storage.service";
+import { filterEventsDocIdNotEqual, mapCalendarEventToDto, mapDtoListToEvents, mapDtoToEvent, mapToEditable } from "../utils/calendar.util";
 import * as moment from "moment";
 import { TimeUnit } from "src/app/shared/model/time-unit";
+import { DataService } from "src/app/core/services/data-service";
+import { mergeForkArrays, takeOnce } from "src/app/common/utils/rxjs-util";
 
 @Injectable()
 export class CalendarService {
@@ -21,23 +20,24 @@ export class CalendarService {
     private calendarEvent$ = new BehaviorSubject<CalendarEventWithMeta[]>([]);
     private dayEvent$ = new BehaviorSubject<CalendarEventWithMeta[]>([]);
 
-    constructor(private firestoreService: FirestoreService,
-        private ngbModalService: NgbModal,
-        private localStoreageService: LocalStorageService) { }
+    constructor(private dataService: DataService,
+        private ngbModalService: NgbModal) { }
 
-    getCalendarEvents(): Observable<CalendarEventWithMeta[]> {
-        const holidayEvents = this.firestoreService.getCollection<CalendarEventDto>(CalendarService.PUBLIC_HOLIDAY_COLLECTION)
-            .pipe(map(mapToUneditable));
-        const customEvents = this.firestoreService.getCollection<CalendarEventDto>(CalendarService.CUSTOM_EVENT_COLLECTION)
-            .pipe(map(mapToEditable));
-
-        forkJoin([holidayEvents, customEvents]).pipe(map(mergeForkArrays), take(1), map(mapCalendarDtoToEvents))
-            .subscribe(events => this.calendarEvent$.next(events));
+    subscribeCalendarEvents(): Observable<CalendarEventWithMeta[]> {
         return this.calendarEvent$.asObservable();
     }
 
-    getDayEvents(): Observable<CalendarEventWithMeta[]> {
+    subscribeDayEvents(): Observable<CalendarEventWithMeta[]> {
         return this.dayEvent$.asObservable();
+    }
+
+    getCalendarEvents(): void {
+        const holidayEvents = this.dataService.getCollection<CalendarEventDto>(CalendarService.PUBLIC_HOLIDAY_COLLECTION);
+        const customEvents = this.dataService.getCollection<CalendarEventDto>(CalendarService.CUSTOM_EVENT_COLLECTION)
+            .pipe(mapToEditable);
+        
+        forkJoin([holidayEvents, customEvents]).pipe(takeOnce(), mergeForkArrays, mapDtoListToEvents)
+            .subscribe(events => this.calendarEvent$.next(events));
     }
 
     showEvents(events: CalendarEventWithMeta[]): void {
@@ -51,11 +51,9 @@ export class CalendarService {
 
         modalRef.result.then(async (result: CalendarEventWithMeta) => {
             const dto = mapCalendarEventToDto(result);
-            const transactionsSuccess = await this.firestoreService.updateDocument(CalendarService.CUSTOM_EVENT_COLLECTION, [dto]);
-            const calendarEvent = mapCalendarDtoToEvents(transactionsSuccess.data)[0];
-
+            const editedData = await this.dataService.updateDocument(CalendarService.CUSTOM_EVENT_COLLECTION, dto);
+            const calendarEvent = mapDtoToEvent(editedData);
             this.updateToEventsDisplay(calendarEvent, currentViewDate);
-            transactionsSuccess.toast.showSuccess('Event updated');
         }, err => { });
     }
 
@@ -63,12 +61,12 @@ export class CalendarService {
         const confirmation = confirm('After confirm the content will be deleted from the system.');
         if (!confirmation) return;
 
-        await this.firestoreService.deleteDocument(CalendarService.CUSTOM_EVENT_COLLECTION, documentId)
-            .then(toast => toast.showSuccess('Event deleted'));
-        this.calendarEvent$.pipe(take(1)).subscribe(events =>
-            this.calendarEvent$.next(events.filter(event => event.meta?.documentId !== documentId)));
-        this.dayEvent$.pipe(take(1)).subscribe(events =>
-            this.dayEvent$.next(events.filter(event => event.meta?.documentId !== documentId)));
+        await this.dataService.deleteDocument(CalendarService.CUSTOM_EVENT_COLLECTION, documentId, 'Event deleted');
+
+        this.calendarEvent$.pipe(takeOnce()).subscribe(events =>
+            this.calendarEvent$.next(events.filter(filterEventsDocIdNotEqual(documentId))));
+        this.dayEvent$.pipe(takeOnce()).subscribe(events =>
+            this.dayEvent$.next(events.filter(filterEventsDocIdNotEqual(documentId))));
     }
 
     async addEvent(startDate: NullableDate): Promise<void> {
@@ -78,20 +76,16 @@ export class CalendarService {
 
         modalRef.result.then(async (result: CalendarEventWithMeta) => {
             const dto = mapCalendarEventToDto(result);
-            const transactionsSuccess = await this.firestoreService.addToCollection(CalendarService.CUSTOM_EVENT_COLLECTION, [dto]);
-            const calendarEvent = mapCalendarDtoToEvents(transactionsSuccess.data)[0];
+            const addedEvent = await this.dataService.addDocument(CalendarService.CUSTOM_EVENT_COLLECTION, dto, 'Event added');
+            const calendarEvent = mapDtoToEvent(addedEvent);
             calendarEvent.meta!.editable = true;
 
             this.addToEventsDisplay(calendarEvent);
-            transactionsSuccess.toast.showSuccess('Event added');
         }, err => { });
     }
 
-    reload(): Observable<CalendarEventWithMeta[]> {
-        this.localStoreageService.clear(CalendarService.CUSTOM_EVENT_COLLECTION);
-        this.localStoreageService.clear(CalendarService.PUBLIC_HOLIDAY_COLLECTION);
-
-        return this.getCalendarEvents();
+    reload(): void {
+        this.getCalendarEvents();
     }
 
     clearEvents(): void {

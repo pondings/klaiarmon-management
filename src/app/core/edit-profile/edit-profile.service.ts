@@ -21,7 +21,7 @@ export class EditProfileService {
         private toastService: ToastService) {}
 
     async editProfile(): Promise<void> {
-        const userData = await this.fireAuthService.getCurrentUser();
+        const userData = this.fireAuthService.getCurrentUser();
 
         const modalRef = this.modalService.open(EditProfileComponent, { centered: true });
         modalRef.componentInstance.userData = { displayName: userData?.displayName, photoURL: userData?.photoURL };

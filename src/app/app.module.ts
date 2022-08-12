@@ -23,6 +23,7 @@ import { CustomCalendarDateFormatter } from './core/providers/calendar-date-form
 import { HammerModule, HAMMER_GESTURE_CONFIG } from "@angular/platform-browser";
 import { AppHammerGestureConfig } from './core/providers/hammer-gesture.provider';
 import { CustomDateFormatter } from './core/providers/custom-date-formatter.provider';
+import { SharedModule } from './shared/shared.module';
 
 export function momentAdapterFactory(): DateAdapter {
   return adapterFactory(moment);
@@ -44,6 +45,7 @@ export function momentAdapterFactory(): DateAdapter {
     NgbModule,
     HammerModule,
     CoreModule,
+    SharedModule,
     AuthModule,
     FontAwesomeModule,
     CalendarModule.forRoot({ provide: DateAdapter, useFactory: momentAdapterFactory }, 

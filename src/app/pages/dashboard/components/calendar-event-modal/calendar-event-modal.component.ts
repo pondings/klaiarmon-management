@@ -58,10 +58,11 @@ export class CalendarEventModalComponent implements OnInit, AfterViewInit {
     ngOnInit(): void {
         this.patchFormValue();
         this.initSubscribe();
+
+        setTimeout(() => this.setGoogleMapsForm(), 100);
     }
 
     ngAfterViewInit(): void {
-        this.setGoogleMapsForm();
     }
 
     submit(): void {

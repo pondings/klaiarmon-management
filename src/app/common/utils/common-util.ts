@@ -1,3 +1,4 @@
+import { map, Observable, OperatorFunction } from "rxjs";
 import { ForkArrays } from "../types/common.type";
 
 export const isArray = (target: any): boolean => target instanceof Array;
@@ -8,5 +9,3 @@ export const isContainProperty = (target: any, property: string): boolean => pro
 export const isNotUndefined = (target: any): boolean => !isUndefined(target);
 export const isNotNull = (target: any): boolean => target != null;
 export const isNotNullOrUndefined = (target: any): boolean => isNotNull(target) && isNotUndefined(target);
-
-export const mergeForkArrays = <T>(target: ForkArrays<T>): T[] => target[0].concat(target[1]);

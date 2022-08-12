@@ -12,6 +12,7 @@ import { CalendarService } from "./services/calendar.service";
 import { NgbCollapseModule, NgbDateParserFormatter, NgbTypeaheadModule } from "@ng-bootstrap/ng-bootstrap";
 import { ConfirmModalModule } from "src/app/shared/components/modal/confirm-modal.module";
 import { GoogleMapsModule } from "@angular/google-maps";
+import { GoogleMapsLoaderService } from "src/app/shared/services/google-maps-loader.service";
 
 @NgModule({
     declarations: [
@@ -33,7 +34,8 @@ import { GoogleMapsModule } from "@angular/google-maps";
         NgbTypeaheadModule
     ],
     providers: [
-        CalendarService
+        CalendarService,
+        GoogleMapsLoaderService
     ]
 })
 export class DashboardModule { }
