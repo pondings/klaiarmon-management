@@ -15,7 +15,9 @@ export class ExpenseService {
     async openAddExpenseModal(): Promise<void> {
         const modalRef = this.modalService.open(ExpenseModalComponent, { centered: true });
 
-        await modalRef.result.then(data => {}, err => {});
+        await modalRef.result.then(expense => {
+            console.log(expense);
+        }, err => {});
     }
 
     addExpense(expense: Expense): void {

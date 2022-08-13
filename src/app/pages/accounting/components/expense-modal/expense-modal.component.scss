@@ -1,5 +1,9 @@
 app-expense-modal {
 
+    div.modal-body {
+        min-height: 40vh !important;
+    }
+
     div.input-checkbox label {
         font-size: 14px !important;
     }

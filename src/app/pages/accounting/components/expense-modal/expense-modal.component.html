@@ -52,7 +52,7 @@
                             <fa-icon [icon]="faFileUpload"></fa-icon>
                         </button>
                         <ng-template #hasPhotoUrl>
-                            <button class="btn btn-outline-secondary" type="button">
+                            <button class="btn btn-outline-secondary" type="button" (click)="viewPhoto(fileForm)">
                                 <fa-icon [icon]="faEye"></fa-icon>
                             </button>
                             <button class="btn btn-outline-secondary" type="button" (click)="clearUploadPhoto(fileForm); uploadFile.value=''">
@@ -68,7 +68,7 @@
     </div>
 
     <div class="modal-footer">
-        <button class="btn btn-sm btn-outline-dark" type="button">Add</button>
+        <button class="btn btn-sm btn-outline-dark" type="button" [disabled]="!(isFormValid$ | async)" (click)="onAdd()">Add</button>
         <button class="btn btn-sm btn-outline-danger" type="button" (click)="dismiss()">Cancel</button>
     </div>
 
