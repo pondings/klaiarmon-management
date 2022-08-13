@@ -35,7 +35,7 @@ const ACCOUNTING: Menu = {
 
     subMenuList: [
         { path: 'accounting', title: 'Accounting', icon: faFileInvoiceDollar },
-        { path: 'accounting/transaction', title: 'Transaction', icon: faMoneyCheck }
+        { path: 'accounting/expense', title: 'Expense', icon: faMoneyCheck }
     ]
 }
 
