@@ -6,7 +6,7 @@ import { BehaviorSubject, firstValueFrom, Observable } from "rxjs";
 import { takeOnce } from "src/app/common/utils/rxjs-util";
 import { FirestoreService } from "./firestore.service";
 
-type UserInfo = Partial<firebase.default.UserInfo>;
+export type UserInfo = Partial<firebase.default.UserInfo>;
 
 @Injectable()
 @UntilDestroy({ checkProperties: true })
@@ -35,6 +35,10 @@ export class FireAuthService {
 
     getCurrentUser(): UserInfo {
         return this.userInfo$.getValue();
+    }
+
+    getAllUsers(): Observable<UserInfo[]> {
+        return this.allUsers$;
     }
 
     async updateUserInfo(userInfo: UserInfo): Promise<void> {

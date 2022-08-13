@@ -1,5 +1,7 @@
 import { FormControl } from "@angular/forms";
 import { Nullable } from "src/app/common/types/common.type";
+import { NullableDateStruct } from "src/app/common/utils/date-struct.util";
+import { UserInfo } from "src/app/core/services/fire-auth.service";
 import { MetaData } from "src/app/model/meta-data";
 
 export interface Expense<TDATE = Date> {
@@ -12,15 +14,16 @@ export interface Expense<TDATE = Date> {
     meta: MetaData<TDATE>;
 }
 
-export interface ExpenseForm {
-    name: FormControl<Nullable<string>>;
-    amount: FormControl<Nullable<number>>;
-    isPersonalDebt: FormControl<Nullable<boolean>>;
-    date: FormControl<Nullable<Date>>;
-    paidBy: FormControl<Nullable<string>>;
+export interface ExpenseSearch {
+    name: string;
+    paidBy: string;
+    startDate: Date;
+    endDate: Date;
 }
 
 export interface ExpenseSearchForm {
     name: FormControl<Nullable<string>>;
-    date: FormControl<Nullable<Date>>;
+    paidBy: FormControl<Nullable<Partial<UserInfo>>>;
+    startDate: FormControl<NullableDateStruct>;
+    endDate: FormControl<NullableDateStruct>;
 }

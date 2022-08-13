@@ -7,8 +7,16 @@ import { HttpService } from "./services/http.service";
 
 @NgModule({
     declarations: [UsernamePipe],
-    imports: [HttpClientModule, HttpClientJsonpModule],
     providers: [HttpService],
-    exports: [ReactiveFormsModule, NgbDatepickerModule, UsernamePipe]
+    imports: [
+        HttpClientModule, 
+        HttpClientJsonpModule, 
+        NgbDatepickerModule
+    ],
+    exports: [
+        ReactiveFormsModule, 
+        NgbDatepickerModule, 
+        UsernamePipe
+    ]
 })
 export class SharedModule { }
