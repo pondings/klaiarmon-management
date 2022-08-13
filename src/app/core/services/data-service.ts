@@ -1,8 +1,11 @@
 import { Injectable } from "@angular/core";
+import { Timestamp } from "firebase/firestore";
 import { map, Observable } from "rxjs";
+import { getDate } from "src/app/common/utils/date.util";
 import { HasMetaData } from "src/app/model/meta-data";
 import { SpinnerService } from "../spinner/spinner.service";
 import { ToastService } from "../toast/toast.service";
+import { FireAuthService } from "./fire-auth.service";
 import { FirestoreService } from "./firestore.service";
 
 export interface DataServiceOptions {
@@ -14,6 +17,7 @@ export interface DataServiceOptions {
 export class DataService {
 
     constructor(private firestoreService: FirestoreService,
+        private fireAuthService: FireAuthService,
         private spinnerService: SpinnerService,
         private toastService: ToastService) { }
 
@@ -22,21 +26,22 @@ export class DataService {
             if (options?.showSpinner) this.spinnerService.show();
             return this.firestoreService.getCollection<HasMetaData<T>>(path).pipe(map(this.mapMeta));
         } catch (error) {
-            this.toastService.showError('Error while get collection, Please contact Pondi!');
+            this.toastService.showError('Error while geting collection, Please contact Pondi!');
             throw error;
         } finally {
             if (options?.showSpinner) this.spinnerService.hide();
         }
     }
 
-    async addDocument<T>(path: string, data: T, options?: DataServiceOptions): Promise<T> {
+    async addDocument<T>(path: string, data: HasMetaData<T>, options?: DataServiceOptions): Promise<T> {
         try {
             if (options?.showSpinner) this.spinnerService.show();
-            const addedDocument = await this.firestoreService.addDocument(path, data);
+            const dataWithMeta = await this.setMeta(data);
+            const addedDocument = await this.firestoreService.addDocument(path, dataWithMeta);
             if (options?.toastMessage) this.toastService.showSuccess(options?.toastMessage);
             return addedDocument;
         } catch (error) {
-            this.toastService.showError('Error while get collection, Please contact Pondi!');
+            this.toastService.showError('Error while adding document, Please contact Pondi!');
             throw error;
         } finally {
             if (options?.showSpinner) this.spinnerService.hide();
@@ -46,11 +51,12 @@ export class DataService {
     async updateDocument<T>(path: string, data: HasMetaData<T>, options?: DataServiceOptions): Promise<T> {
         try {
             if (options?.showSpinner) this.spinnerService.show();
-            const updatedData = await this.firestoreService.updateDocument(`${path}/${data.meta.documentId}`, data);
+            const dataWithMeta = await this.setMeta(data);
+            const updatedData = await this.firestoreService.updateDocument(`${path}/${data.meta.documentId}`, dataWithMeta);
             if (options?.toastMessage) this.toastService.showSuccess(options?.toastMessage);
             return updatedData;
         } catch (error) {
-            this.toastService.showError('Error while update document, Please contact Pondi!');
+            this.toastService.showError('Error while updating document, Please contact Pondi!');
             throw error;
         } finally {
             if (options?.showSpinner) this.spinnerService.hide();
@@ -63,11 +69,26 @@ export class DataService {
             await this.firestoreService.deleteDocument(`${path}/${documentId}`);
             if (options?.toastMessage) this.toastService.showSuccess(options?.toastMessage);
         } catch (error) {
-            this.toastService.showError('Error while delete document, Please contact Pondi!');
+            this.toastService.showError('Error while deleting document, Please contact Pondi!');
             throw error;
         } finally {
             if (options?.showSpinner) this.spinnerService.hide();
         }
+    }
+
+    async setMeta<T>(data: HasMetaData<T>): Promise<T> {
+        const currentDate = Timestamp.fromDate(getDate()!);
+        const user = this.fireAuthService.getCurrentUser();
+
+        const { createdDate = currentDate, createdBy = user.uid } = data.meta;
+        data.meta = {
+            ...data.meta,
+            createdDate,
+            createdBy,
+            updatedBy: user.uid,
+            updatedDate: currentDate
+        };
+        return data;
     }
 
     mapMeta<T>(dataList: HasMetaData<T>[]): T[] {

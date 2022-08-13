@@ -1,13 +1,18 @@
 import { MetaData } from "src/app/model/meta-data";
 import {
     NullableBooleanFormControl,
+    NullableDateFormControl,
     NullableDateStructFormControl,
+    NullableFile,
     NullableFileFormControl,
+    NullableMetaFormControl,
     NullableNumberFormControl,
+    NullableString,
     NullableStringFormControl,
     NullableUserInfoFormControl
 } from "src/app/common/types/common.type";
 import { FormArray, FormControl, FormGroup } from "@angular/forms";
+import { NullableDate } from "src/app/common/utils/date.util";
 
 export interface Expense<TDATE = Date> {
     name: string;
@@ -15,17 +20,18 @@ export interface Expense<TDATE = Date> {
     isPersonalDebt: boolean;
     date: TDATE;
     paidBy: string;
-    documents: string[];
+    files: PhotoUpload[],
     meta: MetaData<TDATE>;
 }
 
-export interface ExpenseAddForm {
+export interface ExpenseForm {
     name: NullableStringFormControl;
     amount: NullableNumberFormControl;
     date: NullableDateStructFormControl;
     paidBy: NullableUserInfoFormControl;
     isPersonalDebt: NullableBooleanFormControl;
-    files: FormArray<FormGroup<PhotoUploadForm>>
+    files: FormArray<FormGroup<PhotoUploadForm>>;
+    meta: NullableMetaFormControl
 }
 
 export interface ExpenseSearch {
@@ -42,8 +48,16 @@ export interface ExpenseSearchForm {
     endDate: NullableDateStructFormControl;
 }
 
+export interface PhotoUpload {
+    name: NullableString;
+    file: NullableFile;
+    photoUrl: NullableString;
+    uploadDate?: NullableDate;
+}
+
 export interface PhotoUploadForm {
     name: NullableStringFormControl,
     file: NullableFileFormControl,
-    photoUrl: NullableStringFormControl
+    photoUrl: NullableStringFormControl,
+    uploadDate?: NullableDateFormControl;
 }

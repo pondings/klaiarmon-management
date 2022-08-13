@@ -5,12 +5,13 @@ import { faCalendar, faEye, faFileUpload, faPlus, faXmark } from "@fortawesome/f
 import { NgbActiveModal, NgbModal } from "@ng-bootstrap/ng-bootstrap";
 import { UntilDestroy } from "@ngneat/until-destroy";
 import { map, Observable } from "rxjs";
-import { NullableDateStructFormControl, NullableFile, NullableNumber, NullableString, NullableUserInfo, NullableUserInfoFormControl } from "src/app/common/types/common.type";
+import { NullableDateStructFormControl, NullableFile, NullableMeta, NullableNumber, NullableString, NullableUserInfo, NullableUserInfoFormControl } from "src/app/common/types/common.type";
 import { getDateStruct } from "src/app/common/utils/date-struct.util";
+import { getDate, getDateFromDateStruct } from "src/app/common/utils/date.util";
 import { inputFileToBlob } from "src/app/common/utils/file-util";
 import { ToastService } from "src/app/core/toast/toast.service";
 import { ImageViewerComponent } from "src/app/shared/components/image-viewer/image-viewer.component";
-import { ExpenseAddForm, PhotoUploadForm } from "../../model/expense.model";
+import { ExpenseForm, PhotoUpload, PhotoUploadForm } from "../../model/expense.model";
 
 @UntilDestroy({ checkProperties: true })
 @Component({
@@ -22,7 +23,7 @@ import { ExpenseAddForm, PhotoUploadForm } from "../../model/expense.model";
 })
 export class ExpenseModalComponent implements OnInit {
 
-    expenseAddForm: FormGroup<ExpenseAddForm>;
+    expenseAddForm: FormGroup<ExpenseForm>;
 
     faCalendar = faCalendar;
     faPlus = faPlus;
@@ -53,9 +54,11 @@ export class ExpenseModalComponent implements OnInit {
             return;
         }
 
-        const files = formValue.files.filter(file => !file.file).map(file => ({ ...file, name: file.name || file.file?.name }));
+        const files = this.processFilesBeforeClose(formValue.files);
         this.activeModal.close({
             ...formValue,
+            date: getDateFromDateStruct(formValue.date!),
+            paidBy: formValue.paidBy?.uid,
             files
         });
     }
@@ -100,14 +103,20 @@ export class ExpenseModalComponent implements OnInit {
         return this.expenseAddForm.controls.files;
     }
 
-    private buildExpenseAddForm(): FormGroup<ExpenseAddForm> {
+    private processFilesBeforeClose(files: PhotoUpload[]): PhotoUpload[] {
+        return files.filter(file => !!file.file)
+            .map(file => ({ ...file, name: file.name || file.file?.name!, uploadDate: getDate()! }));
+    }
+
+    private buildExpenseAddForm(): FormGroup<ExpenseForm> {
         return this.fb.group({
             name: this.fb.control<NullableString>({ value: null, disabled: false }, [Validators.required]),
             amount: this.fb.control<NullableNumber>({ value: null, disabled: false }, [Validators.required]),
             date: this.fb.control({ value: getDateStruct(), disabled: false }, [Validators.required]),
             paidBy: this.fb.control<NullableUserInfo>({ value: null, disabled: false }, [Validators.required]),
             isPersonalDebt: this.fb.control({ value: false, disabled: false }),
-            files: this.fb.array<FormGroup<PhotoUploadForm>>([])
+            files: this.fb.array<FormGroup<PhotoUploadForm>>([]),
+            meta: this.fb.control<NullableMeta>({ value: {}, disabled: true })
         });
     }
 
