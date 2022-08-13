@@ -1,0 +1,12 @@
+<div class="modal-header">
+    <h4>Image Viewer</h4>
+    <button type="button" class="btn-close" type="button" (click)="dismiss()"></button>
+</div>
+
+<div class="modal-body">
+    <img [src]="imgUrl">
+</div>
+
+<div class="modal-footer">
+    <button class="btn btn-sm btn-outline-danger" type="button" (click)="dismiss()">Close</button>
+</div>

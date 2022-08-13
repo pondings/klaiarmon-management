@@ -1,0 +1,21 @@
+app-expense-modal {
+
+    div.modal-body {
+        min-height: 40vh !important;
+    }
+
+    div.input-checkbox label {
+        font-size: 14px !important;
+    }
+
+    .add-photo-btn {
+        width: 45%;
+        font-size: 12px !important;
+    }
+
+    .invisible {
+        width: 0px !important;
+        height: 0px !important;
+    }
+
+}

@@ -3,6 +3,7 @@ import { EditProfileModule } from "./edit-profile/edit-profile.module";
 import { HeaderModule } from "./header/header.module";
 import { DataService } from "./services/data-service";
 import { FireAuthService } from "./services/fire-auth.service";
+import { FireStorageService } from "./services/fire-storage.service";
 import { FirestoreService } from "./services/firestore.service";
 import { LocalStorageService } from "./services/local-storage.service";
 import { SidebarModule } from "./sidebar/sidebar.module";
@@ -27,7 +28,8 @@ import { ToastModule } from "./toast/toast.module";
         FirestoreService, 
         LocalStorageService,
         FireAuthService,
-        DataService
+        DataService,
+        FireStorageService
     ]
 })
 export class CoreModule {}

@@ -1,68 +1,96 @@
 import { Injectable } from "@angular/core";
-import { map, Observable } from "rxjs";
+import { Timestamp } from "firebase/firestore";
+import { map, Observable, tap } from "rxjs";
+import { getDate } from "src/app/common/utils/date.util";
 import { HasMetaData } from "src/app/model/meta-data";
 import { SpinnerService } from "../spinner/spinner.service";
 import { ToastService } from "../toast/toast.service";
+import { FireAuthService } from "./fire-auth.service";
 import { FirestoreService } from "./firestore.service";
+import { QueryFn } from "@angular/fire/compat/firestore";
+
+export interface DataServiceOptions<T = any> {
+    showSpinner?: boolean;
+    toastMessage?: string;
+    query?: QueryFn;
+}
 
 @Injectable()
 export class DataService {
 
     constructor(private firestoreService: FirestoreService,
+        private fireAuthService: FireAuthService,
         private spinnerService: SpinnerService,
         private toastService: ToastService) { }
 
-    getCollection<T>(path: string): Observable<T[]> {
+    getCollection<T>(path: string, options: DataServiceOptions = { showSpinner: true }): Observable<T[]> {
         try {
-            this.spinnerService.show();
-            return this.firestoreService.getCollection<HasMetaData<T>>(path).pipe(map(this.mapMeta));
+            if (options?.showSpinner) this.spinnerService.show();
+            return this.firestoreService.getCollection<HasMetaData<T>>(path, options.query)
+                .pipe(tap(() => this.spinnerService.hide()), map(this.mapMeta));
         } catch (error) {
-            this.toastService.showError('Error while get collection, Please contact Pondi!');
-            throw error;
-        } finally {
             this.spinnerService.hide();
+            this.toastService.showError('Error while geting collection, Please contact Pondi!');
+            throw error;
         }
     }
 
-    async addDocument<T>(path: string, data: T, toastMessage?: string): Promise<T> {
+    async addDocument<T>(path: string, data: HasMetaData<T>, options: DataServiceOptions = { showSpinner: true }): Promise<T> {
         try {
-            this.spinnerService.show();
-            const addedDocument = await this.firestoreService.addDocument(path, data);
-            if (toastMessage) this.toastService.showSuccess(toastMessage);
+            if (options?.showSpinner) this.spinnerService.show();
+            const dataWithMeta = await this.setMeta(data);
+            const addedDocument = await this.firestoreService.addDocument(path, dataWithMeta);
+            if (options?.toastMessage) this.toastService.showSuccess(options?.toastMessage);
             return addedDocument;
         } catch (error) {
-            this.toastService.showError('Error while get collection, Please contact Pondi!');
+            this.toastService.showError('Error while adding document, Please contact Pondi!');
             throw error;
         } finally {
-            this.spinnerService.hide();
+            if (options?.showSpinner) this.spinnerService.hide();
         }
     }
 
-    async updateDocument<T>(path: string, data: HasMetaData<T>, toastMessage?: string): Promise<T> {
+    async updateDocument<T>(path: string, data: HasMetaData<T>, options: DataServiceOptions = { showSpinner: true }): Promise<T> {
         try {
-            this.spinnerService.show();
-            const updatedData = await this.firestoreService.updateDocument(`${path}/${data.meta.documentId}`, data);
-            if (toastMessage) this.toastService.showSuccess(toastMessage);
+            if (options?.showSpinner) this.spinnerService.show();
+            const dataWithMeta = await this.setMeta(data);
+            const updatedData = await this.firestoreService.updateDocument(`${path}/${data.meta.documentId}`, dataWithMeta);
+            if (options?.toastMessage) this.toastService.showSuccess(options?.toastMessage);
             return updatedData;
         } catch (error) {
-            this.toastService.showError('Error while update document, Please contact Pondi!');
+            this.toastService.showError('Error while updating document, Please contact Pondi!');
             throw error;
         } finally {
-            this.spinnerService.hide();
+            if (options?.showSpinner) this.spinnerService.hide();
         }
     }
 
-    async deleteDocument(path: string, documentId: string, toastMessage?: string): Promise<void> {
+    async deleteDocument(path: string, documentId: string, options: DataServiceOptions = { showSpinner: true }): Promise<void> {
         try {
-            this.spinnerService.show();
+            if (options?.showSpinner) this.spinnerService.show();
             await this.firestoreService.deleteDocument(`${path}/${documentId}`);
-            if (toastMessage) this.toastService.showSuccess(toastMessage);
+            if (options?.toastMessage) this.toastService.showSuccess(options?.toastMessage);
         } catch (error) {
-            this.toastService.showError('Error while delete document, Please contact Pondi!');
+            this.toastService.showError('Error while deleting document, Please contact Pondi!');
             throw error;
         } finally {
-            this.spinnerService.hide();
+            if (options?.showSpinner) this.spinnerService.hide();
         }
+    }
+
+    async setMeta<T>(data: HasMetaData<T>): Promise<T> {
+        const currentDate = Timestamp.fromDate(getDate()!);
+        const user = this.fireAuthService.getCurrentUser();
+
+        const { createdDate = currentDate, createdBy = user.uid } = data.meta;
+        data.meta = {
+            ...data.meta,
+            createdDate,
+            createdBy,
+            updatedBy: user.uid,
+            updatedDate: currentDate
+        };
+        return data;
     }
 
     mapMeta<T>(dataList: HasMetaData<T>[]): T[] {

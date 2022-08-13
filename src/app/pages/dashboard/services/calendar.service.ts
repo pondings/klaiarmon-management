@@ -10,6 +10,7 @@ import * as moment from "moment";
 import { TimeUnit } from "src/app/shared/model/time-unit";
 import { DataService } from "src/app/core/services/data-service";
 import { mergeForkArrays, takeOnce } from "src/app/common/utils/rxjs-util";
+import { SpinnerService } from "src/app/core/spinner/spinner.service";
 
 @Injectable()
 export class CalendarService {
@@ -21,6 +22,7 @@ export class CalendarService {
     private dayEvent$ = new BehaviorSubject<CalendarEventWithMeta[]>([]);
 
     constructor(private dataService: DataService,
+        private spinnerService: SpinnerService,
         private ngbModalService: NgbModal) { }
 
     subscribeCalendarEvents(): Observable<CalendarEventWithMeta[]> {
@@ -32,12 +34,16 @@ export class CalendarService {
     }
 
     getCalendarEvents(): void {
+        this.spinnerService.show();
         const holidayEvents = this.dataService.getCollection<CalendarEventDto>(CalendarService.PUBLIC_HOLIDAY_COLLECTION);
         const customEvents = this.dataService.getCollection<CalendarEventDto>(CalendarService.CUSTOM_EVENT_COLLECTION)
             .pipe(mapToEditable);
         
         forkJoin([holidayEvents, customEvents]).pipe(takeOnce(), mergeForkArrays, mapDtoListToEvents)
-            .subscribe(events => this.calendarEvent$.next(events));
+            .subscribe(events => {
+                this.calendarEvent$.next(events);
+                this.spinnerService.hide();
+            });
     }
 
     showEvents(events: CalendarEventWithMeta[]): void {
@@ -51,7 +57,9 @@ export class CalendarService {
 
         modalRef.result.then(async (result: CalendarEventWithMeta) => {
             const dto = mapCalendarEventToDto(result);
-            const editedData = await this.dataService.updateDocument(CalendarService.CUSTOM_EVENT_COLLECTION, dto);
+            const editedData = await this.dataService.updateDocument(
+                CalendarService.CUSTOM_EVENT_COLLECTION, dto, { showSpinner: true });
+
             const calendarEvent = mapDtoToEvent(editedData);
             this.updateToEventsDisplay(calendarEvent, currentViewDate);
         }, err => { });
@@ -61,7 +69,9 @@ export class CalendarService {
         const confirmation = confirm('After confirm the content will be deleted from the system.');
         if (!confirmation) return;
 
-        await this.dataService.deleteDocument(CalendarService.CUSTOM_EVENT_COLLECTION, documentId, 'Event deleted');
+        await this.dataService.deleteDocument(
+            CalendarService.CUSTOM_EVENT_COLLECTION, documentId, 
+            { showSpinner: true, toastMessage: 'Event deleted' });
 
         this.calendarEvent$.pipe(takeOnce()).subscribe(events =>
             this.calendarEvent$.next(events.filter(filterEventsDocIdNotEqual(documentId))));
@@ -76,7 +86,10 @@ export class CalendarService {
 
         modalRef.result.then(async (result: CalendarEventWithMeta) => {
             const dto = mapCalendarEventToDto(result);
-            const addedEvent = await this.dataService.addDocument(CalendarService.CUSTOM_EVENT_COLLECTION, dto, 'Event added');
+            const addedEvent = await this.dataService.addDocument(
+                CalendarService.CUSTOM_EVENT_COLLECTION, dto, 
+                { showSpinner: true, toastMessage: 'Event added' });
+                
             const calendarEvent = mapDtoToEvent(addedEvent);
             calendarEvent.meta!.editable = true;
 
