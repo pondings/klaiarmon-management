@@ -1,12 +1,12 @@
 import { Timestamp } from '@firebase/firestore-types';
 import { ToastService } from '../core/toast/toast.service';
 
-export interface MetaData {
+export interface MetaData<TDate = Timestamp> {
     documentId?: string;
     createdBy?: string;
-    createdDate?: Timestamp;
+    createdDate?: TDate;
     updatedBy?: string;
-    updatedDate?: Timestamp;
+    updatedDate?: TDate;
 }
 
 export interface TransactionsSuccess<T> {

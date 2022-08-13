@@ -1,18 +1,26 @@
-import { Timestamp } from "firebase/firestore";
+import { FormControl } from "@angular/forms";
+import { Nullable } from "src/app/common/types/common.type";
 import { MetaData } from "src/app/model/meta-data";
 
-export interface Expense {
+export interface Expense<TDATE = Date> {
     name: string;
     amount: number;
-    date: Timestamp;
+    isPersonalDebt: boolean;
+    date: TDATE;
+    paidBy: string;
     documents: string[];
-    meta: MetaData;
+    meta: MetaData<TDATE>;
 }
 
-export interface ExpenseDto {
-    name: string;
-    amount: number;
-    date: Date;
-    documents: string[];
-    meta: MetaData<Date>
+export interface ExpenseForm {
+    name: FormControl<Nullable<string>>;
+    amount: FormControl<Nullable<number>>;
+    isPersonalDebt: FormControl<Nullable<boolean>>;
+    date: FormControl<Nullable<Date>>;
+    paidBy: FormControl<Nullable<string>>;
+}
+
+export interface ExpenseSearchForm {
+    name: FormControl<Nullable<string>>;
+    date: FormControl<Nullable<Date>>;
 }
