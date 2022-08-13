@@ -1,7 +1,7 @@
 import { ChangeDetectionStrategy, Component, OnInit, ViewEncapsulation } from "@angular/core";
 import { FormArray, FormBuilder, FormGroup, Validators } from "@angular/forms";
 import { DomSanitizer } from "@angular/platform-browser";
-import { faCalendar, faEye, faFileUpload, faPlus, faXmark } from "@fortawesome/free-solid-svg-icons";
+import { faCalendar, faCircleMinus, faEye, faFileUpload, faPlus, faXmark } from "@fortawesome/free-solid-svg-icons";
 import { NgbActiveModal, NgbModal } from "@ng-bootstrap/ng-bootstrap";
 import { UntilDestroy } from "@ngneat/until-destroy";
 import { map, Observable } from "rxjs";
@@ -28,8 +28,8 @@ export class ExpenseModalComponent implements OnInit {
     faCalendar = faCalendar;
     faPlus = faPlus;
     faFileUpload = faFileUpload;
-    faXmark = faXmark;
     faEye = faEye;
+    faCircleMinus = faCircleMinus;
 
     isFormValid$!: Observable<boolean>
 
@@ -82,9 +82,8 @@ export class ExpenseModalComponent implements OnInit {
         modalRef.componentInstance.imgUrl = this.domSanitizer.bypassSecurityTrustUrl(form.controls.photoUrl.value!);
     }
 
-    clearUploadPhoto(form: FormGroup<PhotoUploadForm>): void {
-        form.controls.file.reset();
-        form.controls.photoUrl.reset();
+    removeFormArr(formIndex: number): void {
+        this.filesFormArr.controls.splice(formIndex, 1);
     }
 
     dismiss(): void {
