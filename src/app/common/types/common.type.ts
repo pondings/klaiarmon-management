@@ -1,2 +1,19 @@
+import { FormControl } from "@angular/forms";
+import { UserInfo } from "src/app/core/services/fire-auth.service";
+import { NullableDateStruct } from "../utils/date-struct.util";
+
 export type Nullable<T> = T | null;
 export type ForkArrays<T> = [T[], T[]];
+
+export type NullableString = Nullable<string>;
+export type NullableNumber = Nullable<number>;
+export type NullableBoolean = Nullable<boolean>;
+export type NullableFile = Nullable<File>;
+export type NullableUserInfo = Nullable<Partial<UserInfo>>;
+
+export type NullableStringFormControl = FormControl<NullableString>;
+export type NullableNumberFormControl = FormControl<NullableNumber>;
+export type NullableBooleanFormControl = FormControl<NullableBoolean>;
+export type NullableDateStructFormControl = FormControl<NullableDateStruct>;
+export type NullableUserInfoFormControl = FormControl<NullableUserInfo>;
+export type NullableFileFormControl = FormControl<NullableFile>;

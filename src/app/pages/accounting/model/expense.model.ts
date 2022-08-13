@@ -1,8 +1,13 @@
-import { FormControl } from "@angular/forms";
-import { Nullable } from "src/app/common/types/common.type";
-import { NullableDateStruct } from "src/app/common/utils/date-struct.util";
-import { UserInfo } from "src/app/core/services/fire-auth.service";
 import { MetaData } from "src/app/model/meta-data";
+import {
+    NullableBooleanFormControl,
+    NullableDateStructFormControl,
+    NullableFileFormControl,
+    NullableNumberFormControl,
+    NullableStringFormControl,
+    NullableUserInfoFormControl
+} from "src/app/common/types/common.type";
+import { FormArray, FormControl, FormGroup } from "@angular/forms";
 
 export interface Expense<TDATE = Date> {
     name: string;
@@ -14,6 +19,15 @@ export interface Expense<TDATE = Date> {
     meta: MetaData<TDATE>;
 }
 
+export interface ExpenseAddForm {
+    name: NullableStringFormControl;
+    amount: NullableNumberFormControl;
+    date: NullableDateStructFormControl;
+    paidBy: NullableUserInfoFormControl;
+    isPersonalDebt: NullableBooleanFormControl;
+    files: FormArray<FormGroup<PhotoUploadForm>>
+}
+
 export interface ExpenseSearch {
     name: string;
     paidBy: string;
@@ -22,8 +36,14 @@ export interface ExpenseSearch {
 }
 
 export interface ExpenseSearchForm {
-    name: FormControl<Nullable<string>>;
-    paidBy: FormControl<Nullable<Partial<UserInfo>>>;
-    startDate: FormControl<NullableDateStruct>;
-    endDate: FormControl<NullableDateStruct>;
+    name: NullableStringFormControl;
+    paidBy: NullableUserInfoFormControl;
+    startDate: NullableDateStructFormControl;
+    endDate: NullableDateStructFormControl;
+}
+
+export interface PhotoUploadForm {
+    name: NullableStringFormControl,
+    file: NullableFileFormControl,
+    photoUrl: NullableStringFormControl
 }

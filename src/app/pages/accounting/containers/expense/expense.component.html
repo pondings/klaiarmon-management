@@ -1,6 +1,12 @@
-<div class="d-flex">
+<div class="d-flex flex-column">
     
-    <app-expense-search-form></app-expense-search-form>
+    <div class="d-flex justify-content-end">
+        <button class="btn add-btn" (click)="openAddExpenseModal()">
+            <fa-icon [icon]="faAdd"></fa-icon>
+        </button>
+    </div>
+
+    <app-expense-search-form (search)="search($event)" (clear)="clear()"></app-expense-search-form>
 
     <app-expense-result></app-expense-result>
 

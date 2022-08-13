@@ -1,11 +1,11 @@
-import { ChangeDetectionStrategy, Component, EventEmitter, OnInit, ViewEncapsulation } from "@angular/core";
+import { ChangeDetectionStrategy, Component, EventEmitter, OnInit, Output, ViewEncapsulation } from "@angular/core";
 import { FormBuilder, FormControl, FormGroup } from "@angular/forms";
 import { faCalendar, faMagnifyingGlass, faXmark } from "@fortawesome/free-solid-svg-icons";
-import { map, Observable, OperatorFunction, startWith, switchMap, tap } from "rxjs";
+import { Observable, startWith } from "rxjs";
 import { Nullable } from "src/app/common/types/common.type";
 import { getDateStruct, NullableDateStruct } from "src/app/common/utils/date-struct.util";
 import { getMoment } from "src/app/common/utils/moment.util";
-import { FireAuthService, UserInfo } from "src/app/core/services/fire-auth.service";
+import { UserInfo } from "src/app/core/services/fire-auth.service";
 import { ExpenseSearch, ExpenseSearchForm } from "../../model/expense.model";
 
 @Component({
@@ -17,10 +17,12 @@ import { ExpenseSearch, ExpenseSearchForm } from "../../model/expense.model";
 })
 export class ExpenseSearchFormComponent implements OnInit {
 
+    @Output()
     search = new EventEmitter<ExpenseSearch>();
+
+    @Output()
     clear = new EventEmitter<void>();
 
-    users$!: Observable<UserInfo[]>;
     startDateValue$!: Observable<NullableDateStruct>;
     endDateValue$!: Observable<NullableDateStruct>;
 
@@ -30,13 +32,11 @@ export class ExpenseSearchFormComponent implements OnInit {
     faCalendar = faCalendar;
     faMagnifyingGlass = faMagnifyingGlass;
 
-    constructor(private fb: FormBuilder,
-        private fireAuthService: FireAuthService) {
+    constructor(private fb: FormBuilder) {
         this.expenseForm = this.buildExpenseForm();
     }
 
     ngOnInit(): void {
-        this.users$ = this.fireAuthService.getAllUsers();
         this.startDateValue$ = this.startDateCtrl.valueChanges.pipe(startWith(this.startDateCtrl.value));
         this.endDateValue$ = this.endDateCtrl.valueChanges.pipe(startWith(this.endDateCtrl.value));
     }
@@ -62,13 +62,6 @@ export class ExpenseSearchFormComponent implements OnInit {
         this.clear.emit();
     }
 
-    searchUsers: OperatorFunction<string, readonly UserInfo[]> = (text$: Observable<string>) =>
-        text$.pipe(switchMap(text => this.users$.pipe(this.mapMatchingUsers(text))));
-
-    searchUserFormatter(result: UserInfo): string {
-        return result.displayName!;
-    }
-
     get startDateCtrl(): FormControl<NullableDateStruct> {
         return this.expenseForm.controls.startDate;
     }
@@ -88,14 +81,6 @@ export class ExpenseSearchFormComponent implements OnInit {
             startDate: this.fb.control({ value: getDateStruct(), disabled: false }),
             endDate: this.fb.control({ value: getDateStruct(), disabled: false })
         });
-    }
-
-    private mapMatchingUsers(candidate: string): OperatorFunction<UserInfo[], UserInfo[]> {
-        return users$ => users$.pipe(map(users => users.filter(this.matchUserDisplayNameIgnoreCase(candidate))));
-    }
-
-    private matchUserDisplayNameIgnoreCase(candidate: string): (user: UserInfo) => boolean {
-        return user => user.displayName?.toLowerCase().includes(candidate.toLowerCase())!;
     }
 
 }

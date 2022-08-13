@@ -3,24 +3,14 @@ app-expense-search-form {
     height: 100%;
     width: 100%;
 
-    ngb-typeahead-window {
-        width: 100%;
-        font-size: 12px !important;
-    }
-
-    .clear-btn {
-        position: absolute;
-        top: 0;
-        right: 0;
-        height: 100%;
-        padding-top: 0px;
-        padding-bottom: 0px;
-    }
-
     .btn-cmd {
         button {
             width: 80%;
         }
+    }
+
+    .red {
+        color: red !important;
     }
 
 }
