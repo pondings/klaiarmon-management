@@ -1,0 +1,32 @@
+@import '/src/scss/var.scss';
+
+app-expense-result {
+
+    div.card {
+        background-color: $page-color !important;
+    }
+
+    span.title {
+        font-size: 12px !important;
+        font-weight: bold;
+        flex-grow: 1;
+        cursor: pointer;
+    }
+
+    .hide-overflow {
+        max-height: 28px !important;
+        white-space: nowrap;
+        text-overflow: ellipsis;
+        overflow: hidden;
+    }
+
+    div.card-text {
+        font-size: 12px !important;
+    }
+
+    span.photo-link {
+        color: blue;
+        text-decoration: underline;
+    }
+
+}

@@ -1,7 +1,7 @@
 import { HttpClientJsonpModule, HttpClientModule } from "@angular/common/http";
 import { NgModule } from "@angular/core";
 import { ReactiveFormsModule } from "@angular/forms";
-import { NgbDatepickerModule } from "@ng-bootstrap/ng-bootstrap";
+import { NgbCollapseModule, NgbDatepickerModule } from "@ng-bootstrap/ng-bootstrap";
 import { UsernamePipe } from "./pipe/username.pipe";
 import { HttpService } from "./services/http.service";
 
@@ -11,12 +11,13 @@ import { HttpService } from "./services/http.service";
     imports: [
         HttpClientModule, 
         HttpClientJsonpModule, 
-        NgbDatepickerModule
+        NgbDatepickerModule,
     ],
     exports: [
         ReactiveFormsModule, 
         NgbDatepickerModule, 
-        UsernamePipe
+        UsernamePipe,
+        NgbCollapseModule
     ]
 })
 export class SharedModule { }

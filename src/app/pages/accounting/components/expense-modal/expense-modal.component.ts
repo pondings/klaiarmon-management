@@ -5,7 +5,7 @@ import { faCalendar, faCircleMinus, faEye, faFileUpload, faPlus, faXmark } from 
 import { NgbActiveModal, NgbModal } from "@ng-bootstrap/ng-bootstrap";
 import { UntilDestroy } from "@ngneat/until-destroy";
 import { map, Observable } from "rxjs";
-import { NullableDateStructFormControl, NullableFile, NullableMeta, NullableNumber, NullableString, NullableUserInfo, NullableUserInfoFormControl } from "src/app/common/types/common.type";
+import { NullableDateStructFormControl, NullableFile, NullableMeta, NullableNumber, NullableNumberFormControl, NullableString, NullableStringFormControl, NullableUserInfo, NullableUserInfoFormControl } from "src/app/common/types/common.type";
 import { getDateStruct } from "src/app/common/utils/date-struct.util";
 import { getDate, getDateFromDateStruct } from "src/app/common/utils/date.util";
 import { inputFileToBlob } from "src/app/common/utils/file-util";
@@ -44,7 +44,9 @@ export class ExpenseModalComponent implements OnInit {
     }
 
     ngOnInit(): void {
-        this.isFormValid$ = this.expenseAddForm.statusChanges.pipe(map(status => status === 'VALID'));
+        this.isFormValid$ = this.expenseAddForm.statusChanges.pipe(map(_ => {
+            return !!this.nameCtrl.value && !!this.amountCtrl.value && !!this.dateCtrl.value && !!this.paidByCtrl.value;
+        }));
     }
 
     onAdd(): void {
@@ -88,6 +90,14 @@ export class ExpenseModalComponent implements OnInit {
 
     dismiss(): void {
         this.activeModal.dismiss();
+    }
+
+    get nameCtrl(): NullableStringFormControl {
+        return this.expenseAddForm.controls.name;
+    }
+
+    get amountCtrl(): NullableNumberFormControl {
+        return this.expenseAddForm.controls.amount;
     }
 
     get dateCtrl(): NullableDateStructFormControl {

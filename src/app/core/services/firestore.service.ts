@@ -3,6 +3,7 @@ import { AngularFirestore } from "@angular/fire/compat/firestore";
 import { Observable } from "rxjs";
 
 import * as firestoreUtils from 'src/app/common/utils/firestore.util';
+import { QueryFn } from "@angular/fire/compat/firestore";
 import { takeOnce } from "src/app/common/utils/rxjs-util";
 
 @Injectable({ providedIn: 'root' })
@@ -16,8 +17,8 @@ export class FirestoreService {
         return this.angularFirestore.collection<T>(path).valueChanges({ idField: FirestoreService.DOCUMENT_ID_KEY });
     }
 
-    getCollection<T>(path: string): Observable<T[]> {
-        return this.angularFirestore.collection<T>(path).valueChanges({ idField: FirestoreService.DOCUMENT_ID_KEY })
+    getCollection<T>(path: string, query?: QueryFn): Observable<T[]> {
+        return this.angularFirestore.collection<T>(path, query).valueChanges({ idField: FirestoreService.DOCUMENT_ID_KEY })
             .pipe(takeOnce());
     }
 

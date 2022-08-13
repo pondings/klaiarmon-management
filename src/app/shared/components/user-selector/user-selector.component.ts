@@ -1,7 +1,7 @@
 import { ChangeDetectionStrategy, Component, Input, OnInit, ViewEncapsulation } from "@angular/core";
 import { FormControl } from "@angular/forms";
 import { faXmark } from "@fortawesome/free-solid-svg-icons";
-import { map, Observable, OperatorFunction, switchMap } from "rxjs";
+import { map, merge, Observable, OperatorFunction, Subject, switchMap } from "rxjs";
 import { FireAuthService, UserInfo } from "src/app/core/services/fire-auth.service";
 
 @Component({
@@ -23,6 +23,7 @@ export class UserSelectorComponent implements OnInit {
     required!: boolean;
 
     users$!: Observable<UserInfo[]>;
+    focus$ = new Subject<string>();
 
     faXmark = faXmark;
 
@@ -33,7 +34,7 @@ export class UserSelectorComponent implements OnInit {
     }
 
     searchUsers: OperatorFunction<string, readonly UserInfo[]> = (text$: Observable<string>) =>
-        text$.pipe(switchMap(text => this.users$.pipe(this.mapMatchingUsers(text))));
+        merge(this.focus$, text$).pipe(switchMap(text => this.users$.pipe(this.mapMatchingUsers(text))));
 
     searchUserFormatter(result: UserInfo): string {
         return result.displayName!;

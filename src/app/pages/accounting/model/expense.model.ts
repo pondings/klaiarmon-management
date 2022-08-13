@@ -11,10 +11,11 @@ import {
     NullableStringFormControl,
     NullableUserInfoFormControl
 } from "src/app/common/types/common.type";
-import { FormArray, FormControl, FormGroup } from "@angular/forms";
+import { FormArray, FormGroup } from "@angular/forms";
 import { NullableDate } from "src/app/common/utils/date.util";
+import { Timestamp } from "firebase/firestore";
 
-export interface Expense<TDATE = Date> {
+export interface Expense<TDATE = Timestamp> {
     name: string;
     amount: number;
     isPersonalDebt: boolean;

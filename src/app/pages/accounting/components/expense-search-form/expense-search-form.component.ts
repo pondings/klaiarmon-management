@@ -4,6 +4,7 @@ import { faCalendar, faMagnifyingGlass, faXmark } from "@fortawesome/free-solid-
 import { Observable, startWith } from "rxjs";
 import { Nullable } from "src/app/common/types/common.type";
 import { getDateStruct, NullableDateStruct } from "src/app/common/utils/date-struct.util";
+import { getDateFromDateStruct } from "src/app/common/utils/date.util";
 import { getMoment } from "src/app/common/utils/moment.util";
 import { UserInfo } from "src/app/core/services/fire-auth.service";
 import { ExpenseSearch, ExpenseSearchForm } from "../../model/expense.model";
@@ -46,8 +47,8 @@ export class ExpenseSearchFormComponent implements OnInit {
         this.search.emit({
             name: formValue.name!,
             paidBy: formValue.paidBy?.uid!,
-            startDate: getMoment(formValue.startDate)?.toDate()!,
-            endDate: getMoment(formValue.endDate)?.toDate()!
+            startDate: getDateFromDateStruct(formValue.startDate!)!,
+            endDate: getDateFromDateStruct(formValue.endDate!)!
         });
     }
 
