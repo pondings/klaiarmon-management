@@ -111,7 +111,6 @@ export class ExpenseModalComponent implements OnInit {
             amount: this.fb.control<NullableNumber>({ value: null, disabled: false }, [Validators.required]),
             date: this.fb.control({ value: getDateStruct(), disabled: false }, [Validators.required]),
             paidBy: this.fb.control<NullableUserInfo>({ value: null, disabled: false }, [Validators.required]),
-            isPersonalDebt: this.fb.control({ value: false, disabled: false }),
             files: this.fb.array<FormGroup<PhotoUploadForm>>([]),
             sharings: this.fb.array<FormGroup<SharingForm>>([]),
             meta: this.fb.control<NullableMeta>({ value: {}, disabled: true })

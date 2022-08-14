@@ -24,8 +24,6 @@
             <div class="grid bs-columns-4 column-gap-0 mt-1">
                 <label class="text-bold ">Paid Amount:</label>
                 <span class="">{{ expense.amount | number }}</span>
-                <label class="text-bold ">Personal Debt:</label>
-                <span class="">{{ !!expense.isPersonalDebt }}</span>
             </div>
             <span class="d-block mt-2 text-bold">Attactments</span>
             <div *ngFor="let file of expense.files">

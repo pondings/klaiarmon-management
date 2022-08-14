@@ -14,12 +14,10 @@ import {
 import { FormArray, FormGroup } from "@angular/forms";
 import { NullableDate } from "src/app/common/utils/date.util";
 import { Timestamp } from "firebase/firestore";
-import { UserInfo } from "src/app/core/services/fire-auth.service";
 
 export interface Expense<TDATE = Timestamp> {
     name: string;
     amount: number;
-    isPersonalDebt: boolean;
     date: TDATE;
     paidBy: string;
     files: PhotoUpload[];
@@ -32,7 +30,6 @@ export interface ExpenseForm {
     amount: NullableNumberFormControl;
     date: NullableDateStructFormControl;
     paidBy: NullableUserInfoFormControl;
-    isPersonalDebt: NullableBooleanFormControl;
     files: FormArray<FormGroup<PhotoUploadForm>>;
     sharings: FormArray<FormGroup<SharingForm>>;
     meta: NullableMetaFormControl;
