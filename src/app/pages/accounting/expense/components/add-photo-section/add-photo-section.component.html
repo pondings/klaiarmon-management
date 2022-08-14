@@ -28,7 +28,7 @@
                 <button class="btn btn-outline-secondary" type="button" (click)="removeFileForm(idx)">
                     <fa-icon [icon]="faCircleMinus"></fa-icon>
                 </button>
-                <input #uploadFile class="invisible" type="file" accept="image/*" (change)="uploadPhoto($event, fileForm)">
+                <input #uploadFile class="d-none" type="file" accept="image/*" (change)="uploadPhoto($event, fileForm)">
             </div>
         </div>
     </div>
