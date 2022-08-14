@@ -96,7 +96,7 @@ export class DataService {
 
     private async setMeta<T>(data: HasMetaData<T>): Promise<T> {
         const currentDate = Timestamp.fromDate(getDate()!);
-        const user = this.fireAuthService.getCurrentUser();
+        const user = await this.fireAuthService.getCurrentUser();
 
         const { createdDate = currentDate, createdBy = user.uid } = data.meta;
         data.meta = {

@@ -1,5 +1,6 @@
 import { ChangeDetectionStrategy, Component, EventEmitter, Input, Output, ViewEncapsulation } from "@angular/core";
 import { faPen, faTrash } from "@fortawesome/free-solid-svg-icons";
+import { UserInfo } from "src/app/core/services/fire-auth.service";
 import { Expense } from "../../model/expense.model";
 
 @Component({
@@ -13,6 +14,9 @@ export class ExpenseResultComponent {
 
     @Input()
     expense!: Expense;
+
+    @Input()
+    currentUser!: UserInfo;
 
     @Output()
     viewAttachment = new EventEmitter<string>();

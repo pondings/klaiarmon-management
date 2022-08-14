@@ -1,5 +1,5 @@
-<div class="d-flex flex-column">
-    
+<div class="d-flex flex-column h-100">
+
     <div class="d-flex justify-content-end">
         <button class="btn add-btn" (click)="openAddExpenseModal()">
             <fa-icon [icon]="faAdd"></fa-icon>
@@ -8,8 +8,10 @@
 
     <app-expense-search-form (search)="search($event)" (clear)="clear()"></app-expense-search-form>
 
-    <app-expense-result *ngFor="let expense of (expenses$ | async)"
-        [expense]="expense" (viewAttachment)="viewAttachment($event)">
-    </app-expense-result>
+    <div class="result-container">
+        <app-expense-result *ngFor="let expense of (expenses$ | async)" [expense]="expense" [currentUser]="currentUser"
+            (viewAttachment)="viewAttachment($event)">
+        </app-expense-result>
+    </div>
 
 </div>

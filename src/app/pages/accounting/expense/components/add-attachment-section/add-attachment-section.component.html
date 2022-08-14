@@ -25,7 +25,7 @@
                         <fa-icon [icon]="faEye"></fa-icon>
                     </button>
                 </ng-template>
-                <button class="btn btn-outline-secondary" type="button" (click)="removeFileForm(idx)">
+                <button class="btn btn-outline-secondary last-btn" type="button" (click)="removeFileForm(idx)">
                     <fa-icon [icon]="faCircleMinus"></fa-icon>
                 </button>
                 <input #uploadFile class="d-none" type="file" accept="image/*" (change)="uploadAttachment($event, fileForm)">

@@ -6,6 +6,7 @@ import { BehaviorSubject, Observable } from "rxjs";
 import { getMoment } from "src/app/common/utils/moment.util";
 import { DataService } from "src/app/core/services/data-service";
 import { FireStorageService } from "src/app/core/services/fire-storage.service";
+import { ToastService } from "src/app/core/toast/toast.service";
 import { ImageViewerComponent } from "src/app/shared/components/image-viewer/image-viewer.component";
 import { ExpenseModalComponent } from "../components/expense-modal/expense-modal.component";
 import { Expense, ExpenseSearch } from "../model/expense.model";
@@ -20,6 +21,7 @@ export class ExpenseService {
 
     constructor(private dataService: DataService,
         private fireStorageService: FireStorageService,
+        private toastService: ToastService,
         private modalService: NgbModal) { }
 
     async openAddExpenseModal(): Promise<void> {
@@ -60,7 +62,13 @@ export class ExpenseService {
         let collection = await this.dataService.getCollection<Expense>(ExpenseService.EXPENSE_COLLECTION_PATH, { showSpinner: true, query: criteriaQuery });
         if (criteria.name) collection = collection.filter(this.filterExpenseByName(criteria.name));
         if (criteria.paidBy) collection = collection.filter(this.filterExpenseByPaidBy(criteria.paidBy));
+
+        if (!collection || !collection[0]) this.toastService.showSuccess('No data found.');
         this.expenses$.next(collection);
+    }
+
+    clearExpense(): void {
+        this.expenses$.next([]);
     }
 
     updateExpense(expense: Expense): Expense {

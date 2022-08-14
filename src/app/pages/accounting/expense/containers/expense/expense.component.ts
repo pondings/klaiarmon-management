@@ -1,13 +1,17 @@
 import { ChangeDetectionStrategy, Component, OnInit, ViewEncapsulation } from "@angular/core";
 import { faAdd } from "@fortawesome/free-solid-svg-icons";
 import { Observable } from "rxjs";
+import { FireAuthService, UserInfo } from "src/app/core/services/fire-auth.service";
 import { Expense, ExpenseSearch } from "../../model/expense.model";
 import { ExpenseService } from "../../services/expense.service";
 
 @Component({
     selector: 'app-expense',
     templateUrl: './expense.component.html',
-    styleUrls: ['./expense.component.scss'],
+    styles: [
+        'app-expense { height: 100%; }',
+        'app-expense .result-container { flex-grow: 1; overflow: auto; }'
+    ],
     changeDetection: ChangeDetectionStrategy.OnPush,
     encapsulation: ViewEncapsulation.None
 })
@@ -17,10 +21,14 @@ export class ExpenseComponent implements OnInit {
 
     faAdd = faAdd;
 
-    constructor(private expenseService: ExpenseService) {}
+    currentUser!: UserInfo;
 
-    ngOnInit(): void {
+    constructor(private expenseService: ExpenseService,
+        private fireAuthService: FireAuthService) {}
+
+    async ngOnInit(): Promise<void> {
         this.expenses$ = this.expenseService.getExpense();
+        this.currentUser = await this.fireAuthService.getCurrentUser();
     }
 
     openAddExpenseModal(): void {
@@ -32,7 +40,7 @@ export class ExpenseComponent implements OnInit {
     }
 
     clear(): void {
-        console.log('Search form clear!');
+        this.expenseService.clearExpense();
     }
 
     viewAttachment(attachmentUrl: string): void {

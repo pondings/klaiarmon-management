@@ -13,7 +13,7 @@ import { ChangeDetectionStrategy, Component, ViewEncapsulation } from "@angular/
         <app-sidebar></app-sidebar>
     `,
     styles: [
-        '.overflow-auto { height: 100%; }',
+        '.overflow-auto { height: 100% !important; }',
         'app-home-layout { height: 100% !important; width: 100% !important; display: flex !important; flex-direction: column !important; }',
         '.container { flex-grow: 1; display: flex; flex-direction: column; height: 100%; }'
     ],
