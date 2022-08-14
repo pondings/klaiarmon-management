@@ -1,16 +1,14 @@
 import { ChangeDetectionStrategy, Component, OnInit, ViewEncapsulation } from "@angular/core";
 import { FormArray, FormBuilder, FormGroup, Validators } from "@angular/forms";
 import { faCalendar } from "@fortawesome/free-solid-svg-icons";
-import { NgbActiveModal, NgbModal } from "@ng-bootstrap/ng-bootstrap";
-import { UntilDestroy } from "@ngneat/until-destroy";
+import { NgbActiveModal } from "@ng-bootstrap/ng-bootstrap";
 import { map, Observable } from "rxjs";
 import { NullableDateStructFormControl, NullableMeta, NullableNumber, NullableNumberFormControl, NullableString, NullableStringFormControl, NullableUserInfo, NullableUserInfoFormControl } from "src/app/common/types/common.type";
 import { getDateStruct } from "src/app/common/utils/date-struct.util";
 import { getDate, getDateFromDateStruct } from "src/app/common/utils/date.util";
 import { ToastService } from "src/app/core/toast/toast.service";
-import { ExpenseForm, PhotoUpload, PhotoUploadForm, SharingForm } from "../../model/expense.model";
+import { ExpenseForm, PhotoUpload, PhotoUploadForm, Sharing, SharingForm } from "../../model/expense.model";
 
-@UntilDestroy({ checkProperties: true })
 @Component({
     selector: 'app-expense-modal',
     templateUrl: './expense-modal.component.html',
@@ -35,28 +33,22 @@ export class ExpenseModalComponent implements OnInit {
     }
 
     ngOnInit(): void {
-        this.isFormValid$ = this.isFormValid();
+        this.isFormValid$ = this.expenseAddForm.statusChanges.pipe(map(status => status === 'VALID'));
     }
 
     onAdd(): void {
+        this.validateForm();
         const formValue = this.expenseAddForm.getRawValue();
-        if (typeof formValue.paidBy === 'string') {
-            this.toastService.showError(`Invalid user: ${formValue.paidBy}, Please select from dropdown.`);
-            return;
-        }
 
         const files = this.processFilesBeforeClose(formValue.files);
+        const sharings = this.processSharingBeforeClose(formValue.sharings);
         this.activeModal.close({
             ...formValue,
             date: getDateFromDateStruct(formValue.date!),
             paidBy: formValue.paidBy?.uid,
-            files
+            files,
+            sharings
         });
-    }
-
-    isFormValid(): Observable<boolean> {
-        return this.expenseAddForm.statusChanges.pipe(map(_ =>
-            !!this.nameCtrl.value && !!this.amountCtrl.value && !!this.dateCtrl.value && !!this.paidByCtrl.value));
     }
 
     dismiss(): void {
@@ -87,9 +79,30 @@ export class ExpenseModalComponent implements OnInit {
         return this.expenseAddForm.controls.sharings;
     }
 
+    private validateForm(): void {
+        const formValue = this.expenseAddForm.getRawValue();
+        if (typeof formValue.paidBy === 'string') {
+            this.toastService.showError(`Invalid user: ${formValue.paidBy}, Please select from dropdown.`);
+            throw 'Invalid user';
+        }
+
+        const sharings = formValue.sharings;
+        const duplicateNames = sharings.map(sharing => sharing.user)
+            .map(user => user?.displayName)
+            .filter((displayName, idx, arr) => arr.indexOf(displayName) !== idx);
+        if (duplicateNames[0]) {
+            this.toastService.showError(`${duplicateNames.join(',')} has duplicated in sharing section.`);
+            throw 'Duplicate user in section';
+        }
+    }
+
     private processFilesBeforeClose(files: PhotoUpload[]): PhotoUpload[] {
         return files.filter(file => !!file.file)
             .map(file => ({ ...file, name: file.name || file.file?.name!, uploadDate: getDate()! }));
+    }
+
+    private processSharingBeforeClose(sharings: { user: NullableUserInfo, amount: NullableNumber }[]): Sharing[] {
+        return sharings.map(sharing => ({ user: sharing.user?.uid!, amount: sharing.amount! }));
     }
 
     private buildExpenseAddForm(): FormGroup<ExpenseForm> {

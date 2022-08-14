@@ -24,6 +24,7 @@ export interface Expense<TDATE = Timestamp> {
     paidBy: string;
     files: PhotoUpload[];
     meta: MetaData<TDATE>;
+    sharings: Sharing[]
 }
 
 export interface ExpenseForm {
@@ -38,7 +39,7 @@ export interface ExpenseForm {
 }
 
 export interface Sharing {
-    user: UserInfo,
+    user: string,
     amount: number;
 }
 

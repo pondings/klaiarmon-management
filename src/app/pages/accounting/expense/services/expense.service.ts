@@ -79,7 +79,7 @@ export class ExpenseService {
         this.dataService.getDocument(ExpenseService.PONDTONG_SHARING_SETTING_DOCUMENT_PATH);
     }
 
-    private filterExpenseByName(name: string): (expense: Expense) => boolean  {
+    private filterExpenseByName(name: string): (expense: Expense) => boolean {
         return (expenses: Expense) => expenses.name.toLowerCase().includes(name.toLowerCase());
     }
 
