@@ -8,7 +8,7 @@ import { NullableDateStructFormControl, NullableMeta, NullableNumber, NullableNu
 import { getDateStruct } from "src/app/common/utils/date-struct.util";
 import { getDate, getDateFromDateStruct } from "src/app/common/utils/date.util";
 import { ToastService } from "src/app/core/toast/toast.service";
-import { ExpenseForm, PhotoUpload, PhotoUploadForm } from "../../model/expense.model";
+import { ExpenseForm, PhotoUpload, PhotoUploadForm, SharingForm } from "../../model/expense.model";
 
 @UntilDestroy({ checkProperties: true })
 @Component({
@@ -83,6 +83,10 @@ export class ExpenseModalComponent implements OnInit {
         return this.expenseAddForm.controls.files;
     }
 
+    get sharingsFormArr(): FormArray<FormGroup<SharingForm>> {
+        return this.expenseAddForm.controls.sharings;
+    }
+
     private processFilesBeforeClose(files: PhotoUpload[]): PhotoUpload[] {
         return files.filter(file => !!file.file)
             .map(file => ({ ...file, name: file.name || file.file?.name!, uploadDate: getDate()! }));
@@ -96,6 +100,7 @@ export class ExpenseModalComponent implements OnInit {
             paidBy: this.fb.control<NullableUserInfo>({ value: null, disabled: false }, [Validators.required]),
             isPersonalDebt: this.fb.control({ value: false, disabled: false }),
             files: this.fb.array<FormGroup<PhotoUploadForm>>([]),
+            sharings: this.fb.array<FormGroup<SharingForm>>([]),
             meta: this.fb.control<NullableMeta>({ value: {}, disabled: true })
         });
     }

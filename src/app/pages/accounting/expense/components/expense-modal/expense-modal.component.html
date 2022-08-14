@@ -18,16 +18,12 @@
             </div>
         </div>
 
-        <div class="grid bs-rows-1 bs-columns-2 row-gap-1 mb-1">
+        <div class="grid bs-rows-1 bs-columns-2 row-gap-1 mb-2">
             <app-date-picker label="Date" [control]="dateCtrl" [maxDate]="today!"></app-date-picker>
             <app-user-selector label="Paid by" [control]="paidByCtrl" [required]="true"></app-user-selector>
         </div>
 
-        <div class="input-checkbox d-flex align-items-center mb-2">
-            <input #isPersonalDebt class="form-check-input pe-1" type="checkbox" placeholder="Is Personal Debt" 
-                checked="false" formControlName="isPersonalDebt">
-            <label for="isPersonalDebt" (click)="isPersonalDebt.click()">Is Personal Debt</label>
-        </div>
+        <app-sharing-section class="d-block mb-2" formArrayName="sharings" [sharingFormArr]="sharingsFormArr"></app-sharing-section>
 
         <app-add-photo-section formArrayName="files" [fileFormArr]="fileFormArr"></app-add-photo-section>
 
