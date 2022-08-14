@@ -1,10 +1,13 @@
 import { CommonModule } from "@angular/common";
 import { NgModule } from "@angular/core";
-import { AccountingComponent } from "./containers/accounting/accounting.component";
+import { AccountingDashboardModule } from "./accounting-dashboard/accounting-dashboard.module";
 import { ExpenseModule } from "./expense/expense.module";
 
 @NgModule({
-    declarations: [AccountingComponent],
-    imports: [CommonModule, ExpenseModule]
+    imports: [
+        CommonModule, 
+        ExpenseModule, 
+        AccountingDashboardModule
+    ]
 })
 export class AccountingModule { }
