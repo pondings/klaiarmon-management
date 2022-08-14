@@ -34,7 +34,7 @@ export class ExpenseService {
                 day = currentDate?.day();
 
             expense.files = await Promise.all(expense.files.map(async file => {
-                const path = `expense/${year}/${month}/${file.name}-${currentDate?.format('DD-MM-YYYY-HH-mm-ss')}.${file.file?.type}`;
+                const path = `expense/${year}/${month}/${file.name}-${currentDate?.format('DD-MM-YYYY-HH-mm-ss')}`;
                 const uploadUrl = await this.fireStorageService.uploadFile(path, file.file!);
                 return { ...file, attachmentUrl: uploadUrl, file: null };
             }))
