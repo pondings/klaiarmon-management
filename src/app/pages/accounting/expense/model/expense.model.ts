@@ -1,6 +1,5 @@
 import { MetaData } from "src/app/model/meta-data";
 import {
-    NullableBooleanFormControl,
     NullableDateFormControl,
     NullableDateStructFormControl,
     NullableFile,
@@ -20,7 +19,7 @@ export interface Expense<TDATE = Timestamp> {
     amount: number;
     date: TDATE;
     paidBy: string;
-    files: PhotoUpload[];
+    files: AttachmentUpload[];
     meta: MetaData<TDATE>;
     sharings: Sharing[]
 }
@@ -30,7 +29,7 @@ export interface ExpenseForm {
     amount: NullableNumberFormControl;
     date: NullableDateStructFormControl;
     paidBy: NullableUserInfoFormControl;
-    files: FormArray<FormGroup<PhotoUploadForm>>;
+    files: FormArray<FormGroup<AttachmentUploadForm>>;
     sharings: FormArray<FormGroup<SharingForm>>;
     meta: NullableMetaFormControl;
 }
@@ -59,16 +58,16 @@ export interface ExpenseSearchForm {
     endDate: NullableDateStructFormControl;
 }
 
-export interface PhotoUpload {
+export interface AttachmentUpload {
     name: NullableString;
     file: NullableFile;
-    photoUrl: NullableString;
+    attachmentUrl: NullableString;
     uploadDate?: NullableDate;
 }
 
-export interface PhotoUploadForm {
+export interface AttachmentUploadForm {
     name: NullableStringFormControl,
     file: NullableFileFormControl,
-    photoUrl: NullableStringFormControl,
+    attachmentUrl: NullableStringFormControl,
     uploadDate?: NullableDateFormControl;
 }

@@ -34,7 +34,7 @@ export class ExpenseService {
             expense.files = await Promise.all(expense.files.map(async file => {
                 const path = `expense/${year}/${month}/${file.name}-${currentDate?.format('DD-MM-YYYY-HH-mm-ss')}.${file.file?.type}`;
                 const uploadUrl = await this.fireStorageService.uploadFile(path, file.file!);
-                return { ...file, photoUrl: uploadUrl, file: null };
+                return { ...file, attachmentUrl: uploadUrl, file: null };
             }))
 
             await this.dataService.addDocument(ExpenseService.EXPENSE_COLLECTION_PATH, expense,
@@ -70,9 +70,9 @@ export class ExpenseService {
     deleteExpense(): void {
     }
 
-    viewPhoto(photoUrl: string) {
+    viewAttachment(attachmentUrl: string) {
         const modalRef = this.modalService.open(ImageViewerComponent, { centered: true });
-        modalRef.componentInstance.imgUrl = photoUrl;
+        modalRef.componentInstance.imgUrl = attachmentUrl;
     }
 
     getSharingSetting(): void {

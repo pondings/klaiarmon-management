@@ -35,8 +35,8 @@ export class ExpenseComponent implements OnInit {
         console.log('Search form clear!');
     }
 
-    viewPhoto(photoUrl: string): void {
-        this.expenseService.viewPhoto(photoUrl);
+    viewAttachment(attachmentUrl: string): void {
+        this.expenseService.viewAttachment(attachmentUrl);
     }
 
 }

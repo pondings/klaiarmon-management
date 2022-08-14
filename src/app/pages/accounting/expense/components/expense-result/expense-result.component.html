@@ -27,7 +27,7 @@
             </div>
             <span class="d-block mt-2 text-bold">Attactments</span>
             <div *ngFor="let file of expense.files">
-                <span class="photo-link" (click)="viewPhoto.emit(file.photoUrl!)">{{file.name}}</span>
+                <span class="attachment-link" (click)="viewAttachment.emit(file.attachmentUrl!)">{{file.name}}</span>
             </div>
         </div>
     </div>

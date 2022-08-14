@@ -15,7 +15,7 @@ export class ExpenseResultComponent {
     expense!: Expense;
 
     @Output()
-    viewPhoto = new EventEmitter<string>();
+    viewAttachment = new EventEmitter<string>();
 
     faPen = faPen;
     faTrash = faTrash;

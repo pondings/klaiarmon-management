@@ -7,7 +7,7 @@ import { NullableDateStructFormControl, NullableMeta, NullableNumber, NullableNu
 import { getDateStruct } from "src/app/common/utils/date-struct.util";
 import { getDate, getDateFromDateStruct } from "src/app/common/utils/date.util";
 import { ToastService } from "src/app/core/toast/toast.service";
-import { ExpenseForm, PhotoUpload, PhotoUploadForm, Sharing, SharingForm } from "../../model/expense.model";
+import { AttachmentUpload, AttachmentUploadForm, ExpenseForm, Sharing, SharingForm } from "../../model/expense.model";
 
 @Component({
     selector: 'app-expense-modal',
@@ -71,7 +71,7 @@ export class ExpenseModalComponent implements OnInit {
         return this.expenseAddForm.controls.paidBy;
     }
 
-    get fileFormArr(): FormArray<FormGroup<PhotoUploadForm>> {
+    get fileFormArr(): FormArray<FormGroup<AttachmentUploadForm>> {
         return this.expenseAddForm.controls.files;
     }
 
@@ -96,7 +96,7 @@ export class ExpenseModalComponent implements OnInit {
         }
     }
 
-    private processFilesBeforeClose(files: PhotoUpload[]): PhotoUpload[] {
+    private processFilesBeforeClose(files: AttachmentUpload[]): AttachmentUpload[] {
         return files.filter(file => !!file.file)
             .map(file => ({ ...file, name: file.name || file.file?.name!, uploadDate: getDate()! }));
     }
@@ -111,7 +111,7 @@ export class ExpenseModalComponent implements OnInit {
             amount: this.fb.control<NullableNumber>({ value: null, disabled: false }, [Validators.required]),
             date: this.fb.control({ value: getDateStruct(), disabled: false }, [Validators.required]),
             paidBy: this.fb.control<NullableUserInfo>({ value: null, disabled: false }, [Validators.required]),
-            files: this.fb.array<FormGroup<PhotoUploadForm>>([]),
+            files: this.fb.array<FormGroup<AttachmentUploadForm>>([]),
             sharings: this.fb.array<FormGroup<SharingForm>>([]),
             meta: this.fb.control<NullableMeta>({ value: {}, disabled: true })
         });

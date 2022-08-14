@@ -9,7 +9,7 @@
     <app-expense-search-form (search)="search($event)" (clear)="clear()"></app-expense-search-form>
 
     <app-expense-result *ngFor="let expense of (expenses$ | async)"
-        [expense]="expense" (viewPhoto)="viewPhoto($event)">
+        [expense]="expense" (viewAttachment)="viewAttachment($event)">
     </app-expense-result>
 
 </div>
