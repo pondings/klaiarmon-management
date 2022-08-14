@@ -21,7 +21,7 @@ export interface Expense<TDATE = Timestamp> {
     isPersonalDebt: boolean;
     date: TDATE;
     paidBy: string;
-    files: PhotoUpload[],
+    files: PhotoUpload[];
     meta: MetaData<TDATE>;
 }
 
