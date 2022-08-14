@@ -2,11 +2,11 @@ import { Injectable } from "@angular/core";
 import { QueryFn } from "@angular/fire/compat/firestore";
 import { NgbModal } from "@ng-bootstrap/ng-bootstrap";
 import { Timestamp } from "firebase/firestore";
-import { BehaviorSubject, map, Observable, OperatorFunction } from "rxjs";
+import { BehaviorSubject, Observable } from "rxjs";
 import { getMoment } from "src/app/common/utils/moment.util";
-import { takeOnce } from "src/app/common/utils/rxjs-util";
 import { DataService } from "src/app/core/services/data-service";
 import { FireStorageService } from "src/app/core/services/fire-storage.service";
+import { ToastService } from "src/app/core/toast/toast.service";
 import { ImageViewerComponent } from "src/app/shared/components/image-viewer/image-viewer.component";
 import { ExpenseModalComponent } from "../components/expense-modal/expense-modal.component";
 import { Expense, ExpenseSearch } from "../model/expense.model";
@@ -15,11 +15,13 @@ import { Expense, ExpenseSearch } from "../model/expense.model";
 export class ExpenseService {
 
     private static readonly EXPENSE_COLLECTION_PATH = 'accounting/expense/data';
+    private static readonly PONDTONG_SHARING_SETTING_DOCUMENT_PATH = 'accounting/expense/sharing-setting/pondtong';
 
     private expenses$ = new BehaviorSubject<Expense[]>([]);
 
     constructor(private dataService: DataService,
         private fireStorageService: FireStorageService,
+        private toastService: ToastService,
         private modalService: NgbModal) { }
 
     async openAddExpenseModal(): Promise<void> {
@@ -32,9 +34,9 @@ export class ExpenseService {
                 day = currentDate?.day();
 
             expense.files = await Promise.all(expense.files.map(async file => {
-                const path = `expense/${year}/${month}/${file.name}-${currentDate?.format('DD-MM-YYYY-HH-mm-ss')}.${file.file?.type}`;
+                const path = `expense/${year}/${month}/${file.name}-${currentDate?.format('DD-MM-YYYY-HH-mm-ss')}`;
                 const uploadUrl = await this.fireStorageService.uploadFile(path, file.file!);
-                return { ...file, photoUrl: uploadUrl, file: null };
+                return { ...file, attachmentUrl: uploadUrl, file: null };
             }))
 
             await this.dataService.addDocument(ExpenseService.EXPENSE_COLLECTION_PATH, expense,
@@ -49,7 +51,7 @@ export class ExpenseService {
         return this.expenses$.asObservable();
     }
 
-    searchExpense(criteria: ExpenseSearch): void {
+    async searchExpense(criteria: ExpenseSearch): Promise<void> {
         const criteriaQuery: QueryFn = (ref) => {
             let query: firebase.default.firestore.CollectionReference | firebase.default.firestore.Query = ref;
             if (criteria.startDate) query = query.where('date', '>=', criteria.startDate);
@@ -57,10 +59,16 @@ export class ExpenseService {
             return query.orderBy('date', 'desc');
         };
 
-        let collection = this.dataService.getCollection<Expense>(ExpenseService.EXPENSE_COLLECTION_PATH, { showSpinner: true, query: criteriaQuery });
-        if (criteria.name) collection = collection.pipe(this.filterExpenseByName(criteria.name));
-        if (criteria.paidBy) collection = collection.pipe(this.filterExpenseByPaidBy(criteria.paidBy));
-        collection.pipe(takeOnce()).subscribe(expenses => this.expenses$.next(expenses));
+        let collection = await this.dataService.getCollection<Expense>(ExpenseService.EXPENSE_COLLECTION_PATH, { showSpinner: true, query: criteriaQuery });
+        if (criteria.name) collection = collection.filter(this.filterExpenseByName(criteria.name));
+        if (criteria.paidBy) collection = collection.filter(this.filterExpenseByPaidBy(criteria.paidBy));
+
+        if (!collection || !collection[0]) this.toastService.showSuccess('No data found.');
+        this.expenses$.next(collection);
+    }
+
+    clearExpense(): void {
+        this.expenses$.next([]);
     }
 
     updateExpense(expense: Expense): Expense {
@@ -70,22 +78,21 @@ export class ExpenseService {
     deleteExpense(): void {
     }
 
-    viewPhoto(photoUrl: string) {
+    viewAttachment(attachmentUrl: string) {
         const modalRef = this.modalService.open(ImageViewerComponent, { centered: true });
-        modalRef.componentInstance.imgUrl = photoUrl;
+        modalRef.componentInstance.imgUrl = attachmentUrl;
     }
 
-    private filterExpenseByName(name: string): OperatorFunction<Expense[], Expense[]> {
-        return expenses$ => expenses$.pipe(map(expenses =>
-            expenses.filter(expense =>
-                expense.name.toLowerCase().includes(name.toLowerCase()))));
+    getSharingSetting(): void {
+        this.dataService.getDocument(ExpenseService.PONDTONG_SHARING_SETTING_DOCUMENT_PATH);
     }
 
-    private filterExpenseByPaidBy(paidBy: string): OperatorFunction<Expense[], Expense[]> {
-        return expenses$ => expenses$.pipe(map(expenses =>
-            expenses.filter(expense =>
-                expense.paidBy === paidBy)));
+    private filterExpenseByName(name: string): (expense: Expense) => boolean {
+        return (expenses: Expense) => expenses.name.toLowerCase().includes(name.toLowerCase());
     }
 
+    private filterExpenseByPaidBy(paidBy: string): (expense: Expense) => boolean {
+        return (expense: Expense) => expense.paidBy === paidBy;
+    }
 
 }

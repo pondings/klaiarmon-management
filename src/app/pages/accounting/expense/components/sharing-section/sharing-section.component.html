@@ -1,0 +1,25 @@
+<div class="d-flex flex-column">
+    <button class="btn btn-outline-dark add-attachment-btn mb-3" [disabled]="!(parentPaidByCtrl.valueChanges | async)"
+        (click)="addSharingForm()">
+        <fa-icon [icon]="faPlus"></fa-icon>
+        Add Sharing
+    </button>
+
+    <div class="mb-3" *ngFor="let sharingForm of sharingFormArr.controls; let idx = index">
+        <div class="grid bs-rows-1 bs-columns-2" [formGroup]="sharingForm">
+            <div class="form-floating g-col-1">
+                <app-user-selector label="User" [control]="sharingForm.controls.user" [required]="true"></app-user-selector>
+            </div>
+            <div class="input-group">
+                <div class="form-floating">
+                    <input class="form-control form-control-sm" formControlName="amount" type="number" placeholder="Amount">
+                    <label class="required">Amount</label>
+                </div>
+                <button class="btn btn-outline-secondary" type="button" [disabled]="sharingForm.controls.amount.disabled" 
+                    (click)="removeSharingForm(idx)">
+                    <fa-icon [icon]="faCircleMinus"></fa-icon>
+                </button>
+            </div>
+        </div>
+    </div>
+</div>

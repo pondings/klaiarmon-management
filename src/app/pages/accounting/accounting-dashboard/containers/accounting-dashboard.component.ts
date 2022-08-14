@@ -1,11 +1,11 @@
 import { ChangeDetectionStrategy, Component, ViewEncapsulation } from "@angular/core";
 
 @Component({
-    selector: 'app-accounting',
-    template: 'Hello World from AccountingComponent',
+    selector: 'app-accounting-dashboard',
+    template: 'Hello World from AccountingDashboardComponent',
     changeDetection: ChangeDetectionStrategy.OnPush,
     encapsulation: ViewEncapsulation.None
 })
-export class AccountingComponent {
+export class AccountingDashboardComponent {
 
 }

@@ -1,6 +1,5 @@
 import { MetaData } from "src/app/model/meta-data";
 import {
-    NullableBooleanFormControl,
     NullableDateFormControl,
     NullableDateStructFormControl,
     NullableFile,
@@ -18,11 +17,11 @@ import { Timestamp } from "firebase/firestore";
 export interface Expense<TDATE = Timestamp> {
     name: string;
     amount: number;
-    isPersonalDebt: boolean;
     date: TDATE;
     paidBy: string;
-    files: PhotoUpload[],
+    files: AttachmentUpload[];
     meta: MetaData<TDATE>;
+    sharings: Sharing[]
 }
 
 export interface ExpenseForm {
@@ -30,9 +29,19 @@ export interface ExpenseForm {
     amount: NullableNumberFormControl;
     date: NullableDateStructFormControl;
     paidBy: NullableUserInfoFormControl;
-    isPersonalDebt: NullableBooleanFormControl;
-    files: FormArray<FormGroup<PhotoUploadForm>>;
-    meta: NullableMetaFormControl
+    files: FormArray<FormGroup<AttachmentUploadForm>>;
+    sharings: FormArray<FormGroup<SharingForm>>;
+    meta: NullableMetaFormControl;
+}
+
+export interface Sharing {
+    user: string,
+    amount: number;
+}
+
+export interface SharingForm {
+    user: NullableUserInfoFormControl,
+    amount: NullableNumberFormControl
 }
 
 export interface ExpenseSearch {
@@ -49,16 +58,16 @@ export interface ExpenseSearchForm {
     endDate: NullableDateStructFormControl;
 }
 
-export interface PhotoUpload {
+export interface AttachmentUpload {
     name: NullableString;
     file: NullableFile;
-    photoUrl: NullableString;
+    attachmentUrl: NullableString;
     uploadDate?: NullableDate;
 }
 
-export interface PhotoUploadForm {
+export interface AttachmentUploadForm {
     name: NullableStringFormControl,
     file: NullableFileFormControl,
-    photoUrl: NullableStringFormControl,
+    attachmentUrl: NullableStringFormControl,
     uploadDate?: NullableDateFormControl;
 }

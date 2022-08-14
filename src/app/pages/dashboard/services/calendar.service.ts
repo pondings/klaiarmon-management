@@ -1,15 +1,15 @@
 import { Injectable } from "@angular/core";
 import { NgbModal } from "@ng-bootstrap/ng-bootstrap";
-import { BehaviorSubject, forkJoin, Observable, take, tap } from "rxjs";
+import { BehaviorSubject, Observable } from "rxjs";
 import { CalendarEventDto, CalendarEventWithMeta } from "../model/calendar";
 import { CalendarEventModalComponent } from "../components/calendar-event-modal/calendar-event-modal.component";
 import { Action } from "src/app/common/enum/action";
 import { NullableDate } from "src/app/common/utils/date.util";
-import { filterEventsDocIdNotEqual, mapCalendarEventToDto, mapDtoListToEvents, mapDtoToEvent, mapToEditable } from "../utils/calendar.util";
+import { filterEventsDocIdNotEqual, mapCalendarDtoToEvent, mapCalendarEventToDto, mapToEditable } from "../utils/calendar.util";
 import * as moment from "moment";
 import { TimeUnit } from "src/app/shared/model/time-unit";
 import { DataService } from "src/app/core/services/data-service";
-import { mergeForkArrays, takeOnce } from "src/app/common/utils/rxjs-util";
+import { takeOnce } from "src/app/common/utils/rxjs-util";
 import { SpinnerService } from "src/app/core/spinner/spinner.service";
 
 @Injectable()
@@ -33,17 +33,13 @@ export class CalendarService {
         return this.dayEvent$.asObservable();
     }
 
-    getCalendarEvents(): void {
-        this.spinnerService.show();
-        const holidayEvents = this.dataService.getCollection<CalendarEventDto>(CalendarService.PUBLIC_HOLIDAY_COLLECTION);
-        const customEvents = this.dataService.getCollection<CalendarEventDto>(CalendarService.CUSTOM_EVENT_COLLECTION)
-            .pipe(mapToEditable);
-        
-        forkJoin([holidayEvents, customEvents]).pipe(takeOnce(), mergeForkArrays, mapDtoListToEvents)
-            .subscribe(events => {
-                this.calendarEvent$.next(events);
-                this.spinnerService.hide();
-            });
+    async getCalendarEvents(): Promise<void> {
+        const holidayEvents = await this.dataService.getCollection<CalendarEventDto>(CalendarService.PUBLIC_HOLIDAY_COLLECTION);
+        const customEvents = (await this.dataService.getCollection<CalendarEventDto>(CalendarService.CUSTOM_EVENT_COLLECTION))
+            .map(mapToEditable);
+
+        const mergedHoliday = holidayEvents.concat(customEvents).map(mapCalendarDtoToEvent);
+        this.calendarEvent$.next(mergedHoliday);
     }
 
     showEvents(events: CalendarEventWithMeta[]): void {
@@ -60,7 +56,7 @@ export class CalendarService {
             const editedData = await this.dataService.updateDocument(
                 CalendarService.CUSTOM_EVENT_COLLECTION, dto, { showSpinner: true });
 
-            const calendarEvent = mapDtoToEvent(editedData);
+            const calendarEvent = mapCalendarDtoToEvent(editedData);
             this.updateToEventsDisplay(calendarEvent, currentViewDate);
         }, err => { });
     }
@@ -90,7 +86,7 @@ export class CalendarService {
                 CalendarService.CUSTOM_EVENT_COLLECTION, dto, 
                 { showSpinner: true, toastMessage: 'Event added' });
                 
-            const calendarEvent = mapDtoToEvent(addedEvent);
+            const calendarEvent = mapCalendarDtoToEvent(addedEvent);
             calendarEvent.meta!.editable = true;
 
             this.addToEventsDisplay(calendarEvent);

@@ -1,6 +1,6 @@
 import { Injectable } from "@angular/core";
 import { Timestamp } from "firebase/firestore";
-import { map, Observable, tap } from "rxjs";
+import { firstValueFrom } from "rxjs";
 import { getDate } from "src/app/common/utils/date.util";
 import { HasMetaData } from "src/app/model/meta-data";
 import { SpinnerService } from "../spinner/spinner.service";
@@ -23,15 +23,31 @@ export class DataService {
         private spinnerService: SpinnerService,
         private toastService: ToastService) { }
 
-    getCollection<T>(path: string, options: DataServiceOptions = { showSpinner: true }): Observable<T[]> {
+    async getCollection<T>(path: string, options: DataServiceOptions = { showSpinner: true }): Promise<T[]> {
+        if (options?.showSpinner) this.spinnerService.show();
         try {
-            if (options?.showSpinner) this.spinnerService.show();
-            return this.firestoreService.getCollection<HasMetaData<T>>(path, options.query)
-                .pipe(tap(() => this.spinnerService.hide()), map(this.mapMeta));
+            const collection = this.firestoreService.getCollection<HasMetaData<T>>(path, options.query);
+            const data = (await firstValueFrom(collection)).map(this.mapMeta);
+            return data;
         } catch (error) {
-            this.spinnerService.hide();
             this.toastService.showError('Error while geting collection, Please contact Pondi!');
             throw error;
+        } finally {
+            if (options?.showSpinner) this.spinnerService.hide();
+        }
+    }
+
+    async getDocument<T>(path: string, options: DataServiceOptions = { showSpinner: true }): Promise<T> {
+        if (options?.showSpinner) this.spinnerService.show();
+        try {
+            const document = this.firestoreService.getDocument<HasMetaData<T>>(path);
+            const data = this.mapMeta((await firstValueFrom(document)));
+            return data;
+        } catch (error) {
+            this.toastService.showError('Error while getting document, Please contact Pondi!');
+            throw error;
+        } finally {
+            if (options?.showSpinner) this.spinnerService.hide();
         }
     }
 
@@ -78,9 +94,9 @@ export class DataService {
         }
     }
 
-    async setMeta<T>(data: HasMetaData<T>): Promise<T> {
+    private async setMeta<T>(data: HasMetaData<T>): Promise<T> {
         const currentDate = Timestamp.fromDate(getDate()!);
-        const user = this.fireAuthService.getCurrentUser();
+        const user = await this.fireAuthService.getCurrentUser();
 
         const { createdDate = currentDate, createdBy = user.uid } = data.meta;
         data.meta = {
@@ -93,8 +109,8 @@ export class DataService {
         return data;
     }
 
-    mapMeta<T>(dataList: HasMetaData<T>[]): T[] {
-        return dataList.map(data => ({ ...data, meta: { ...data.meta, documentId: data._documentId } }));
+    private mapMeta<T>(data: HasMetaData<T>): T {
+        return ({ ...data, meta: { ...data.meta, documentId: data._documentId } });
     }
 
 }

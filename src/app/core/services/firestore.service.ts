@@ -1,6 +1,6 @@
 import { Injectable } from "@angular/core";
 import { AngularFirestore } from "@angular/fire/compat/firestore";
-import { Observable } from "rxjs";
+import { map, Observable } from "rxjs";
 
 import * as firestoreUtils from 'src/app/common/utils/firestore.util';
 import { QueryFn } from "@angular/fire/compat/firestore";
@@ -24,6 +24,11 @@ export class FirestoreService {
 
     subscribeDocument<T>(path: string): Observable<T | undefined> {
         return this.angularFirestore.doc<T>(path).valueChanges();
+    }
+
+    getDocument<T>(path: string): Observable<T> {
+        return this.angularFirestore.doc<T>(path).valueChanges()
+            .pipe(map(data => data!), takeOnce());
     }
 
     async updateDocument<T>(path: string, data: T): Promise<T> {

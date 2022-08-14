@@ -1,0 +1,67 @@
+<div class="card mt-2">
+    
+    <div class="card-body p-2">
+        <div class="card-title d-flex flex-row justify-content-between align-items-center m-0">
+            <span class="title hide-overflow m-0" (click)="collapse.toggle()">
+                {{expense.name}} 
+            </span>
+            <div class="d-flex" *ngIf="expense.meta.createdBy === currentUser.uid">
+                <fa-icon [icon]="faPen"
+                    (click)="editExpense()">
+                </fa-icon>
+                <fa-icon class="ms-2" [icon]="faTrash" 
+                    (click)="deleteExpense()">
+                </fa-icon>
+            </div>
+        </div>
+        <div class="card-text mt-2" #collapse="ngbCollapse" [(ngbCollapse)]="isCollapsed">
+
+            <div class="grid bs-columns-6 column-gap-0">
+                <label class="text-bold g-col-1">Paid By</label>
+                <span class="g-col-2 text-center">{{ expense.paidBy | username | async }}</span>
+                <label class="text-bold g-col-1">Paid Date</label>
+                <span class="g-col-2 text-center">{{ expense.date.toDate() | date:'dd/MM/YYYY' }}</span>
+            </div>
+
+            <div class="grid bs-columns-6 column-gap-0 mt-2">
+                <label class="text-bold g-col-1">Amount</label>
+                <span class="g-col-2 text-center">{{ expense.amount | number }}</span>
+            </div>
+
+            <hr>
+
+            <span class="d-block mt-2 title-section text-bold">Sharing</span>
+            <div *ngFor="let sharing of expense.sharings" class="grid bs-columns-4 column-gap-0 mt-2">
+                <label class="text-bold">By</label>
+                <span>{{ sharing.user | username | async }}</span>
+                <label class="text-bold">Amount</label>
+                <span>{{ sharing.amount | number }}</span>
+            </div>
+
+            <ng-template [ngIf]="!!expense.files[0]">
+                <hr>
+                <span class="d-block mt-2 title-section text-bold">Attactments</span>
+                <div *ngFor="let file of expense.files">
+                    <span class="attachment-link" (click)="viewAttachment.emit(file.attachmentUrl!)">{{file.name}}</span>
+                </div>
+            </ng-template>
+
+            <hr>
+
+            <div class="grid bs-columns-6 column-gap-0">
+                <label class="text-bold g-col-1">Created</label>
+                <span class="g-col-2 text-center">{{ expense.meta.createdBy! | username | async }}</span>
+                <label class="text-bold g-col-1">Date</label>
+                <span class="g-col-2 text-center">{{ expense.meta.createdDate?.toDate() | date:'dd/MM/YYYY HH:mm:ss' }}</span>
+            </div>
+            <div class="grid bs-columns-6 column-gap-0">
+                <label class="text-bold g-col-1">Updated</label>
+                <span class="g-col-2 text-center">{{ expense.meta.updatedBy! | username | async }}</span>
+                <label class="text-bold g-col-1">Date</label>
+                <span class="g-col-2 text-center">{{ expense.meta.updatedDate?.toDate() | date:'dd/MM/YYYY HH:mm:ss' }}</span>
+            </div>
+
+        </div>
+    </div>
+
+</div>
