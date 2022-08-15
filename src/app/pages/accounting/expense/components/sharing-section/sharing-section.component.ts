@@ -2,6 +2,7 @@ import { ChangeDetectionStrategy, ChangeDetectorRef, Component, Input, OnInit, V
 import { FormArray, FormBuilder, FormGroup, Validators } from "@angular/forms";
 import { faCircleMinus, faPlus } from "@fortawesome/free-solid-svg-icons";
 import { UntilDestroy } from "@ngneat/until-destroy";
+import { map, Observable } from "rxjs";
 import { Action } from "src/app/common/enum/action";
 import { NullableNumber, NullableNumberFormControl, NullableUserInfo, NullableUserInfoFormControl } from "src/app/common/types/common.type";
 import { takeOnce } from "src/app/common/utils/rxjs-util";
@@ -26,6 +27,8 @@ export class SharingSectionComponent implements OnInit {
     faPlus = faPlus;
     faCircleMinus = faCircleMinus;
 
+    overRemain$!: Observable<string>;
+
     private parentForm!: FormGroup<ExpenseForm>;
 
     constructor(private fb: FormBuilder,
@@ -34,6 +37,7 @@ export class SharingSectionComponent implements OnInit {
     ngOnInit(): void {
         this.parentForm = <FormGroup<ExpenseForm>>this.sharingFormArr.parent;
         this.parentAmountCtrl.valueChanges.subscribe(amount => this.recalculateSharingAmount(amount!));
+        this.overRemain$ = this.getOverRemain();
 
         if (this.action === Action.CREATE) {
             this.initCreateForm();
@@ -82,8 +86,17 @@ export class SharingSectionComponent implements OnInit {
         this.parentPaidByCtrl.valueChanges.pipe(takeOnce()).subscribe(paidBy => {
             disabledSharingForm.enable();
             disabledSharingForm.controls.user.setValue(paidBy);
-            disabledSharingForm.controls.user.disable();
         });
+    }
+
+    private getOverRemain(): Observable<string> {
+        return this.sharingFormArr.valueChanges.pipe(map(sharingFormArr => {
+            const parentAmount = this.parentAmountCtrl.value;
+            const totalSharingAmount = sharingFormArr.map(sharingForm => sharingForm.amount).reduce((prev, cur) => prev! + cur!, 0);
+            const diff = parentAmount! - totalSharingAmount!;
+
+            return diff > 0 ? `Remaining ${diff}` : diff < 0 ? `Over ${Math.abs(diff)}` : '';
+        }));
     }
 
     private buildSharingForm(isDisabled = false): FormGroup<SharingForm> {

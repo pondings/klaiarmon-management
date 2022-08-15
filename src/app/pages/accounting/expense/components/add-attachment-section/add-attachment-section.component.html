@@ -13,7 +13,7 @@
             <div class="input-group">
                 <div class="form-floating">
                     <input formControlName="attachmentUrl" class="form-control form-control-sm" placeholder="File" 
-                        (click)="uploadFile.click()" readonly>
+                        (click)="uploadFile.click()">
                     <label for="file" class="required">File</label>
                 </div>
                 <button *ngIf="!getAttchmentUrl(idx); else hasAttachmentUrl" class="btn btn-outline-secondary" 

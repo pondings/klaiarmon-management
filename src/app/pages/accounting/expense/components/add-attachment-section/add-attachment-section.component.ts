@@ -33,7 +33,7 @@ export class AddAttachmentSectionComponent {
 
     addFileForm(): void {
         const fileForm = this.buildAttachmentForm();
-        this.fileFormArr.controls.push(fileForm);
+        this.fileFormArr.push(fileForm);
     }
 
     async uploadAttachment(event: Event, form: FormGroup<AttachmentUploadForm>): Promise<void> {

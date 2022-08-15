@@ -1,9 +1,14 @@
 <div class="d-flex flex-column">
-    <button class="btn btn-outline-dark add-attachment-btn mb-3" [disabled]="!(parentPaidByCtrl.valueChanges | async)"
-        (click)="addSharingForm()">
-        <fa-icon [icon]="faPlus"></fa-icon>
-        Add Sharing
-    </button>
+    <div class="d-flex justify-content-between align-items-center mb-3">
+        <button class="btn btn-outline-dark add-attachment-btn" [disabled]="!(parentPaidByCtrl.valueChanges | async)"
+            (click)="addSharingForm()">
+            <fa-icon [icon]="faPlus"></fa-icon>
+            Add Sharing
+        </button>
+        <span class="remaining-amount">
+            {{ overRemain$ | async }}
+        </span>
+    </div>
 
     <div class="mb-3" *ngFor="let sharingForm of sharingFormArr.controls; let idx = index">
         <div class="grid bs-rows-1 bs-columns-2" [formGroup]="sharingForm">
