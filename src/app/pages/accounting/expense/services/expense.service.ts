@@ -18,7 +18,7 @@ import { AttachmentUpload, Expense, ExpenseFormValue, ExpenseSearch } from "../m
 @Injectable()
 export class ExpenseService {
 
-    private static readonly EXPENSE_COLLECTION_PATH = 'accounting/expense/data';
+    static readonly EXPENSE_COLLECTION_PATH = 'accounting/expense/data';
 
     private expenses$ = new BehaviorSubject<Expense[]>([]);
 

@@ -13,7 +13,7 @@ export const mapCalendarEventToDto = (calendarEvent: CalendarEventWithMeta): Cal
 }
 
 export const mapToEditable: (eventDto: CalendarEventDto) => CalendarEventDto = (eventDto) => 
-    ({ ...eventDto, meta: { ...eventDto.meta, editable: false } });
+    ({ ...eventDto, meta: { ...eventDto.meta, editable: true } });
 
 export const mapCalendarDtoToEvent: (eventDto: CalendarEventDto) => CalendarEventWithMeta = eventDto => 
     ({ ...eventDto, start: eventDto.start.toDate(), end: eventDto.end?.toDate() });

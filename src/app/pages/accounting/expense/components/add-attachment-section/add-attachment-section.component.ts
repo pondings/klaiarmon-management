@@ -42,6 +42,7 @@ export class AddAttachmentSectionComponent {
         const url = await inputFileToBlob(file);
         
         form.patchValue({ attachmentUrl: url, file });
+        this.cdr.detectChanges();
     }
 
     viewAttachment(form: FormGroup<AttachmentUploadForm>): void {
