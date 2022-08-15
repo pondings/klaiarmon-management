@@ -37,6 +37,10 @@ export class ToastComponent {
                 return { 'bg-danger': true, 'text-light': true };
             } else if (type === 'success') {
                 return { 'bg-success': true, 'text-light': true }
+            } else if (type === 'info') {
+                return { 'bg-info': true, 'text-light': true }
+            } else if (type === 'warning') {
+                return { 'bg-warning': true }
             } else {
                 return {  };
             }
