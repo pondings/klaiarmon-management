@@ -39,6 +39,10 @@ export class ExpenseComponent implements OnInit {
         this.expenseService.searchExpense(criteria);
     }
 
+    async deleteExpense(documentId: string): Promise<void> {
+        await this.expenseService.deleteExpense(documentId);
+    }
+
     clear(): void {
         this.expenseService.clearExpense();
     }

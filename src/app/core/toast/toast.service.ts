@@ -11,6 +11,14 @@ export class ToastService {
         this.toastOption$.next({ message });
     }
 
+    showInfo(message: string): void {
+        this.toastOption$.next({ type: 'info', message });
+    }
+    
+    showWarning(message: string): void {
+        this.toastOption$.next({ type: 'warning', message });
+    }
+
     showSuccess(message: string): void {
         this.toastOption$.next({ type: 'success', message });
     }

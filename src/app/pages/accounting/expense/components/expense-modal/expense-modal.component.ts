@@ -81,17 +81,18 @@ export class ExpenseModalComponent implements OnInit {
 
     private validateForm(): void {
         const formValue = this.expenseAddForm.getRawValue();
-        if (typeof formValue.paidBy === 'string') {
-            this.toastService.showError(`Invalid user: ${formValue.paidBy}, Please select from dropdown.`);
-            throw 'Invalid user';
+        const sharings = formValue.sharings;
+        const totalSharingAmount = sharings.map(sharing => sharing.amount).reduce((prev, cur) => prev! + cur!, 0);
+        if (formValue.amount !== totalSharingAmount) {
+            this.toastService.showWarning(`Total sharing amoumt ${totalSharingAmount} not match with expense amount ${formValue.amount}`);
+            throw 'Total amount not match with expense amount';
         }
 
-        const sharings = formValue.sharings;
         const duplicateNames = sharings.map(sharing => sharing.user)
             .map(user => user?.displayName)
             .filter((displayName, idx, arr) => arr.indexOf(displayName) !== idx);
         if (duplicateNames[0]) {
-            this.toastService.showError(`${duplicateNames.join(',')} has duplicated in sharing section.`);
+            this.toastService.showWarning(`${duplicateNames.join(',')} has duplicated in sharing section.`);
             throw 'Duplicate user in section';
         }
     }

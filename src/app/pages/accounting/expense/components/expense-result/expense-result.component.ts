@@ -21,6 +21,9 @@ export class ExpenseResultComponent {
     @Output()
     viewAttachment = new EventEmitter<string>();
 
+    @Output()
+    deleteExpense = new EventEmitter<string>();
+
     faPen = faPen;
     faTrash = faTrash;
 
@@ -28,6 +31,8 @@ export class ExpenseResultComponent {
 
     editExpense(): void {}
 
-    deleteExpense(): void {}
+    onDelete(): void {
+        this.deleteExpense.emit(this.expense.meta.documentId);
+    }
 
 }
