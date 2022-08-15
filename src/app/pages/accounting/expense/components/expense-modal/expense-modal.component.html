@@ -23,8 +23,8 @@
             <app-user-selector label="Paid by" [control]="paidByCtrl" [required]="true"></app-user-selector>
         </div>
 
-        <app-sharing-section class="d-block mt-2" formArrayName="sharings" [sharingFormArr]="sharingsFormArr"
-            [action]="action"></app-sharing-section>
+        <app-billing-section class="d-block mt-2" formArrayName="billings" [billingFormArr]="billingsFormArr"
+            [action]="action"></app-billing-section>
 
         <app-add-attachment-section formArrayName="files" [fileFormArr]="fileFormArr"></app-add-attachment-section>
 

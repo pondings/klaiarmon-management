@@ -11,7 +11,7 @@ import { AddAttachmentSectionComponent } from "./components/add-attachment-secti
 import { ExpenseModalComponent } from "./components/expense-modal/expense-modal.component";
 import { ExpenseResultComponent } from "./components/expense-result/expense-result.component";
 import { ExpenseSearchFormComponent } from "./components/expense-search-form/expense-search-form.component";
-import { SharingSectionComponent } from "./components/sharing-section/sharing-section.component";
+import { BillingSectionComponent } from "./components/billing-section/billing-section.component";
 import { ExpenseComponent } from "./containers/expense/expense.component";
 import { ExpenseService } from "./services/expense.service";
 
@@ -22,7 +22,7 @@ import { ExpenseService } from "./services/expense.service";
         ExpenseModalComponent,
         ExpenseResultComponent,
         ExpenseSearchFormComponent,
-        SharingSectionComponent
+        BillingSectionComponent
     ],
     providers: [ExpenseService],
     imports: [

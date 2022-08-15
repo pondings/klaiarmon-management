@@ -13,13 +13,12 @@ import { FireStorageService } from "src/app/core/services/fire-storage.service";
 import { ToastService } from "src/app/core/toast/toast.service";
 import { ImageViewerComponent } from "src/app/shared/components/image-viewer/image-viewer.component";
 import { ExpenseModalComponent } from "../components/expense-modal/expense-modal.component";
-import { AttachmentUpload, Expense, ExpenseFormValue, ExpenseSearch, SharingFormValue } from "../model/expense.model";
+import { AttachmentUpload, Expense, ExpenseFormValue, ExpenseSearch } from "../model/expense.model";
 
 @Injectable()
 export class ExpenseService {
 
     private static readonly EXPENSE_COLLECTION_PATH = 'accounting/expense/data';
-    private static readonly PONDTONG_SHARING_SETTING_DOCUMENT_PATH = 'accounting/expense/sharing-setting/pondtong';
 
     private expenses$ = new BehaviorSubject<Expense[]>([]);
 
@@ -97,10 +96,6 @@ export class ExpenseService {
         modalRef.componentInstance.imgUrl = attachmentUrl;
     }
 
-    getSharingSetting(): void {
-        this.dataService.getDocument(ExpenseService.PONDTONG_SHARING_SETTING_DOCUMENT_PATH);
-    }
-
     private async uploadFile(file: AttachmentUpload): Promise<AttachmentUpload> {
         const currentDate = getMoment(),
             year = currentDate?.year(),
@@ -121,13 +116,13 @@ export class ExpenseService {
     }
 
     private async getExpenseFormValueFromExpense(expense: Expense): Promise<ExpenseFormValue> {
-        const { name, amount, date: _date, paidBy: _paidBy, files, meta, sharings: _sharings } = expense;
+        const { name, amount, date: _date, paidBy: _paidBy, files, meta, billings: _billings } = expense;
         const date = getDateStructFromDate(_date.toDate());
         const paidBy = await this.fireAuthService.getUserByUid(expense.paidBy);
-        const sharings = await Promise.all(_sharings.map(async sharing => 
-            ({ user: await this.fireAuthService.getUserByUid(sharing.user), amount: sharing.amount })));
+        const billings = await Promise.all(_billings.map(async billing => 
+            ({ user: await this.fireAuthService.getUserByUid(billing.user), amount: billing.amount })));
 
-        return { name, amount, date, paidBy, files, meta, sharings }
+        return { name, amount, date, paidBy, files, meta, billings }
     }
 
 }

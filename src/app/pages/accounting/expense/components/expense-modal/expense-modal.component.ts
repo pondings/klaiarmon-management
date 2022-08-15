@@ -6,11 +6,11 @@ import { map, Observable } from "rxjs";
 import { Action } from "src/app/common/enum/action";
 import { NullableDateStructFormControl, NullableMeta, NullableNumber, NullableNumberFormControl, NullableString, NullableStringFormControl, NullableUserInfo, NullableUserInfoFormControl } from "src/app/common/types/common.type";
 import { getDateStruct } from "src/app/common/utils/date-struct.util";
-import { getDate, getDateFromDateStruct } from "src/app/common/utils/date.util";
+import { getDateFromDateStruct } from "src/app/common/utils/date.util";
 import { ToastService } from "src/app/core/toast/toast.service";
-import { AttachmentUpload, AttachmentUploadForm, Expense, ExpenseForm, ExpenseFormValue, Sharing, SharingForm } from "../../model/expense.model";
+import { AttachmentUpload, AttachmentUploadForm, ExpenseForm, ExpenseFormValue, Billing, BillingForm } from "../../model/expense.model";
 import { AddAttachmentSectionComponent } from "../add-attachment-section/add-attachment-section.component";
-import { SharingSectionComponent } from "../sharing-section/sharing-section.component";
+import { BillingSectionComponent } from "../billing-section/billing-section.component";
 
 @Component({
     selector: 'app-expense-modal',
@@ -30,8 +30,8 @@ export class ExpenseModalComponent implements OnInit, AfterViewInit {
     @ViewChild(AddAttachmentSectionComponent)
     addAttachmentSection!: AddAttachmentSectionComponent;
 
-    @ViewChild(SharingSectionComponent)
-    sharingSection!: SharingSectionComponent;
+    @ViewChild(BillingSectionComponent)
+    billingSection!: BillingSectionComponent;
 
     expenseForm: FormGroup<ExpenseForm>;
 
@@ -60,13 +60,13 @@ export class ExpenseModalComponent implements OnInit, AfterViewInit {
         const formValue = this.expenseForm.getRawValue();
 
         const files = this.processFilesBeforeClose(formValue.files);
-        const sharings = this.processSharingBeforeClose(formValue.sharings);
+        const billings = this.processBillingBeforeClose(formValue.billings);
         this.activeModal.close({
             ...formValue,
             date: getDateFromDateStruct(formValue.date!),
             paidBy: formValue.paidBy?.uid,
             files,
-            sharings
+            billings
         });
     }
 
@@ -98,24 +98,24 @@ export class ExpenseModalComponent implements OnInit, AfterViewInit {
         return this.expenseForm.controls.files;
     }
 
-    get sharingsFormArr(): FormArray<FormGroup<SharingForm>> {
-        return this.expenseForm.controls.sharings;
+    get billingsFormArr(): FormArray<FormGroup<BillingForm>> {
+        return this.expenseForm.controls.billings;
     }
 
     private validateForm(): void {
         const formValue = this.expenseForm.getRawValue();
-        const sharings = formValue.sharings;
-        const totalSharingAmount = sharings.map(sharing => sharing.amount).reduce((prev, cur) => prev! + cur!, 0);
-        if (formValue.amount !== totalSharingAmount) {
-            this.toastService.showWarning(`Total sharing amoumt ${totalSharingAmount} not match with expense amount ${formValue.amount}`);
+        const billings = formValue.billings;
+        const totalBillingAmount = billings.map(billing => billing.amount).reduce((prev, cur) => prev! + cur!, 0);
+        if (formValue.amount !== totalBillingAmount) {
+            this.toastService.showWarning(`Total billing amoumt ${totalBillingAmount} not match with expense amount ${formValue.amount}`);
             throw 'Total amount not match with expense amount';
         }
 
-        const duplicateNames = sharings.map(sharing => sharing.user)
+        const duplicateNames = billings.map(billing => billing.user)
             .map(user => user?.displayName)
             .filter((displayName, idx, arr) => arr.indexOf(displayName) !== idx);
         if (duplicateNames[0]) {
-            this.toastService.showWarning(`${duplicateNames.join(',')} has duplicated in sharing section.`);
+            this.toastService.showWarning(`${duplicateNames.join(',')} has duplicated in billing section.`);
             throw 'Duplicate user in section';
         }
     }
@@ -124,15 +124,15 @@ export class ExpenseModalComponent implements OnInit, AfterViewInit {
         const formValue = this.expense;
         this.expenseForm.patchValue(formValue);
         this.addAttachmentSection.patchValue(formValue.files);
-        this.sharingSection.patchValue(formValue.sharings);
+        this.billingSection.patchValue(formValue.billings);
     }
 
     private processFilesBeforeClose(files: AttachmentUpload[]): AttachmentUpload[] {
         return files.map(file => ({ ...file, name: file.name || file.file?.name! }));
     }
 
-    private processSharingBeforeClose(sharings: { user: NullableUserInfo, amount: NullableNumber }[]): Sharing[] {
-        return sharings.map(sharing => ({ user: sharing.user?.uid!, amount: sharing.amount! }));
+    private processBillingBeforeClose(billings: { user: NullableUserInfo, amount: NullableNumber }[]): Billing[] {
+        return billings.map(billing => ({ user: billing.user?.uid!, amount: billing.amount! }));
     }
 
     private buildExpenseForm(): FormGroup<ExpenseForm> {
@@ -142,7 +142,7 @@ export class ExpenseModalComponent implements OnInit, AfterViewInit {
             date: this.fb.control({ value: getDateStruct(), disabled: false }, [Validators.required]),
             paidBy: this.fb.control<NullableUserInfo>({ value: null, disabled: false }, [Validators.required]),
             files: this.fb.array<FormGroup<AttachmentUploadForm>>([]),
-            sharings: this.fb.array<FormGroup<SharingForm>>([]),
+            billings: this.fb.array<FormGroup<BillingForm>>([]),
             meta: this.fb.control<NullableMeta>({ value: {}, disabled: true })
         });
     }
