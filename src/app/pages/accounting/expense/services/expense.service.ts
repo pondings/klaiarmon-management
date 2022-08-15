@@ -4,6 +4,7 @@ import { NgbModal } from "@ng-bootstrap/ng-bootstrap";
 import { Timestamp } from "firebase/firestore";
 import { BehaviorSubject, Observable } from "rxjs";
 import { getMoment } from "src/app/common/utils/moment.util";
+import { takeOnce } from "src/app/common/utils/rxjs-util";
 import { DataService } from "src/app/core/services/data-service";
 import { FireStorageService } from "src/app/core/services/fire-storage.service";
 import { ToastService } from "src/app/core/toast/toast.service";
@@ -75,7 +76,15 @@ export class ExpenseService {
         return expense;
     }
 
-    deleteExpense(): void {
+    async deleteExpense(documentId: string): Promise<void> {
+        const confirmation = confirm('After confirm the content will be deleted from the system.');
+        if (!confirmation) return;
+
+        await this.dataService.deleteDocument(ExpenseService.EXPENSE_COLLECTION_PATH, documentId, 
+            { showSpinner: true, toastMessage: 'Expense deleted' });
+        this.expenses$.pipe(takeOnce()).subscribe(expenses => 
+            this.expenses$.next(expenses.filter(expense => 
+                expense.meta.documentId !== documentId)));
     }
 
     viewAttachment(attachmentUrl: string) {
