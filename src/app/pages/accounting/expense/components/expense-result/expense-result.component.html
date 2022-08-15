@@ -31,11 +31,11 @@
             <hr>
 
             <span class="d-block mt-2 title-section text-bold">Sharing</span>
-            <div *ngFor="let sharing of expense.sharings" class="grid bs-columns-4 column-gap-0 mt-2">
+            <div *ngFor="let billing of expense.billings" class="grid bs-columns-4 column-gap-0 mt-2">
                 <label class="text-bold">By</label>
-                <span>{{ sharing.user | username | async }}</span>
+                <span>{{ billing.user | username | async }}</span>
                 <label class="text-bold">Amount</label>
-                <span>{{ sharing.amount | number }}</span>
+                <span>{{ billing.amount | number }}</span>
             </div>
 
             <ng-template [ngIf]="!!expense.files[0]">

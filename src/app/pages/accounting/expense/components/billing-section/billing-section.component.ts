@@ -6,20 +6,20 @@ import { map, Observable } from "rxjs";
 import { Action } from "src/app/common/enum/action";
 import { NullableNumber, NullableNumberFormControl, NullableUserInfo, NullableUserInfoFormControl } from "src/app/common/types/common.type";
 import { takeOnce } from "src/app/common/utils/rxjs-util";
-import { ExpenseForm, SharingForm, SharingFormValue } from "../../model/expense.model";
+import { ExpenseForm, BillingForm, BillingFormValue } from "../../model/expense.model";
 
 @UntilDestroy({ checkProperties: true })
 @Component({
-    selector: 'app-sharing-section',
-    templateUrl: './sharing-section.component.html',
-    styleUrls: ['sharing-section.component.scss'],
+    selector: 'app-billing-section',
+    templateUrl: './billing-section.component.html',
+    styleUrls: ['billing-section.component.scss'],
     changeDetection: ChangeDetectionStrategy.OnPush,
     encapsulation: ViewEncapsulation.None
 })
-export class SharingSectionComponent implements OnInit {
+export class BillingSectionComponent implements OnInit {
 
     @Input()
-    sharingFormArr!: FormArray<FormGroup<SharingForm>>;
+    billingFormArr!: FormArray<FormGroup<BillingForm>>;
 
     @Input()
     action!: Action;
@@ -35,8 +35,8 @@ export class SharingSectionComponent implements OnInit {
         private cdr: ChangeDetectorRef) { }
 
     ngOnInit(): void {
-        this.parentForm = <FormGroup<ExpenseForm>>this.sharingFormArr.parent;
-        this.parentAmountCtrl.valueChanges.subscribe(amount => this.recalculateSharingAmount(amount!));
+        this.parentForm = <FormGroup<ExpenseForm>>this.billingFormArr.parent;
+        this.parentAmountCtrl.valueChanges.subscribe(amount => this.recalculateBillingAmount(amount!));
         this.overRemain$ = this.getOverRemain();
 
         if (this.action === Action.CREATE) {
@@ -44,25 +44,25 @@ export class SharingSectionComponent implements OnInit {
         }
     }
 
-    addSharingForm(): void {
-        const sharingForm = this.buildSharingForm();
-        this.sharingFormArr.push(sharingForm);
+    addBillingForm(): void {
+        const billingForm = this.buildBillingForm();
+        this.billingFormArr.push(billingForm);
 
-        this.recalculateSharingAmount(this.parentAmountCtrl.value!);
+        this.recalculateBillingAmount(this.parentAmountCtrl.value!);
     }
 
-    removeSharingForm(formIdx: number): void {
-        this.sharingFormArr.controls.splice(formIdx, 1);
+    removeBillingForm(formIdx: number): void {
+        this.billingFormArr.removeAt(formIdx);
 
-        this.recalculateSharingAmount(this.parentAmountCtrl.value!);
+        this.recalculateBillingAmount(this.parentAmountCtrl.value!);
     }
 
-    recalculateSharingAmount(amount: number): void {
-        const totalSharing = this.sharingFormArr.controls.length;
-        if (!totalSharing) return;
+    recalculateBillingAmount(amount: number): void {
+        const totalBilling = this.billingFormArr.controls.length;
+        if (!totalBilling) return;
 
-        const averageSharing = amount / totalSharing;
-        this.sharingFormArr.controls.forEach(control => control.controls.amount.setValue(averageSharing));
+        const averageBilling = amount / totalBilling;
+        this.billingFormArr.controls.forEach(control => control.controls.amount.setValue(averageBilling));
     }
 
     get parentAmountCtrl(): NullableNumberFormControl {
@@ -73,33 +73,33 @@ export class SharingSectionComponent implements OnInit {
         return this.parentForm.controls.paidBy;
     }
 
-    patchValue(sharings: SharingFormValue[]): void {
-        sharings.forEach(_ => this.addSharingForm());
-        this.sharingFormArr.patchValue(sharings);
+    patchValue(billingList: BillingFormValue[]): void {
+        billingList.forEach(_ => this.addBillingForm());
+        this.billingFormArr.patchValue(billingList);
         this.cdr.detectChanges();
     }
 
     private initCreateForm(): void {
-        const disabledSharingForm = this.buildSharingForm(true);
-        this.sharingFormArr.push(disabledSharingForm);
+        const disabledBillingForm = this.buildBillingForm(true);
+        this.billingFormArr.push(disabledBillingForm);
 
         this.parentPaidByCtrl.valueChanges.pipe(takeOnce()).subscribe(paidBy => {
-            disabledSharingForm.enable();
-            disabledSharingForm.controls.user.setValue(paidBy);
+            disabledBillingForm.enable();
+            disabledBillingForm.controls.user.setValue(paidBy);
         });
     }
 
     private getOverRemain(): Observable<string> {
-        return this.sharingFormArr.valueChanges.pipe(map(sharingFormArr => {
+        return this.billingFormArr.valueChanges.pipe(map(billingFormArr => {
             const parentAmount = this.parentAmountCtrl.value;
-            const totalSharingAmount = sharingFormArr.map(sharingForm => sharingForm.amount).reduce((prev, cur) => prev! + cur!, 0);
-            const diff = parentAmount! - totalSharingAmount!;
+            const totalBillingAmount = billingFormArr.map(billingForm => billingForm.amount).reduce((prev, cur) => prev! + cur!, 0);
+            const diff = parentAmount! - totalBillingAmount!;
 
             return diff > 0 ? `Remaining ${diff}` : diff < 0 ? `Over ${Math.abs(diff)}` : '';
         }));
     }
 
-    private buildSharingForm(isDisabled = false): FormGroup<SharingForm> {
+    private buildBillingForm(isDisabled = false): FormGroup<BillingForm> {
         return this.fb.group({
             user: this.fb.control<NullableUserInfo>({ value: null, disabled: isDisabled }, [Validators.required]),
             amount: this.fb.control<NullableNumber>({ value: null, disabled: isDisabled }, [Validators.required])

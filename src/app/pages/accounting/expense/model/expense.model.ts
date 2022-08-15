@@ -25,7 +25,7 @@ export interface Expense<TDATE = Timestamp> {
     paidBy: string;
     files: AttachmentUpload[];
     meta: MetaData<TDATE>;
-    sharings: Sharing[]
+    billings: Billing[]
 }
 
 export interface ExpenseForm {
@@ -34,7 +34,7 @@ export interface ExpenseForm {
     date: NullableDateStructFormControl;
     paidBy: NullableUserInfoFormControl;
     files: FormArray<FormGroup<AttachmentUploadForm>>;
-    sharings: FormArray<FormGroup<SharingForm>>;
+    billings: FormArray<FormGroup<BillingForm>>;
     meta: NullableMetaFormControl;
 }
 
@@ -44,21 +44,21 @@ export interface ExpenseFormValue {
     date: NullableDateStruct;
     paidBy: NullableUserInfo;
     files: AttachmentUpload[];
-    sharings: SharingFormValue[];
+    billings: BillingFormValue[];
     meta: NullableMeta;
 }
 
-export interface Sharing {
+export interface Billing {
     user: string,
     amount: number;
 }
 
-export interface SharingForm {
+export interface BillingForm {
     user: NullableUserInfoFormControl,
     amount: NullableNumberFormControl
 }
 
-export interface SharingFormValue {
+export interface BillingFormValue {
     user: NullableUserInfo;
     amount: NullableNumber;
 }

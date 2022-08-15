@@ -50,7 +50,7 @@ export class AddAttachmentSectionComponent {
     }
 
     removeFileForm(formIdx: number): void {
-        this.fileFormArr.controls.splice(formIdx, 1);
+        this.fileFormArr.removeAt(formIdx);
     }
 
     patchValue(files: AttachmentUpload[]) {
