@@ -2,7 +2,7 @@ import { Injectable } from "@angular/core";
 import { AngularFireAuth } from "@angular/fire/compat/auth";
 import { Router } from "@angular/router";
 import { UntilDestroy } from "@ngneat/until-destroy";
-import { BehaviorSubject, firstValueFrom, Observable, Subject } from "rxjs";
+import { BehaviorSubject, Observable, Subject } from "rxjs";
 import { takeOnce } from "src/app/common/utils/rxjs-util";
 import { FirestoreService } from "./firestore.service";
 
@@ -34,7 +34,7 @@ export class FireAuthService {
     }
 
     async getCurrentUser(): Promise<UserInfo> {
-        return await firstValueFrom(this.userInfo$);
+        return (await this.angularFireAuth.currentUser)!;
     }
 
     getAllUsers(): Observable<UserInfo[]> {
