@@ -24,6 +24,7 @@ export class UserSelectorComponent implements OnInit {
 
     users$!: Observable<UserInfo[]>;
     focus$ = new Subject<string>();
+    click$ = new Subject<string>();
 
     faXmark = faXmark;
 
@@ -34,7 +35,7 @@ export class UserSelectorComponent implements OnInit {
     }
 
     searchUsers: OperatorFunction<string, readonly UserInfo[]> = (text$: Observable<string>) =>
-        merge(this.focus$, text$).pipe(switchMap(text => this.users$.pipe(this.mapMatchingUsers(text))));
+        merge(this.focus$, this.click$, text$).pipe(switchMap(text => this.users$.pipe(this.mapMatchingUsers(text))));
 
     searchUserFormatter(result: UserInfo): string {
         return result.displayName!;

@@ -24,12 +24,17 @@ export class ExpenseResultComponent {
     @Output()
     deleteExpense = new EventEmitter<string>();
 
+    @Output()
+    editExpense = new EventEmitter<Expense>();
+
     faPen = faPen;
     faTrash = faTrash;
 
     isCollapsed = true;
 
-    editExpense(): void {}
+    onEdit(): void {
+        this.editExpense.emit(this.expense);
+    }
 
     onDelete(): void {
         this.deleteExpense.emit(this.expense.meta.documentId);

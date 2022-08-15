@@ -1,11 +1,11 @@
-import { ChangeDetectionStrategy, Component, Input, OnInit, ViewEncapsulation } from "@angular/core";
+import { ChangeDetectionStrategy, ChangeDetectorRef, Component, Input, OnInit, ViewEncapsulation } from "@angular/core";
 import { FormArray, FormBuilder, FormGroup, Validators } from "@angular/forms";
 import { faCircleMinus, faPlus } from "@fortawesome/free-solid-svg-icons";
 import { UntilDestroy } from "@ngneat/until-destroy";
-import { skip } from "rxjs";
+import { Action } from "src/app/common/enum/action";
 import { NullableNumber, NullableNumberFormControl, NullableUserInfo, NullableUserInfoFormControl } from "src/app/common/types/common.type";
 import { takeOnce } from "src/app/common/utils/rxjs-util";
-import { ExpenseForm, SharingForm } from "../../model/expense.model";
+import { ExpenseForm, SharingForm, SharingFormValue } from "../../model/expense.model";
 
 @UntilDestroy({ checkProperties: true })
 @Component({
@@ -20,18 +20,24 @@ export class SharingSectionComponent implements OnInit {
     @Input()
     sharingFormArr!: FormArray<FormGroup<SharingForm>>;
 
+    @Input()
+    action!: Action;
+
     faPlus = faPlus;
     faCircleMinus = faCircleMinus;
 
     private parentForm!: FormGroup<ExpenseForm>;
 
-    constructor(private fb: FormBuilder) { }
+    constructor(private fb: FormBuilder,
+        private cdr: ChangeDetectorRef) { }
 
     ngOnInit(): void {
         this.parentForm = <FormGroup<ExpenseForm>>this.sharingFormArr.parent;
         this.parentAmountCtrl.valueChanges.subscribe(amount => this.recalculateSharingAmount(amount!));
 
-        this.initialSharingForm();
+        if (this.action === Action.CREATE) {
+            this.initCreateForm();
+        }
     }
 
     addSharingForm(): void {
@@ -63,11 +69,17 @@ export class SharingSectionComponent implements OnInit {
         return this.parentForm.controls.paidBy;
     }
 
-    private initialSharingForm(): void {
+    patchValue(sharings: SharingFormValue[]): void {
+        sharings.forEach(_ => this.addSharingForm());
+        this.sharingFormArr.patchValue(sharings);
+        this.cdr.detectChanges();
+    }
+
+    private initCreateForm(): void {
         const disabledSharingForm = this.buildSharingForm(true);
         this.sharingFormArr.push(disabledSharingForm);
 
-        this.parentPaidByCtrl.valueChanges.pipe(skip(1), takeOnce()).subscribe(paidBy => {
+        this.parentPaidByCtrl.valueChanges.pipe(takeOnce()).subscribe(paidBy => {
             disabledSharingForm.enable();
             disabledSharingForm.controls.user.setValue(paidBy);
             disabledSharingForm.controls.user.disable();

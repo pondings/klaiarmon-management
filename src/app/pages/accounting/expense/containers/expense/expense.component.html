@@ -10,7 +10,7 @@
 
     <div class="result-container">
         <app-expense-result *ngFor="let expense of (expenses$ | async)" [expense]="expense" [currentUser]="currentUser"
-            (viewAttachment)="viewAttachment($event)" (deleteExpense)="deleteExpense($event)">
+            (viewAttachment)="viewAttachment($event)" (deleteExpense)="deleteExpense($event)" (editExpense)="editExpense($event)">
         </app-expense-result>
     </div>
 

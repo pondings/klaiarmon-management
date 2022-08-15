@@ -32,7 +32,7 @@ export class ExpenseComponent implements OnInit {
     }
 
     openAddExpenseModal(): void {
-        this.expenseService.openAddExpenseModal();
+        this.expenseService.addExpense();
     }
 
     search(criteria: ExpenseSearch): void {
@@ -41,6 +41,10 @@ export class ExpenseComponent implements OnInit {
 
     async deleteExpense(documentId: string): Promise<void> {
         await this.expenseService.deleteExpense(documentId);
+    }
+
+    async editExpense(expense: Expense): Promise<void> {
+        await this.expenseService.editExpense(expense);
     }
 
     clear(): void {
