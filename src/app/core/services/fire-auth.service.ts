@@ -51,6 +51,10 @@ export class FireAuthService {
         this.angularFireAuth.signOut().then(_ => this.router.navigate(['login']));
     }
 
+    async getUserByUid(uid: string): Promise<UserInfo> {
+        return this.allUsers$.getValue().find(user => user.uid === uid)!
+    }
+
     async getUsernameByUid(uid: string): Promise<string> {
         const users = this.allUsers$.getValue();
         return users.find(user => user.uid === uid)?.displayName!;

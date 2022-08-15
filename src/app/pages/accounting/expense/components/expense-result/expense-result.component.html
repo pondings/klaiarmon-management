@@ -7,7 +7,7 @@
             </span>
             <div class="d-flex" *ngIf="expense.meta.createdBy === currentUser.uid">
                 <fa-icon [icon]="faPen"
-                    (click)="editExpense()">
+                    (click)="onEdit()">
                 </fa-icon>
                 <fa-icon class="ms-2" [icon]="faTrash" 
                     (click)="onDelete()">

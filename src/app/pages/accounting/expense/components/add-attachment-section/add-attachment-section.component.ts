@@ -1,12 +1,12 @@
-import { ChangeDetectionStrategy, Component, Input, ViewEncapsulation } from "@angular/core";
-import { FormArray, FormBuilder, FormGroup } from "@angular/forms";
+import { ChangeDetectionStrategy, ChangeDetectorRef, Component, Input, ViewEncapsulation } from "@angular/core";
+import { FormArray, FormBuilder, FormGroup, Validators } from "@angular/forms";
 import { DomSanitizer } from "@angular/platform-browser";
 import { faCircleMinus, faEye, faFileUpload, faPlus } from "@fortawesome/free-solid-svg-icons";
 import { NgbModal } from "@ng-bootstrap/ng-bootstrap";
 import { NullableFile, NullableString } from "src/app/common/types/common.type";
 import { inputFileToBlob } from "src/app/common/utils/file-util";
 import { ImageViewerComponent } from "src/app/shared/components/image-viewer/image-viewer.component";
-import { AttachmentUploadForm } from "../../model/expense.model";
+import { AttachmentUpload, AttachmentUploadForm } from "../../model/expense.model";
 
 @Component({
     selector: 'app-add-attachment-section',
@@ -27,12 +27,13 @@ export class AddAttachmentSectionComponent {
 
     constructor(private fb: FormBuilder,
         private modalService: NgbModal,
-        private domSanitizer: DomSanitizer) {
+        private domSanitizer: DomSanitizer,
+        private cdr: ChangeDetectorRef) {
     }
 
     addFileForm(): void {
         const fileForm = this.buildAttachmentForm();
-        this.fileFormArr.controls.push(fileForm);
+        this.fileFormArr.push(fileForm);
     }
 
     async uploadAttachment(event: Event, form: FormGroup<AttachmentUploadForm>): Promise<void> {
@@ -52,11 +53,21 @@ export class AddAttachmentSectionComponent {
         this.fileFormArr.controls.splice(formIdx, 1);
     }
 
+    patchValue(files: AttachmentUpload[]) {
+        files.forEach(_ => this.addFileForm());
+        this.fileFormArr.patchValue(files);
+        this.cdr.detectChanges();
+    }
+
+    getAttchmentUrl(idx: number): string {
+        return this.fileFormArr.at(idx).controls.attachmentUrl.value!;
+    }
+
     private buildAttachmentForm(): FormGroup<AttachmentUploadForm> {
         return this.fb.group({
             name: this.fb.control<NullableString>({ value: null, disabled: false }),
             file: this.fb.control<NullableFile>({ value: null, disabled: false }),
-            attachmentUrl: this.fb.control<NullableString>({ value: null, disabled: false })
+            attachmentUrl: this.fb.control<NullableString>({ value: null, disabled: false }, [Validators.required])
         })
     }
 

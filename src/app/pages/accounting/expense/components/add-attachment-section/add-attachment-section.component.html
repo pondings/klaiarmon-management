@@ -7,16 +7,16 @@
     <div class="mt-3" *ngFor="let fileForm of fileFormArr.controls; let idx = index">
         <div class="grid bs-rows-1 bs-columns-2" [formGroup]="fileForm">
             <div class="form-floating g-col-1">
-                <input class="form-control form-control-sm" placeholder="File Name" formControlName="name" required>
-                <label class="required">File Name</label>
+                <input class="form-control form-control-sm" placeholder="File Name" formControlName="name">
+                <label>File Name</label>
             </div>
             <div class="input-group">
                 <div class="form-floating">
                     <input formControlName="attachmentUrl" class="form-control form-control-sm" placeholder="File" 
-                        (click)="uploadFile.click()" readonly required>
+                        (click)="uploadFile.click()">
                     <label for="file" class="required">File</label>
                 </div>
-                <button *ngIf="!(fileForm.controls.attachmentUrl.valueChanges | async); else hasAttachmentUrl" class="btn btn-outline-secondary" 
+                <button *ngIf="!getAttchmentUrl(idx); else hasAttachmentUrl" class="btn btn-outline-secondary" 
                     type="button" (click)="uploadFile.click()">
                     <fa-icon [icon]="faFileUpload"></fa-icon>
                 </button>

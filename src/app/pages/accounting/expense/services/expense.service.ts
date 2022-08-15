@@ -3,14 +3,17 @@ import { QueryFn } from "@angular/fire/compat/firestore";
 import { NgbModal } from "@ng-bootstrap/ng-bootstrap";
 import { Timestamp } from "firebase/firestore";
 import { BehaviorSubject, Observable } from "rxjs";
+import { Action } from "src/app/common/enum/action";
+import { getDateStructFromDate } from "src/app/common/utils/date-struct.util";
 import { getMoment } from "src/app/common/utils/moment.util";
 import { takeOnce } from "src/app/common/utils/rxjs-util";
 import { DataService } from "src/app/core/services/data-service";
+import { FireAuthService } from "src/app/core/services/fire-auth.service";
 import { FireStorageService } from "src/app/core/services/fire-storage.service";
 import { ToastService } from "src/app/core/toast/toast.service";
 import { ImageViewerComponent } from "src/app/shared/components/image-viewer/image-viewer.component";
 import { ExpenseModalComponent } from "../components/expense-modal/expense-modal.component";
-import { Expense, ExpenseSearch } from "../model/expense.model";
+import { AttachmentUpload, Expense, ExpenseFormValue, ExpenseSearch, SharingFormValue } from "../model/expense.model";
 
 @Injectable()
 export class ExpenseService {
@@ -22,30 +25,36 @@ export class ExpenseService {
 
     constructor(private dataService: DataService,
         private fireStorageService: FireStorageService,
+        private fireAuthService: FireAuthService,
         private toastService: ToastService,
         private modalService: NgbModal) { }
 
-    async openAddExpenseModal(): Promise<void> {
+    async addExpense(): Promise<void> {
         const modalRef = this.modalService.open(ExpenseModalComponent, { centered: true });
+        modalRef.componentInstance.action = Action.CREATE;
 
         await modalRef.result.then(async (expense: Expense<Timestamp>) => {
-            const currentDate = getMoment(),
-                year = currentDate?.year(),
-                month = currentDate?.month()! + 1,
-                day = currentDate?.day();
-
-            expense.files = await Promise.all(expense.files.map(async file => {
-                const path = `expense/${year}/${month}/${file.name}-${currentDate?.format('DD-MM-YYYY-HH-mm-ss')}`;
-                const uploadUrl = await this.fireStorageService.uploadFile(path, file.file!);
-                return { ...file, attachmentUrl: uploadUrl, file: null };
-            }))
-
+            expense.files = await Promise.all(expense.files.map(async file => await this.uploadFile(file)));
             await this.dataService.addDocument(ExpenseService.EXPENSE_COLLECTION_PATH, expense,
                 { showSpinner: true, toastMessage: 'Expense added' });
         }, err => { });
     }
 
-    addExpense(expense: Expense): void {
+    async editExpense(expense: Expense): Promise<void> {
+        const expenseFormValue = await this.getExpenseFormValueFromExpense(expense);
+        const modalRef = this.modalService.open(ExpenseModalComponent, { centered: true });
+        modalRef.componentInstance.action = Action.UPDATE;
+        modalRef.componentInstance.expense = expenseFormValue;
+
+        await modalRef.result.then(async (expense: Expense) => {
+            expense.files = await Promise.all(expense.files.map(async file => file.file ? await this.uploadFile(file) : file));
+            expense.date = Timestamp.fromDate(expense.date as any);
+            const updatedData = await this.dataService.updateDocument(ExpenseService.EXPENSE_COLLECTION_PATH, expense, 
+                { showSpinner: true, toastMessage: 'Expense updated' });
+            this.expenses$.pipe(takeOnce()).subscribe(expenses => 
+                this.expenses$.next(expenses.map(exp => 
+                    exp.meta.documentId === updatedData.meta.documentId ? updatedData : exp)));
+        }, err => { });
     }
 
     getExpense(): Observable<Expense[]> {
@@ -72,10 +81,6 @@ export class ExpenseService {
         this.expenses$.next([]);
     }
 
-    updateExpense(expense: Expense): Expense {
-        return expense;
-    }
-
     async deleteExpense(documentId: string): Promise<void> {
         const confirmation = confirm('After confirm the content will be deleted from the system.');
         if (!confirmation) return;
@@ -96,12 +101,33 @@ export class ExpenseService {
         this.dataService.getDocument(ExpenseService.PONDTONG_SHARING_SETTING_DOCUMENT_PATH);
     }
 
+    private async uploadFile(file: AttachmentUpload): Promise<AttachmentUpload> {
+        const currentDate = getMoment(),
+            year = currentDate?.year(),
+            month = currentDate?.month()! + 1;
+        const fileName = file.name?.toLowerCase().replace(/\s|\//g, '');
+
+        const path = `expense/${year}/${month}/${fileName}-${currentDate?.format('DD-MM-YYYY-HH-mm-ss')}`;
+        const uploadUrl = await this.fireStorageService.uploadFile(path, file.file!);
+        return { name: fileName!, attachmentUrl: uploadUrl, uploadDate: currentDate?.toDate() };
+    }
+
     private filterExpenseByName(name: string): (expense: Expense) => boolean {
         return (expenses: Expense) => expenses.name.toLowerCase().includes(name.toLowerCase());
     }
 
     private filterExpenseByPaidBy(paidBy: string): (expense: Expense) => boolean {
         return (expense: Expense) => expense.paidBy === paidBy;
+    }
+
+    private async getExpenseFormValueFromExpense(expense: Expense): Promise<ExpenseFormValue> {
+        const { name, amount, date: _date, paidBy: _paidBy, files, meta, sharings: _sharings } = expense;
+        const date = getDateStructFromDate(_date.toDate());
+        const paidBy = await this.fireAuthService.getUserByUid(expense.paidBy);
+        const sharings = await Promise.all(_sharings.map(async sharing => 
+            ({ user: await this.fireAuthService.getUserByUid(sharing.user), amount: sharing.amount })));
+
+        return { name, amount, date, paidBy, files, meta, sharings }
     }
 
 }

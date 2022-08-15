@@ -1,13 +1,16 @@
-import { ChangeDetectionStrategy, Component, OnInit, ViewEncapsulation } from "@angular/core";
+import { ChangeDetectionStrategy, Component, OnInit, ViewEncapsulation, Input, ViewChild, AfterViewInit } from "@angular/core";
 import { FormArray, FormBuilder, FormGroup, Validators } from "@angular/forms";
 import { faCalendar } from "@fortawesome/free-solid-svg-icons";
 import { NgbActiveModal } from "@ng-bootstrap/ng-bootstrap";
 import { map, Observable } from "rxjs";
+import { Action } from "src/app/common/enum/action";
 import { NullableDateStructFormControl, NullableMeta, NullableNumber, NullableNumberFormControl, NullableString, NullableStringFormControl, NullableUserInfo, NullableUserInfoFormControl } from "src/app/common/types/common.type";
 import { getDateStruct } from "src/app/common/utils/date-struct.util";
 import { getDate, getDateFromDateStruct } from "src/app/common/utils/date.util";
 import { ToastService } from "src/app/core/toast/toast.service";
-import { AttachmentUpload, AttachmentUploadForm, ExpenseForm, Sharing, SharingForm } from "../../model/expense.model";
+import { AttachmentUpload, AttachmentUploadForm, Expense, ExpenseForm, ExpenseFormValue, Sharing, SharingForm } from "../../model/expense.model";
+import { AddAttachmentSectionComponent } from "../add-attachment-section/add-attachment-section.component";
+import { SharingSectionComponent } from "../sharing-section/sharing-section.component";
 
 @Component({
     selector: 'app-expense-modal',
@@ -16,9 +19,21 @@ import { AttachmentUpload, AttachmentUploadForm, ExpenseForm, Sharing, SharingFo
     changeDetection: ChangeDetectionStrategy.OnPush,
     encapsulation: ViewEncapsulation.None
 })
-export class ExpenseModalComponent implements OnInit {
+export class ExpenseModalComponent implements OnInit, AfterViewInit {
 
-    expenseAddForm: FormGroup<ExpenseForm>;
+    @Input()
+    action!: Action;
+
+    @Input()
+    expense!: ExpenseFormValue;
+
+    @ViewChild(AddAttachmentSectionComponent)
+    addAttachmentSection!: AddAttachmentSectionComponent;
+
+    @ViewChild(SharingSectionComponent)
+    sharingSection!: SharingSectionComponent;
+
+    expenseForm: FormGroup<ExpenseForm>;
 
     faCalendar = faCalendar;
 
@@ -29,16 +44,20 @@ export class ExpenseModalComponent implements OnInit {
     constructor(private fb: FormBuilder,
         private activeModal: NgbActiveModal,
         private toastService: ToastService) {
-        this.expenseAddForm = this.buildExpenseAddForm();
+        this.expenseForm = this.buildExpenseForm();
     }
 
     ngOnInit(): void {
-        this.isFormValid$ = this.expenseAddForm.statusChanges.pipe(map(status => status === 'VALID'));
+        this.isFormValid$ = this.expenseForm.statusChanges.pipe(map(status => status === 'VALID'));
     }
 
-    onAdd(): void {
+    ngAfterViewInit(): void {
+        if (this.action === Action.UPDATE) setTimeout(() => this.initEditForm(), 100);
+    }
+
+    onSubmit(): void {
         this.validateForm();
-        const formValue = this.expenseAddForm.getRawValue();
+        const formValue = this.expenseForm.getRawValue();
 
         const files = this.processFilesBeforeClose(formValue.files);
         const sharings = this.processSharingBeforeClose(formValue.sharings);
@@ -55,32 +74,36 @@ export class ExpenseModalComponent implements OnInit {
         this.activeModal.dismiss();
     }
 
+    get submitButtonLabel(): string {
+        return this.action === Action.CREATE ? 'Add' : 'Edit';
+    }
+
     get nameCtrl(): NullableStringFormControl {
-        return this.expenseAddForm.controls.name;
+        return this.expenseForm.controls.name;
     }
 
     get amountCtrl(): NullableNumberFormControl {
-        return this.expenseAddForm.controls.amount;
+        return this.expenseForm.controls.amount;
     }
 
     get dateCtrl(): NullableDateStructFormControl {
-        return this.expenseAddForm.controls.date;
+        return this.expenseForm.controls.date;
     }
 
     get paidByCtrl(): NullableUserInfoFormControl {
-        return this.expenseAddForm.controls.paidBy;
+        return this.expenseForm.controls.paidBy;
     }
 
     get fileFormArr(): FormArray<FormGroup<AttachmentUploadForm>> {
-        return this.expenseAddForm.controls.files;
+        return this.expenseForm.controls.files;
     }
 
     get sharingsFormArr(): FormArray<FormGroup<SharingForm>> {
-        return this.expenseAddForm.controls.sharings;
+        return this.expenseForm.controls.sharings;
     }
 
     private validateForm(): void {
-        const formValue = this.expenseAddForm.getRawValue();
+        const formValue = this.expenseForm.getRawValue();
         const sharings = formValue.sharings;
         const totalSharingAmount = sharings.map(sharing => sharing.amount).reduce((prev, cur) => prev! + cur!, 0);
         if (formValue.amount !== totalSharingAmount) {
@@ -97,16 +120,22 @@ export class ExpenseModalComponent implements OnInit {
         }
     }
 
+    private initEditForm(): void {
+        const formValue = this.expense;
+        this.expenseForm.patchValue(formValue);
+        this.addAttachmentSection.patchValue(formValue.files);
+        this.sharingSection.patchValue(formValue.sharings);
+    }
+
     private processFilesBeforeClose(files: AttachmentUpload[]): AttachmentUpload[] {
-        return files.filter(file => !!file.file)
-            .map(file => ({ ...file, name: file.name || file.file?.name!, uploadDate: getDate()! }));
+        return files.map(file => ({ ...file, name: file.name || file.file?.name! }));
     }
 
     private processSharingBeforeClose(sharings: { user: NullableUserInfo, amount: NullableNumber }[]): Sharing[] {
         return sharings.map(sharing => ({ user: sharing.user?.uid!, amount: sharing.amount! }));
     }
 
-    private buildExpenseAddForm(): FormGroup<ExpenseForm> {
+    private buildExpenseForm(): FormGroup<ExpenseForm> {
         return this.fb.group({
             name: this.fb.control<NullableString>({ value: null, disabled: false }, [Validators.required]),
             amount: this.fb.control<NullableNumber>({ value: null, disabled: false }, [Validators.required]),

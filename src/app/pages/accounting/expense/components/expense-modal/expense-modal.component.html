@@ -1,4 +1,4 @@
-<form [formGroup]="expenseAddForm">
+<form [formGroup]="expenseForm">
 
     <div class="modal-header">
         <h4>Add Expense</h4>
@@ -23,14 +23,17 @@
             <app-user-selector label="Paid by" [control]="paidByCtrl" [required]="true"></app-user-selector>
         </div>
 
-        <app-sharing-section class="d-block mt-2" formArrayName="sharings" [sharingFormArr]="sharingsFormArr"></app-sharing-section>
+        <app-sharing-section class="d-block mt-2" formArrayName="sharings" [sharingFormArr]="sharingsFormArr"
+            [action]="action"></app-sharing-section>
 
         <app-add-attachment-section formArrayName="files" [fileFormArr]="fileFormArr"></app-add-attachment-section>
 
     </div>
 
     <div class="modal-footer">
-        <button class="btn btn-sm btn-outline-dark" type="button" [disabled]="!(isFormValid$ | async)" (click)="onAdd()">Add</button>
+        <button class="btn btn-sm btn-outline-dark" type="button" [disabled]="!(isFormValid$ | async)" (click)="onSubmit()">
+            {{ submitButtonLabel }}
+        </button>
         <button class="btn btn-sm btn-outline-danger" type="button" (click)="dismiss()">Cancel</button>
     </div>
 
