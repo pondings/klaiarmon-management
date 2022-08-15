@@ -5,7 +5,6 @@ import { UntilDestroy } from "@ngneat/until-destroy";
 import { map, Observable } from "rxjs";
 import { Action } from "src/app/common/enum/action";
 import { NullableNumber, NullableNumberFormControl, NullableUserInfo, NullableUserInfoFormControl } from "src/app/common/types/common.type";
-import { takeOnce } from "src/app/common/utils/rxjs-util";
 import { ExpenseForm, BillingForm, BillingFormValue } from "../../model/expense.model";
 
 @UntilDestroy({ checkProperties: true })
@@ -80,13 +79,7 @@ export class BillingSectionComponent implements OnInit {
     }
 
     private initCreateForm(): void {
-        const disabledBillingForm = this.buildBillingForm(true);
-        this.billingFormArr.push(disabledBillingForm);
-
-        this.parentPaidByCtrl.valueChanges.pipe(takeOnce()).subscribe(paidBy => {
-            disabledBillingForm.enable();
-            disabledBillingForm.controls.user.setValue(paidBy);
-        });
+        this.billingFormArr.push(this.buildBillingForm());
     }
 
     private getOverRemain(): Observable<string> {
