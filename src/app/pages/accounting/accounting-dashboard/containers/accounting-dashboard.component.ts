@@ -1,11 +1,25 @@
-import { ChangeDetectionStrategy, Component, ViewEncapsulation } from "@angular/core";
+import { ChangeDetectionStrategy, Component, OnInit, ViewEncapsulation } from "@angular/core";
+import { Observable } from "rxjs";
+import { PaymentAction, UserBillingInfo } from "../model/user-billing-info.model";
+import { AccountingDashboardService } from "../services/accounting-dashboard.service";
 
 @Component({
     selector: 'app-accounting-dashboard',
-    template: 'Hello World from AccountingDashboardComponent',
+    templateUrl: './accounting-dashboard.component.html',
     changeDetection: ChangeDetectionStrategy.OnPush,
     encapsulation: ViewEncapsulation.None
 })
-export class AccountingDashboardComponent {
+export class AccountingDashboardComponent implements OnInit {
+
+    paymentAction = PaymentAction;
+
+    userBillingInfos$!: Observable<UserBillingInfo[]>
+
+    constructor(private accountingDashboardService: AccountingDashboardService) {}
+
+    async ngOnInit(): Promise<void> {
+        this.userBillingInfos$ = this.accountingDashboardService.subscribeUserBillingInfos();
+        this.accountingDashboardService.getUserBillingInfos();
+    }
 
 }

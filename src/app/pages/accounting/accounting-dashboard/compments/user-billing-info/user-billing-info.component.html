@@ -1,0 +1,28 @@
+<div *ngFor="let userBillingInfo of userBillingInfos; let idx = index">
+    <hr *ngIf="idx !== 0">
+    <div>
+        <label class="text-bold">{{ userBillingInfo.user | username | async }}</label>
+    </div>
+    <div>
+        <label class="text-bold text-underline me-2">Total Expense </label>
+        <span>{{ userBillingInfo.expenseAmount | number }}</span>
+    </div>
+    <div>
+        <label class="text-bold text-underline">Expense info</label>
+        <div *ngFor="let expense of userBillingInfo.expenses">
+            <span class="text-bold me-2">{{ expense.name }}</span>
+            <span>{{expense.amount | number}}</span>
+        </div>
+    </div>
+    <div>
+        <label class="text-bold text-underline">Summary</label>
+        <div *ngFor="let result of userBillingInfo.results">
+            <span class="text-bold me-2">
+                {{ result.paymentAction }} {{ result.user | username | async }}
+            </span>
+            <span>
+                {{ result.amount | number }}
+            </span>
+        </div>
+    </div>
+</div>
