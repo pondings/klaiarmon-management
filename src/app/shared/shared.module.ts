@@ -11,7 +11,7 @@ import { HttpService } from "./services/http.service";
     imports: [
         HttpClientModule, 
         HttpClientJsonpModule, 
-        NgbDatepickerModule,
+        NgbDatepickerModule
     ],
     exports: [
         ReactiveFormsModule, 

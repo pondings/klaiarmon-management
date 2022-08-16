@@ -1,7 +1,6 @@
 import { ChangeDetectionStrategy, Component, OnInit, ViewEncapsulation } from "@angular/core";
 import { faAdd } from "@fortawesome/free-solid-svg-icons";
 import { Observable } from "rxjs";
-import { FireAuthService, UserInfo } from "src/app/core/services/fire-auth.service";
 import { Expense, ExpenseSearch } from "../../model/expense.model";
 import { ExpenseService } from "../../services/expense.service";
 
@@ -21,14 +20,10 @@ export class ExpenseComponent implements OnInit {
 
     faAdd = faAdd;
 
-    currentUser!: UserInfo;
-
-    constructor(private expenseService: ExpenseService,
-        private fireAuthService: FireAuthService) {}
+    constructor(private expenseService: ExpenseService) {}
 
     async ngOnInit(): Promise<void> {
         this.expenses$ = this.expenseService.getExpense();
-        this.currentUser = await this.fireAuthService.getCurrentUser();
     }
 
     openAddExpenseModal(): void {
