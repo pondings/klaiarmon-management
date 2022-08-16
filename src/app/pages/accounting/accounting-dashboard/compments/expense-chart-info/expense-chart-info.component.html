@@ -7,9 +7,10 @@
     </select>
   </div>
   <div class="g-col-1 input-group d-flex justify-content-end">
-    <select class="select-mode w-70">
-      <option selected>By User</option>
-      <option value="1">By Expense Type</option>
+    <select class="select-mode w-70" [formControl]="chartModeCtrl">
+      <option *ngFor="let mode of chartModeOptions" [ngValue]="mode">
+        {{ mode }}
+      </option>
     </select>
   </div>
 </div>

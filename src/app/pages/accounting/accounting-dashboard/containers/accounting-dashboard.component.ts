@@ -22,7 +22,6 @@ export class AccountingDashboardComponent implements OnInit {
     async ngOnInit(): Promise<void> {
         this.userBillingInfos$ = this.accountingDashboardService.subscribeUserBillingInfos();
         this.accountingDashboardService.getUserBillingInfos(getMoment()!);
-        this.userBillingInfos$.subscribe(console.log);
     }
 
     periodChange(date: Moment) {
