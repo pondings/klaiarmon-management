@@ -9,6 +9,7 @@ import { SpinnerService } from "../spinner/spinner.service";
 import { ToastService } from "../toast/toast.service";
 import { EditProfileComponent } from "./edit-profile.component";
 import { EditProfile } from "./edit-profile.model";
+import { compressAccurately } from 'image-conversion';
 
 @Injectable()
 @UntilDestroy({ checkProperties: true })
@@ -44,6 +45,7 @@ export class EditProfileService {
     async uploadProfilePhoto(data: Blob, fileName: string): Promise<string> {
         const userInfo = await this.fireAuthService.getCurrentUser();
 
+        data = await compressAccurately(data, 200);
         const ref = this.angularFireStorage.ref(`profile-photo/${userInfo?.uid}/${fileName}-${moment().format('DD-MM-YYYY')}`);
         const task = ref.put(data, { cacheControl: 'public, max-age=86400' });
         return new Promise((resolve) => {
