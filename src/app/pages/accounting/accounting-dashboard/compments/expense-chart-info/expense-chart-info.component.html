@@ -1,0 +1,17 @@
+<div class="grid bs-rows-1 bs-columns-2">
+  <div class="g-col-1 input-group d-flex justify-content-start">
+    <select class="select-period w-75" [formControl]="periodCtrl">
+      <option *ngFor="let month of monthOptions" [ngValue]="month">
+        {{ month.format('MM/YYYY') }}
+      </option>
+    </select>
+  </div>
+  <div class="g-col-1 input-group d-flex justify-content-end">
+    <select class="select-mode w-70">
+      <option selected>By User</option>
+      <option value="1">By Expense Type</option>
+    </select>
+  </div>
+</div>
+
+<canvas baseChart [type]="'pie'" [data]="chartData" [options]="chartOptions"></canvas>

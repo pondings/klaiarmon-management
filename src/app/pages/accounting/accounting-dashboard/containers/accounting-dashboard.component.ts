@@ -1,5 +1,7 @@
 import { ChangeDetectionStrategy, Component, OnInit, ViewEncapsulation } from "@angular/core";
+import { Moment } from "moment";
 import { Observable } from "rxjs";
+import { getMoment } from "src/app/common/utils/moment.util";
 import { PaymentAction, UserBillingInfo } from "../model/user-billing-info.model";
 import { AccountingDashboardService } from "../services/accounting-dashboard.service";
 
@@ -19,7 +21,12 @@ export class AccountingDashboardComponent implements OnInit {
 
     async ngOnInit(): Promise<void> {
         this.userBillingInfos$ = this.accountingDashboardService.subscribeUserBillingInfos();
-        this.accountingDashboardService.getUserBillingInfos();
+        this.accountingDashboardService.getUserBillingInfos(getMoment()!);
+        this.userBillingInfos$.subscribe(console.log);
+    }
+
+    periodChange(date: Moment) {
+        this.accountingDashboardService.getUserBillingInfos(date);
     }
 
 }

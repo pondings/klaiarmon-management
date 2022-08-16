@@ -1,5 +1,7 @@
 import { Injectable } from "@angular/core";
 import { QueryFn } from "@angular/fire/compat/firestore";
+import * as moment from "moment";
+import { Moment } from "moment";
 import { firstValueFrom } from "rxjs";
 import { getMoment } from "src/app/common/utils/moment.util";
 import { DataService } from "src/app/core/services/data-service";
@@ -16,10 +18,9 @@ export class UserBillingInfoService {
     constructor(private dataService: DataService,
         private fireAuthService: FireAuthService) {}
 
-    async getUserBillingInfos(): Promise<UserBillingInfo[]> {
-        const startMonth = getMoment()?.startOf('month').startOf('day');
-        const endMonth = getMoment()?.endOf('month').startOf('day');
-
+    async getUserBillingInfos(targetMonth: Moment): Promise<UserBillingInfo[]> {
+        const startMonth = moment(targetMonth.toObject()).startOf('month');
+        const endMonth = moment(targetMonth.toObject()).endOf('month');
         const query: QueryFn = ref => ref.where('date', '>=', startMonth?.toDate())
             .where('date', '<=', endMonth?.toDate());
 

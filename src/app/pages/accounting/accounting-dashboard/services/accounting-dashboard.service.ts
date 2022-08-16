@@ -1,4 +1,5 @@
 import { Injectable } from "@angular/core";
+import { Moment } from "moment";
 import { Observable, Subject } from "rxjs";
 import { UserBillingInfo } from "../model/user-billing-info.model";
 import { UserBillingInfoService } from "./user-billing-info.service";
@@ -14,8 +15,8 @@ export class AccountingDashboardService {
         return this.userBillingInfo$.asObservable();
     }
 
-    async getUserBillingInfos(): Promise<void> {
-        const userBillingInfos = await this.userBillingInfoService.getUserBillingInfos();
+    async getUserBillingInfos(targetMonth: Moment): Promise<void> {
+        const userBillingInfos = await this.userBillingInfoService.getUserBillingInfos(targetMonth);
         this.userBillingInfo$.next(userBillingInfos);
     }
 

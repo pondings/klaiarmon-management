@@ -37,6 +37,10 @@ export class FireAuthService {
         return (await this.angularFireAuth.currentUser)!;
     }
 
+    getCurrentUser$(): Observable<UserInfo> {
+        return this.userInfo$.asObservable();
+    }
+
     getAllUsers(): Observable<UserInfo[]> {
         return this.allUsers$;
     }
