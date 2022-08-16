@@ -25,7 +25,7 @@ export class UserBillingInfoService {
             .where('date', '<=', endMonth?.toDate());
 
         const expenses = await this.dataService.getCollection<Expense>(ExpenseService.EXPENSE_COLLECTION_PATH, { showSpinner: true, query });
-        const users = await firstValueFrom(this.fireAuthService.getAllUsers());
+        const users = await this.fireAuthService.getAllUsers();
         let userBillingInfos = this.calculateDebtors(expenses, users);
         userBillingInfos = this.calculateCreditors(userBillingInfos);
         userBillingInfos = this.calculateResult(userBillingInfos);
