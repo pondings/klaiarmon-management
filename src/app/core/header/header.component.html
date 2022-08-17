@@ -1,8 +1,11 @@
 <nav class="navbar navbar-expand-md">
     <div class="container-fluid">
         <img src="/assets/logo.png" alt="" width="50" height="50">
-        <button class="sidebar-toggle" type="button" (click)="sidebarService.toggle()">
-            <fa-icon [icon]="faBars"></fa-icon>
-        </button>
+        <div class="cmd-group">
+            <app-notification></app-notification>
+            <button class="sidebar-toggle ms-4" type="button" (click)="sidebarService.toggle()">
+                <fa-icon [icon]="faBars"></fa-icon>
+            </button>
+        </div>
     </div>
 </nav>
