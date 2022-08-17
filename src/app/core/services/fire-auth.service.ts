@@ -2,11 +2,10 @@ import { Injectable } from "@angular/core";
 import { AngularFireAuth } from "@angular/fire/compat/auth";
 import { Router } from "@angular/router";
 import { UntilDestroy } from "@ngneat/until-destroy";
-import { BehaviorSubject, firstValueFrom, Observable, of } from "rxjs";
+import { BehaviorSubject, firstValueFrom, Observable } from "rxjs";
 import { takeOnce } from "src/app/common/utils/rxjs-util";
+import { UserInfo } from "../models/user.model";
 import { FirestoreService } from "./firestore.service";
-
-export type UserInfo = Partial<firebase.default.UserInfo>;
 
 @Injectable()
 @UntilDestroy({ checkProperties: true })
@@ -29,7 +28,7 @@ export class FireAuthService {
     }
 
     triggerSubscribedUserInfo(userInfo: UserInfo): void {
-        this.userInfo$.next({ displayName: userInfo?.displayName!, photoURL: userInfo?.photoURL });
+        this.userInfo$.next(userInfo);
     }
 
     async getCurrentUser(): Promise<UserInfo> {

@@ -5,7 +5,7 @@ import { Observable, startWith } from "rxjs";
 import { Nullable } from "src/app/common/types/common.type";
 import { getDateStruct, NullableDateStruct } from "src/app/common/utils/date-struct.util";
 import { getDateFromDateStruct } from "src/app/common/utils/date.util";
-import { UserInfo } from "src/app/core/services/fire-auth.service";
+import { UserInfo } from "src/app/core/models/user.model";
 import { ExpenseSearch, ExpenseSearchForm } from "../../model/expense.model";
 
 @Component({

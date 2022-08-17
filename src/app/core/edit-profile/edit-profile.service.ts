@@ -10,6 +10,7 @@ import { ToastService } from "../toast/toast.service";
 import { EditProfileComponent } from "./edit-profile.component";
 import { EditProfile } from "./edit-profile.model";
 import { compressAccurately } from 'image-conversion';
+import { UserInfo } from "../models/user.model";
 
 @Injectable()
 @UntilDestroy({ checkProperties: true })
@@ -33,7 +34,7 @@ export class EditProfileService {
             const photoURL = userInfo.profilePhoto 
                 ? await this.uploadProfilePhoto(userInfo.profilePhoto, userInfo.profilePhoto.name) 
                 : userData?.photoURL;
-            const editData: Partial<firebase.default.UserInfo> = { displayName: userInfo.displayName!, photoURL };
+            const editData: Partial<UserInfo> = { displayName: userInfo.displayName!, photoURL };
 
             this.fireAuthService.updateUserInfo(editData);
             this.fireAuthService.triggerSubscribedUserInfo(editData);

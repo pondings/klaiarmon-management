@@ -2,7 +2,8 @@ import { ChangeDetectionStrategy, Component, Input, OnInit, ViewEncapsulation } 
 import { FormControl } from "@angular/forms";
 import { faXmark } from "@fortawesome/free-solid-svg-icons";
 import { BehaviorSubject, map, merge, Observable, OperatorFunction, Subject, switchMap } from "rxjs";
-import { FireAuthService, UserInfo } from "src/app/core/services/fire-auth.service";
+import { UserInfo } from "src/app/core/models/user.model";
+import { FireAuthService } from "src/app/core/services/fire-auth.service";
 
 @Component({
     selector: 'app-user-selector',
