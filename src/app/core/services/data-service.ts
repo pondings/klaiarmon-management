@@ -76,9 +76,7 @@ export class DataService {
         try {
             if (options?.showSpinner) this.spinnerService.show();
             const dataWithMeta = await this.setMeta(data);
-            console.log('After set Meta');
             const updatedData = await this.firestoreService.updateDocument(`${path}/${data.meta.documentId}`, dataWithMeta);
-            console.log('After update');
             if (options?.toastMessage) this.toastService.showSuccess(options?.toastMessage);
             return updatedData;
         } catch (error) {
@@ -103,7 +101,7 @@ export class DataService {
     }
 
     private async setMeta<T>(data: HasMetaData<T>): Promise<T> {
-        const currentDate = Timestamp.fromDate(getDate()!);
+        const currentDate = Timestamp.now();
         const user = await this.fireAuthService.getCurrentUser();
 
         const { createdDate = currentDate, createdBy = user.uid } = data.meta;

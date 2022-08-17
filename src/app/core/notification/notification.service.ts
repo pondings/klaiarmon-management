@@ -29,8 +29,7 @@ export class NotificationService {
 
     async initNotificationService(): Promise<void> {
         const currentUser = await this.fireAuthService.getCurrentUser();
-        const query: QueryFn = ref => ref.where('to', '==', currentUser.uid)
-            .where('isRead', '==', false);
+        const query: QueryFn = ref => ref.where('to', 'array-contains', currentUser.uid);
 
         this.userNotification$ = this.dataService.subscribeCollection<UserNotification>(`notification`, { query });
         this.notifications$ = this.userNotification$.pipe(map(notis => notis.filter(noti => !noti.isAlert)));
@@ -46,7 +45,9 @@ export class NotificationService {
     }
 
     private async markNotificationAsRead(noti: UserNotification): Promise<void> {
-        noti.isRead = true;
+        const user = await this.fireAuthService.getCurrentUser();
+        noti.to = noti.to.filter(t => t !== user.uid);
+        noti.readed?.push(user.uid!);
         await this.dataService.updateDocument('notification', noti, { showSpinner: false });
     }
 

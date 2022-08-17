@@ -1,0 +1,43 @@
+import { Injectable } from "@angular/core";
+import { Timestamp } from "firebase/firestore";
+import { EXPENSE_CONTENT_NOTIFICATION_TEMPLATE, EXPENSE_DETAIL_NOTIFICATION_TEMPLATE, EXPENSE_TITLE_NOTIFICATION_TEMPLATE } from "src/app/common/constants/notification-template";
+import { Action } from "src/app/common/enum/action";
+import { stringFormat } from "src/app/common/utils/common-util";
+import { getMoment } from "src/app/common/utils/moment.util";
+import { UserNotification } from "src/app/core/models/notification.model";
+import { DataService } from "src/app/core/services/data-service";
+import { Expense } from "src/app/pages/accounting/expense/model/expense.model";
+import { UsernamePipe } from "../pipe/username.pipe";
+
+@Injectable()
+export class PushNotificationService {
+
+    constructor(private dataService: DataService,
+        private usernamePipe: UsernamePipe) {}
+
+    async pushExpenseNotification(expense: Expense, action: Action): Promise<void> {
+        const notiUsers = expense.billings.map(billing => billing.user).concat([expense.paidBy])
+            .filter(uid => uid !== expense.meta.updatedBy)
+            .filter((val, idx, arr) => arr.indexOf(val) === idx);
+        if (!notiUsers[0]) return;
+        const contentAction = action === Action.CREATE ? 'added new' : action === Action.UPDATE ? 'edited' : 'deleted';
+        const details = await Promise.all(expense.billings.map(async billing => {
+            const username = await this.usernamePipe.transform(billing.user);
+            return stringFormat(EXPENSE_DETAIL_NOTIFICATION_TEMPLATE, username, billing.amount.toFixed(2));
+        }));
+        const notiUsernames = await Promise.all(notiUsers.map(async user => await this.usernamePipe.transform(user)));
+        const userAction = await this.usernamePipe.transform(expense.meta.updatedBy!);
+
+        const title = stringFormat(EXPENSE_TITLE_NOTIFICATION_TEMPLATE, userAction);
+        const content = stringFormat(EXPENSE_CONTENT_NOTIFICATION_TEMPLATE, notiUsernames.join(', '), userAction, contentAction, expense.name,
+            expense.amount.toFixed(2), getMoment(expense.date.toDate())?.format('DD/MM/YYYY')!, details.join(''));
+        await this.pushNotification(title, content, notiUsers);
+    }
+
+    async pushNotification(title: string, content: string, to: string[], isAlert?: boolean): Promise<void> {
+        to = to.filter((val, idx, arr) => arr.indexOf(val) === idx);
+        const notification: UserNotification = { title, content, isAlert: isAlert!, date: Timestamp.now(), meta: {}, to, readed: [] };
+        await this.dataService.addDocument('notification', notification, { showSpinner: false });
+    }
+
+}

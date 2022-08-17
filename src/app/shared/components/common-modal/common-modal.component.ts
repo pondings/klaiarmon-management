@@ -4,6 +4,7 @@ import { NgbActiveModal } from "@ng-bootstrap/ng-bootstrap";
 @Component({
     selector: 'app-common-modal',
     templateUrl: 'common-modal.component.html',
+    styles: ['app-common-modal h5 { margin-bottom: unset !important; }'],
     changeDetection: ChangeDetectionStrategy.OnPush,
     encapsulation: ViewEncapsulation.None
 })

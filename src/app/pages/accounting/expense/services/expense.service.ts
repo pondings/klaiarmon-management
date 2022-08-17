@@ -12,6 +12,7 @@ import { FireAuthService } from "src/app/core/services/fire-auth.service";
 import { FireStorageService } from "src/app/core/services/fire-storage.service";
 import { ToastService } from "src/app/core/toast/toast.service";
 import { ImageViewerComponent } from "src/app/shared/components/image-viewer/image-viewer.component";
+import { PushNotificationService } from "src/app/shared/services/push-notification.service";
 import { ExpenseModalComponent } from "../components/expense-modal/expense-modal.component";
 import { AttachmentUpload, Expense, ExpenseFormValue, ExpenseSearch } from "../model/expense.model";
 
@@ -26,7 +27,8 @@ export class ExpenseService {
         private fireStorageService: FireStorageService,
         private fireAuthService: FireAuthService,
         private toastService: ToastService,
-        private modalService: NgbModal) { }
+        private modalService: NgbModal,
+        private pushNotificationService: PushNotificationService) { }
 
     async addExpense(): Promise<void> {
         const modalRef = this.modalService.open(ExpenseModalComponent, { centered: true });
@@ -34,8 +36,9 @@ export class ExpenseService {
 
         await modalRef.result.then(async (expense: Expense<Timestamp>) => {
             expense.files = await Promise.all(expense.files.map(async file => await this.uploadFile(file)));
-            await this.dataService.addDocument(ExpenseService.EXPENSE_COLLECTION_PATH, expense,
+            const addedData = await this.dataService.addDocument(ExpenseService.EXPENSE_COLLECTION_PATH, expense,
                 { showSpinner: true, toastMessage: 'Expense added' });
+            await this.pushNotificationService.pushExpenseNotification(addedData, Action.CREATE);
         }, err => { });
     }
 
@@ -47,12 +50,12 @@ export class ExpenseService {
 
         await modalRef.result.then(async (expense: Expense) => {
             expense.files = await Promise.all(expense.files.map(async file => file.file ? await this.uploadFile(file) : file));
-            expense.date = Timestamp.fromDate(expense.date as any);
             const updatedData = await this.dataService.updateDocument(ExpenseService.EXPENSE_COLLECTION_PATH, expense, 
                 { showSpinner: true, toastMessage: 'Expense updated' });
             this.expenses$.pipe(takeOnce()).subscribe(expenses => 
                 this.expenses$.next(expenses.map(exp => 
                     exp.meta.documentId === updatedData.meta.documentId ? updatedData : exp)));
+            await this.pushNotificationService.pushExpenseNotification(updatedData, Action.UPDATE);
         }, err => { });
     }
 
@@ -80,15 +83,16 @@ export class ExpenseService {
         this.expenses$.next([]);
     }
 
-    async deleteExpense(documentId: string): Promise<void> {
+    async deleteExpense(expense: Expense): Promise<void> {
         const confirmation = confirm('After confirm the content will be deleted from the system.');
         if (!confirmation) return;
 
-        await this.dataService.deleteDocument(ExpenseService.EXPENSE_COLLECTION_PATH, documentId, 
+        await this.dataService.deleteDocument(ExpenseService.EXPENSE_COLLECTION_PATH, expense.meta.documentId!, 
             { showSpinner: true, toastMessage: 'Expense deleted' });
         this.expenses$.pipe(takeOnce()).subscribe(expenses => 
             this.expenses$.next(expenses.filter(expense => 
-                expense.meta.documentId !== documentId)));
+                expense.meta.documentId !== expense.meta.documentId)));
+        this.pushNotificationService.pushExpenseNotification(expense, Action.DELETE);
     }
 
     viewAttachment(attachmentUrl: string) {
