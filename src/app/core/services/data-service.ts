@@ -1,19 +1,13 @@
 import { Injectable } from "@angular/core";
 import { Timestamp } from "firebase/firestore";
-import { firstValueFrom } from "rxjs";
+import { firstValueFrom, map, Observable, tap } from "rxjs";
 import { getDate } from "src/app/common/utils/date.util";
 import { HasMetaData } from "src/app/model/meta-data";
+import { DataServiceOptions } from "../models/data.model";
 import { SpinnerService } from "../spinner/spinner.service";
 import { ToastService } from "../toast/toast.service";
 import { FireAuthService } from "./fire-auth.service";
 import { FirestoreService } from "./firestore.service";
-import { QueryFn } from "@angular/fire/compat/firestore";
-
-export interface DataServiceOptions<T = any> {
-    showSpinner?: boolean;
-    toastMessage?: string;
-    query?: QueryFn;
-}
 
 @Injectable()
 export class DataService {
@@ -22,6 +16,18 @@ export class DataService {
         private fireAuthService: FireAuthService,
         private spinnerService: SpinnerService,
         private toastService: ToastService) { }
+
+    subscribeCollection<T>(path: string, options: DataServiceOptions = { showSpinner: true }): Observable<T[]> {
+        if (options?.showSpinner) this.spinnerService.show();
+        try {
+            return this.firestoreService.subscribeCollection<HasMetaData<T>>(path, options.query).pipe(map(data => data.map(this.mapMeta)),
+                tap(() => this.spinnerService.hide()));
+        } catch (error) {
+            if (options?.showSpinner) this.spinnerService.hide();
+            this.toastService.showError('Error while geting collection, Please contact Pondi!');
+            throw error;
+        }
+    }
 
     async getCollection<T>(path: string, options: DataServiceOptions = { showSpinner: true }): Promise<T[]> {
         if (options?.showSpinner) this.spinnerService.show();
@@ -95,7 +101,7 @@ export class DataService {
     }
 
     private async setMeta<T>(data: HasMetaData<T>): Promise<T> {
-        const currentDate = Timestamp.fromDate(getDate()!);
+        const currentDate = Timestamp.now();
         const user = await this.fireAuthService.getCurrentUser();
 
         const { createdDate = currentDate, createdBy = user.uid } = data.meta;

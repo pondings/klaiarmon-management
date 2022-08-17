@@ -1,5 +1,6 @@
 import { Injectable } from "@angular/core";
 import { AngularFireStorage } from "@angular/fire/compat/storage";
+import { compressAccurately } from "image-conversion";
 import { finalize } from "rxjs";
 import { takeOnce } from "src/app/common/utils/rxjs-util";
 import { SpinnerService } from "../spinner/spinner.service";
@@ -20,6 +21,11 @@ export class FireStorageService {
                 return resolve(url);
             }))).subscribe();
         });
+    }
+
+    async uploadPhoto(path: string, data: Blob): Promise<string> {
+        data = await compressAccurately(data, 200);
+        return await this.uploadFile(path, data);
     }
 
 }

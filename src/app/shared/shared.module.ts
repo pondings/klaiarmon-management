@@ -4,10 +4,11 @@ import { ReactiveFormsModule } from "@angular/forms";
 import { NgbCollapseModule, NgbDatepickerModule } from "@ng-bootstrap/ng-bootstrap";
 import { UsernamePipe } from "./pipe/username.pipe";
 import { HttpService } from "./services/http.service";
+import { PushNotificationService } from "./services/push-notification.service";
 
 @NgModule({
     declarations: [UsernamePipe],
-    providers: [HttpService],
+    providers: [HttpService, PushNotificationService, UsernamePipe],
     imports: [
         HttpClientModule, 
         HttpClientJsonpModule, 

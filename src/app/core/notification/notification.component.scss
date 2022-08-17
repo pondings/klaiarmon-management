@@ -1,0 +1,22 @@
+app-notification {
+
+    position: relative;
+    display: inline-block;
+
+    .noti-container {
+        fa-icon {
+            color: white !important;
+        }
+
+        .badge {
+            position: absolute;
+            padding: 0.05rem 0.2rem !important;
+            right: -10px;
+        }
+    }
+
+    .dropdown-toggle:after {
+        content: none !important;
+    }
+
+}

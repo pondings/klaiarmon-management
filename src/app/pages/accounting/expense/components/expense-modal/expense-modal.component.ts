@@ -2,6 +2,7 @@ import { ChangeDetectionStrategy, Component, OnInit, ViewEncapsulation, Input, V
 import { FormArray, FormBuilder, FormGroup, Validators } from "@angular/forms";
 import { faCalendar } from "@fortawesome/free-solid-svg-icons";
 import { NgbActiveModal } from "@ng-bootstrap/ng-bootstrap";
+import { Timestamp } from "firebase/firestore";
 import { map, Observable } from "rxjs";
 import { Action } from "src/app/common/enum/action";
 import { NullableDateStructFormControl, NullableMeta, NullableNumber, NullableNumberFormControl, NullableString, NullableStringFormControl, NullableUserInfo, NullableUserInfoFormControl } from "src/app/common/types/common.type";
@@ -63,7 +64,7 @@ export class ExpenseModalComponent implements OnInit, AfterViewInit {
         const billings = this.processBillingBeforeClose(formValue.billings);
         this.activeModal.close({
             ...formValue,
-            date: getDateFromDateStruct(formValue.date!),
+            date: Timestamp.fromDate(getDateFromDateStruct(formValue.date!)!),
             paidBy: formValue.paidBy?.uid,
             files,
             billings

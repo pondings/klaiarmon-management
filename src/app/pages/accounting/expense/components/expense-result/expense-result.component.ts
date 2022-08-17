@@ -18,7 +18,7 @@ export class ExpenseResultComponent {
     viewAttachment = new EventEmitter<string>();
 
     @Output()
-    deleteExpense = new EventEmitter<string>();
+    deleteExpense = new EventEmitter<Expense>();
 
     @Output()
     editExpense = new EventEmitter<Expense>();
@@ -33,7 +33,7 @@ export class ExpenseResultComponent {
     }
 
     onDelete(): void {
-        this.deleteExpense.emit(this.expense.meta.documentId);
+        this.deleteExpense.emit(this.expense);
     }
 
 }

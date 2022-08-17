@@ -13,8 +13,8 @@ export class FirestoreService {
 
     constructor(private angularFirestore: AngularFirestore) { }
 
-    subscribeCollection<T>(path: string): Observable<T[]> {
-        return this.angularFirestore.collection<T>(path).valueChanges({ idField: FirestoreService.DOCUMENT_ID_KEY });
+    subscribeCollection<T>(path: string, query?: QueryFn): Observable<T[]> {
+        return this.angularFirestore.collection<T>(path, query).valueChanges({ idField: FirestoreService.DOCUMENT_ID_KEY });
     }
 
     getCollection<T>(path: string, query?: QueryFn): Observable<T[]> {

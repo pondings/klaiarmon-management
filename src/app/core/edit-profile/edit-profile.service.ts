@@ -1,15 +1,14 @@
 import { Injectable } from "@angular/core";
-import { AngularFireStorage } from "@angular/fire/compat/storage";
 import { NgbModal } from "@ng-bootstrap/ng-bootstrap";
 import { UntilDestroy } from "@ngneat/until-destroy";
 import * as moment from "moment";
-import { finalize, take } from "rxjs";
 import { FireAuthService } from "../services/fire-auth.service";
 import { SpinnerService } from "../spinner/spinner.service";
 import { ToastService } from "../toast/toast.service";
 import { EditProfileComponent } from "./edit-profile.component";
 import { EditProfile } from "./edit-profile.model";
-import { compressAccurately } from 'image-conversion';
+import { UserInfo } from "../models/user.model";
+import { FireStorageService } from "../services/fire-storage.service";
 
 @Injectable()
 @UntilDestroy({ checkProperties: true })
@@ -17,7 +16,7 @@ export class EditProfileService {
 
     constructor(private modalService: NgbModal,
         private fireAuthService: FireAuthService,
-        private angularFireStorage: AngularFireStorage,
+        private fireStorageService: FireStorageService,
         private spinnerService: SpinnerService,
         private toastService: ToastService) {}
 
@@ -33,7 +32,7 @@ export class EditProfileService {
             const photoURL = userInfo.profilePhoto 
                 ? await this.uploadProfilePhoto(userInfo.profilePhoto, userInfo.profilePhoto.name) 
                 : userData?.photoURL;
-            const editData: Partial<firebase.default.UserInfo> = { displayName: userInfo.displayName!, photoURL };
+            const editData: Partial<UserInfo> = { displayName: userInfo.displayName!, photoURL };
 
             this.fireAuthService.updateUserInfo(editData);
             this.fireAuthService.triggerSubscribedUserInfo(editData);
@@ -44,16 +43,7 @@ export class EditProfileService {
 
     async uploadProfilePhoto(data: Blob, fileName: string): Promise<string> {
         const userInfo = await this.fireAuthService.getCurrentUser();
-
-        data = await compressAccurately(data, 200);
-        const ref = this.angularFireStorage.ref(`profile-photo/${userInfo?.uid}/${fileName}-${moment().format('DD-MM-YYYY')}`);
-        const task = ref.put(data, { cacheControl: 'public, max-age=86400' });
-        return new Promise((resolve) => {
-            task.snapshotChanges().pipe(finalize(() => {
-                ref.getDownloadURL().pipe(take(1)).subscribe(url => resolve(url));
-            }))
-            .subscribe();
-        });
+        return await this.fireStorageService.uploadPhoto(`profile-photo/${userInfo?.uid}/${fileName}-${moment().format('DD-MM-YYYY')}`, data);
     }
 
 }

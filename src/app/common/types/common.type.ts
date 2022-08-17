@@ -1,5 +1,5 @@
 import { FormControl } from "@angular/forms";
-import { UserInfo } from "src/app/core/services/fire-auth.service";
+import { UserInfo } from "src/app/core/models/user.model";
 import { MetaData } from "src/app/model/meta-data";
 import { NullableDateStruct } from "../utils/date-struct.util";
 import { NullableDate } from "../utils/date.util";
