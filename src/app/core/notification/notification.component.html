@@ -1,1 +1,13 @@
-<fa-icon [icon]="faBell"></fa-icon>
+<div ngbDropdown class="d-inline-block">
+    <div class="noti-container" ngbDropdownToggle>
+        <span class="badge text-bg-secondary" *ngIf="hasNotification$ | async">
+            {{ totalNotification$ | async }}
+        </span>
+        <fa-icon [icon]="faBell"></fa-icon>
+    </div>
+    <div ngbDropdownMenu [class.invisible]="!(hasNotification$ | async)">
+        <button *ngFor="let noti of (notifications$ | async)" ngbDropdownItem (click)="openNotification(noti)">
+            {{ noti.title }}
+        </button>
+    </div>
+</div>

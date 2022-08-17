@@ -1,6 +1,6 @@
 import { Injectable } from "@angular/core";
 import { Timestamp } from "firebase/firestore";
-import { firstValueFrom } from "rxjs";
+import { firstValueFrom, map, Observable, tap } from "rxjs";
 import { getDate } from "src/app/common/utils/date.util";
 import { HasMetaData } from "src/app/model/meta-data";
 import { DataServiceOptions } from "../models/data.model";
@@ -16,6 +16,18 @@ export class DataService {
         private fireAuthService: FireAuthService,
         private spinnerService: SpinnerService,
         private toastService: ToastService) { }
+
+    subscribeCollection<T>(path: string, options: DataServiceOptions = { showSpinner: true }): Observable<T[]> {
+        if (options?.showSpinner) this.spinnerService.show();
+        try {
+            return this.firestoreService.subscribeCollection<HasMetaData<T>>(path, options.query).pipe(map(data => data.map(this.mapMeta)),
+                tap(() => this.spinnerService.hide()));
+        } catch (error) {
+            if (options?.showSpinner) this.spinnerService.hide();
+            this.toastService.showError('Error while geting collection, Please contact Pondi!');
+            throw error;
+        }
+    }
 
     async getCollection<T>(path: string, options: DataServiceOptions = { showSpinner: true }): Promise<T[]> {
         if (options?.showSpinner) this.spinnerService.show();
@@ -64,7 +76,9 @@ export class DataService {
         try {
             if (options?.showSpinner) this.spinnerService.show();
             const dataWithMeta = await this.setMeta(data);
+            console.log('After set Meta');
             const updatedData = await this.firestoreService.updateDocument(`${path}/${data.meta.documentId}`, dataWithMeta);
+            console.log('After update');
             if (options?.toastMessage) this.toastService.showSuccess(options?.toastMessage);
             return updatedData;
         } catch (error) {
