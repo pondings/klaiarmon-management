@@ -3,17 +3,11 @@ import { Timestamp } from "firebase/firestore";
 import { firstValueFrom } from "rxjs";
 import { getDate } from "src/app/common/utils/date.util";
 import { HasMetaData } from "src/app/model/meta-data";
+import { DataServiceOptions } from "../models/data.model";
 import { SpinnerService } from "../spinner/spinner.service";
 import { ToastService } from "../toast/toast.service";
 import { FireAuthService } from "./fire-auth.service";
 import { FirestoreService } from "./firestore.service";
-import { QueryFn } from "@angular/fire/compat/firestore";
-
-export interface DataServiceOptions<T = any> {
-    showSpinner?: boolean;
-    toastMessage?: string;
-    query?: QueryFn;
-}
 
 @Injectable()
 export class DataService {

@@ -2,7 +2,6 @@ import { Injectable } from "@angular/core";
 import { QueryFn } from "@angular/fire/compat/firestore";
 import { NgbModal } from "@ng-bootstrap/ng-bootstrap";
 import { Timestamp } from "firebase/firestore";
-import { compressAccurately } from "image-conversion";
 import { BehaviorSubject, Observable } from "rxjs";
 import { Action } from "src/app/common/enum/action";
 import { getDateStructFromDate } from "src/app/common/utils/date-struct.util";
@@ -103,9 +102,8 @@ export class ExpenseService {
             month = currentDate?.month()! + 1;
         const fileName = file.name?.toLowerCase().replace(/\s|\//g, '');
 
-        file.file = await compressAccurately(file.file!, 200) as any;
         const path = `expense/${year}/${month}/${fileName}-${currentDate?.format('DD-MM-YYYY-HH-mm-ss')}`;
-        const uploadUrl = await this.fireStorageService.uploadFile(path, file.file!);
+        const uploadUrl = await this.fireStorageService.uploadPhoto(path, file.file!);
         return { name: fileName!, attachmentUrl: uploadUrl, uploadDate: currentDate?.toDate() };
     }
 
