@@ -1,5 +1,9 @@
 app-header {
 
+    nav {
+        padding-top: env(safe-area-inset-top) !important;
+    }
+
     a {
         cursor: pointer;
     }
