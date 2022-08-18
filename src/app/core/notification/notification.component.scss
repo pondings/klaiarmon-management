@@ -16,6 +16,12 @@ app-notification {
         }
     }
 
+    button.dd-btn {
+        font-size: 12px !important;
+        display: flex;
+        justify-content: space-between;
+    }
+
     .dropdown-toggle:after {
         content: none !important;
     }

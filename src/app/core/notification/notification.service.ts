@@ -2,6 +2,7 @@ import { Injectable } from "@angular/core";
 import { QueryFn } from "@angular/fire/compat/firestore";
 import { NgbModal } from "@ng-bootstrap/ng-bootstrap";
 import { map, Observable } from "rxjs";
+import { getMoment } from "src/app/common/utils/moment.util";
 import { CommonModalComponent } from "src/app/shared/components/common-modal/common-modal.component";
 import { UserNotification } from "../models/notification.model";
 import { DataService } from "../services/data-service";
@@ -29,17 +30,24 @@ export class NotificationService {
 
     async initNotificationService(): Promise<void> {
         const currentUser = await this.fireAuthService.getCurrentUser();
-        const query: QueryFn = ref => ref.where('to', 'array-contains', currentUser.uid);
+        const query: QueryFn = ref => ref.where('to', 'array-contains', currentUser.uid)
+            .orderBy('date', 'desc')
+            .limit(5);
 
         this.userNotification$ = this.dataService.subscribeCollection<UserNotification>(`notification`, { query });
         this.notifications$ = this.userNotification$.pipe(map(notis => notis.filter(noti => !noti.isAlert)));
         this.alertNotification$ = this.userNotification$.pipe(map(notis => notis.filter(noti => noti.isAlert)));
+        this.alertNotification$.subscribe(async notis => Promise.all(notis.map(async noti => {
+            await this.openNotificationModal(noti);
+        })));
     }
 
     async openNotificationModal(noti: UserNotification): Promise<void> {
         const modalRef = this.modalService.open(CommonModalComponent, { centered: true });
+        const contentDate = `<div class="noti-content-date">${getMoment(noti.date.toDate())?.format('DD/MM/YYYY HH:mm')}</div>`;
+
         modalRef.componentInstance.title = noti.title;
-        modalRef.componentInstance.content = noti.content;
+        modalRef.componentInstance.content = `${noti.content}${contentDate}`;
 
         await modalRef.result.then(_ => this.markNotificationAsRead(noti), _ => this.markNotificationAsRead(noti));
     }
