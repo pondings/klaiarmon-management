@@ -11,7 +11,6 @@ import { FireAuthService } from "../services/fire-auth.service";
 @Injectable()
 export class NotificationService {
 
-    userNotification$!: Observable<UserNotification[]>;
     notifications$!: Observable<UserNotification[]>;
     alertNotification$!: Observable<UserNotification[]>;
 
@@ -31,12 +30,16 @@ export class NotificationService {
     async initNotificationService(): Promise<void> {
         const currentUser = await this.fireAuthService.getCurrentUser();
         const query: QueryFn = ref => ref.where('to', 'array-contains', currentUser.uid)
+            .where('isAlert', '==', false)
             .orderBy('date', 'desc')
             .limit(5);
-
-        this.userNotification$ = this.dataService.subscribeCollection<UserNotification>(`notification`, { query });
-        this.notifications$ = this.userNotification$.pipe(map(notis => notis.filter(noti => !noti.isAlert)));
-        this.alertNotification$ = this.userNotification$.pipe(map(notis => notis.filter(noti => noti.isAlert)));
+        this.notifications$ = this.dataService.subscribeCollection<UserNotification>(`notification`, { query });
+        
+        const alertNotiQuery: QueryFn = ref => ref.where('to', 'array-contains', currentUser.uid)
+            .where('isAlert', '==', true)
+            .orderBy('date', 'desc')
+            .limit(1);
+        this.alertNotification$ = this.dataService.subscribeCollection<UserNotification>('notification', { query: alertNotiQuery });
         this.alertNotification$.subscribe(async notis => Promise.all(notis.map(async noti => {
             await this.openNotificationModal(noti);
         })));
@@ -49,6 +52,8 @@ export class NotificationService {
         modalRef.componentInstance.title = noti.title;
         modalRef.componentInstance.content = `${noti.content}${contentDate}`;
         this.markNotificationAsRead(noti);
+
+        await modalRef.result.then(_ => {}, _ => {});
     }
 
     private async markNotificationAsRead(noti: UserNotification): Promise<void> {

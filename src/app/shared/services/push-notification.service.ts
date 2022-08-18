@@ -60,9 +60,9 @@ export class PushNotificationService {
         await this.pushNotification(title, content, notiUsers);
     }
 
-    async pushNotification(title: string, content: string, to: string[], isAlert?: boolean): Promise<void> {
+    async pushNotification(title: string, content: string, to: string[], isAlert = false): Promise<void> {
         to = to.filter(removeArrDuplicated);
-        const notification: UserNotification = { title, content, isAlert: isAlert!, date: Timestamp.now(), meta: {}, to, readed: [] };
+        const notification: UserNotification = { title, content, isAlert, date: Timestamp.now(), meta: {}, to, readed: [] };
         await this.dataService.addDocument('notification', notification, { showSpinner: false });
     }
 
