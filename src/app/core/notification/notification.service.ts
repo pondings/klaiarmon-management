@@ -43,7 +43,7 @@ export class NotificationService {
     }
 
     async openNotificationModal(noti: UserNotification): Promise<void> {
-        const modalRef = this.modalService.open(CommonModalComponent, { centered: true });
+        const modalRef = this.modalService.open(CommonModalComponent, { centered: true, backdrop: 'static' });
         const contentDate = `<div class="noti-content-date">${getMoment(noti.date.toDate())?.format('DD/MM/YYYY HH:mm')}</div>`;
 
         modalRef.componentInstance.title = noti.title;
