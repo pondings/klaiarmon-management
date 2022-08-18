@@ -48,8 +48,7 @@ export class NotificationService {
 
         modalRef.componentInstance.title = noti.title;
         modalRef.componentInstance.content = `${noti.content}${contentDate}`;
-
-        await modalRef.result.then(_ => this.markNotificationAsRead(noti), _ => this.markNotificationAsRead(noti));
+        this.markNotificationAsRead(noti);
     }
 
     private async markNotificationAsRead(noti: UserNotification): Promise<void> {

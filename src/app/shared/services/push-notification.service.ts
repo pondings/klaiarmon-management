@@ -32,7 +32,7 @@ export class PushNotificationService {
             .filter(removeArrDuplicated);
         if (!notiUsers[0]) return;
 
-        const contentAction = action === Action.CREATE ? 'added new' : action === Action.UPDATE ? 'edited' : 'deleted';
+        const contentAction = action === Action.CREATE ? 'add new' : action === Action.UPDATE ? 'edit' : 'delete';
         const details = await Promise.all(expense.billings.map(async billing => {
             const username = await this.usernamePipe.transform(billing.user);
             return stringFormat(EXPENSE_DETAIL_NOTIFICATION_TEMPLATE, username, billing.amount.toFixed(2));
@@ -49,7 +49,7 @@ export class PushNotificationService {
     async pushCalendarNotification(calendarDto: CalendarEventDto, action: Action): Promise<void> {
         const allUser = await this.fireAuthService.getAllUsers();
         const currentUser = await this.fireAuthService.getCurrentUser();
-        const userAction = action === Action.CREATE ? 'added new' : action === Action.UPDATE ? 'edited' : 'deleted';
+        const userAction = action === Action.CREATE ? 'add' : action === Action.UPDATE ? 'edit' : 'delete';
 
         const notiUsers = allUser.filter(filterUidNotMatch(currentUser.uid!)).map(mapToUid);
         const notiUserNames = await Promise.all(notiUsers.map(transformUsername(this.usernamePipe)));
