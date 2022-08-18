@@ -15,7 +15,7 @@ export class EventInfoComponent {
     event!: CalendarEventWithMeta;
 
     @Output()
-    onDelete = new EventEmitter<string>();
+    onDelete = new EventEmitter<CalendarEventWithMeta>();
 
     @Output()
     onEdit = new EventEmitter<CalendarEventWithMeta>;
@@ -27,7 +27,7 @@ export class EventInfoComponent {
     isCollapsed = true;
 
     deleteEvent(): void {
-        this.onDelete.emit(this.event.meta?.documentId);
+        this.onDelete.emit(this.event);
     }
 
     editEvent(): void {

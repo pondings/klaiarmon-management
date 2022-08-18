@@ -1,31 +1,43 @@
 import { Injectable } from "@angular/core";
 import { Timestamp } from "firebase/firestore";
-import { EXPENSE_CONTENT_NOTIFICATION_TEMPLATE, EXPENSE_DETAIL_NOTIFICATION_TEMPLATE, EXPENSE_TITLE_NOTIFICATION_TEMPLATE } from "src/app/common/constants/notification-template";
 import { Action } from "src/app/common/enum/action";
-import { stringFormat } from "src/app/common/utils/common-util";
+import { removeArrDuplicated, stringFormat } from "src/app/common/utils/common-util";
 import { getMoment } from "src/app/common/utils/moment.util";
+import { filterUidNotEqualToUpdatedBy, filterUidNotMatch, mapToUid, transformUsername } from "src/app/common/utils/user.util";
 import { UserNotification } from "src/app/core/models/notification.model";
 import { DataService } from "src/app/core/services/data-service";
+import { FireAuthService } from "src/app/core/services/fire-auth.service";
 import { Expense } from "src/app/pages/accounting/expense/model/expense.model";
+import { CalendarEventDto } from "src/app/pages/dashboard/model/calendar";
 import { UsernamePipe } from "../pipe/username.pipe";
+
+import { 
+    CALENDAR_CONTENT_NOTIFICATION_TEMPLATE, 
+    CALENDAR_TITLE_NOTIFICATION_TEMPLATE, 
+    EXPENSE_CONTENT_NOTIFICATION_TEMPLATE, 
+    EXPENSE_DETAIL_NOTIFICATION_TEMPLATE, 
+    EXPENSE_TITLE_NOTIFICATION_TEMPLATE 
+} from "src/app/common/constants/notification-template";
 
 @Injectable()
 export class PushNotificationService {
 
     constructor(private dataService: DataService,
+        private fireAuthService: FireAuthService,
         private usernamePipe: UsernamePipe) {}
 
     async pushExpenseNotification(expense: Expense, action: Action): Promise<void> {
         const notiUsers = expense.billings.map(billing => billing.user).concat([expense.paidBy])
-            .filter(uid => uid !== expense.meta.updatedBy)
-            .filter((val, idx, arr) => arr.indexOf(val) === idx);
+            .filter(filterUidNotEqualToUpdatedBy(expense))
+            .filter(removeArrDuplicated);
         if (!notiUsers[0]) return;
+
         const contentAction = action === Action.CREATE ? 'added new' : action === Action.UPDATE ? 'edited' : 'deleted';
         const details = await Promise.all(expense.billings.map(async billing => {
             const username = await this.usernamePipe.transform(billing.user);
             return stringFormat(EXPENSE_DETAIL_NOTIFICATION_TEMPLATE, username, billing.amount.toFixed(2));
         }));
-        const notiUsernames = await Promise.all(notiUsers.map(async user => await this.usernamePipe.transform(user)));
+        const notiUsernames = await Promise.all(notiUsers.map(transformUsername(this.usernamePipe)));
         const userAction = await this.usernamePipe.transform(expense.meta.updatedBy!);
 
         const title = stringFormat(EXPENSE_TITLE_NOTIFICATION_TEMPLATE, userAction);
@@ -34,8 +46,22 @@ export class PushNotificationService {
         await this.pushNotification(title, content, notiUsers);
     }
 
+    async pushCalendarNotification(calendarDto: CalendarEventDto, action: Action): Promise<void> {
+        const allUser = await this.fireAuthService.getAllUsers();
+        const currentUser = await this.fireAuthService.getCurrentUser();
+        const userAction = action === Action.CREATE ? 'added new' : action === Action.UPDATE ? 'edited' : 'deleted';
+
+        const notiUsers = allUser.filter(filterUidNotMatch(currentUser.uid!)).map(mapToUid);
+        const notiUserNames = await Promise.all(notiUsers.map(transformUsername(this.usernamePipe)));
+        
+        const title = stringFormat(CALENDAR_TITLE_NOTIFICATION_TEMPLATE, currentUser.displayName!);
+        const content = stringFormat(CALENDAR_CONTENT_NOTIFICATION_TEMPLATE, notiUserNames.join(', '), currentUser.displayName!,
+            userAction, calendarDto.title, getMoment(calendarDto.start.toDate())?.format('DD/MM/YYYY')!, calendarDto.meta.description!);
+        await this.pushNotification(title, content, notiUsers);
+    }
+
     async pushNotification(title: string, content: string, to: string[], isAlert?: boolean): Promise<void> {
-        to = to.filter((val, idx, arr) => arr.indexOf(val) === idx);
+        to = to.filter(removeArrDuplicated);
         const notification: UserNotification = { title, content, isAlert: isAlert!, date: Timestamp.now(), meta: {}, to, readed: [] };
         await this.dataService.addDocument('notification', notification, { showSpinner: false });
     }

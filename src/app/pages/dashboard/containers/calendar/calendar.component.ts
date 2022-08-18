@@ -66,8 +66,8 @@ export class CalendarComponent implements OnInit {
         this.calendarService.addEvent(this.viewDate);
     }
 
-    async deleteEvent(documentId: string): Promise<void> {
-        this.calendarService.deleteEvent(documentId);
+    async deleteEvent(event: CalendarEventWithMeta): Promise<void> {
+        this.calendarService.deleteEvent(event);
     }
 
     reload(): void {
