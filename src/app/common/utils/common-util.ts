@@ -7,4 +7,5 @@ export const isNotUndefined = (target: any): boolean => !isUndefined(target);
 export const isNotNull = (target: any): boolean => target != null;
 export const isNotNullOrUndefined = (target: any): boolean => isNotNull(target) && isNotUndefined(target);
 
+export const removeArrDuplicated = <T>(record: T, idx: number, self: T[]) => self.indexOf(record) === idx;
 export const stringFormat = (str: string, ...args: string[]) => str.replace(/{(\d+)}/g, (match, index) => args[index] || '');
