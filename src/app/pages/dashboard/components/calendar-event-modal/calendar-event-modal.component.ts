@@ -10,6 +10,8 @@ import { getDateFromDateStruct } from "src/app/common/utils/date.util";
 import { UntilDestroy } from "@ngneat/until-destroy";
 import { Nullable } from "src/app/common/types/common.type";
 import { GoogleMap } from "@angular/google-maps";
+import { Geolocation } from '@capacitor/geolocation';
+import { Capacitor } from "@capacitor/core";
 
 @UntilDestroy({ checkProperties: true })
 @Component({
@@ -55,11 +57,11 @@ export class CalendarEventModalComponent implements OnInit, AfterViewInit {
         this.calendarEventForm = this.createCalendarEventForm();
     }
 
-    ngOnInit(): void {
+    async ngOnInit(): Promise<void> {
         this.patchFormValue();
         this.initSubscribe();
 
-        setTimeout(() => this.setGoogleMapsForm(), 100);
+        setTimeout(async () => await this.setGoogleMapsForm(), 100);
     }
 
     ngAfterViewInit(): void {
@@ -151,10 +153,10 @@ export class CalendarEventModalComponent implements OnInit, AfterViewInit {
         });
     }
 
-    private setGoogleMapsForm(): void {
+    private async setGoogleMapsForm(): Promise<void> {
         const { placeName, placeLatLng, placeId } = this.event.meta?.place! || {};
         if (!placeName || !placeLatLng) {
-            this.setToCurrentPosition();
+            await this.setToCurrentPosition();
             return;
         };
 
@@ -168,10 +170,15 @@ export class CalendarEventModalComponent implements OnInit, AfterViewInit {
         new google.maps.Marker({ position: latlng, map: this.googleMap.googleMap, animation: google.maps.Animation.DROP })
     }
 
-    private setToCurrentPosition(): void {
-        navigator.geolocation.getCurrentPosition((position) => {
-            this.setGoogleMapsLocation({ lat: position.coords.latitude, lng: position.coords.longitude });
-        });
+    private async setToCurrentPosition(): Promise<void> {
+        if (Capacitor.isNativePlatform()) {
+            const codinates = await Geolocation.getCurrentPosition();
+            this.setGoogleMapsLocation({ lat: codinates.coords.latitude, lng: codinates.coords.longitude });
+        } else {
+            navigator.geolocation.getCurrentPosition((position) => {
+                this.setGoogleMapsLocation({ lat: position.coords.latitude, lng: position.coords.longitude });
+            });
+        }
     }
 
     private createCalendarEventForm(): FormGroup<AddCalendarEventForm> {

@@ -1,5 +1,9 @@
 app-sidebar {
 
+    div.offcanvas {
+        padding-top: env(safe-area-inset-top) !important;
+    }
+
     div.offcanvas-header {
         padding-bottom: 0px;
 
