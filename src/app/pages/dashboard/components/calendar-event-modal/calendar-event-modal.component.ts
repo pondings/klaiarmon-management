@@ -57,11 +57,11 @@ export class CalendarEventModalComponent implements OnInit, AfterViewInit {
         this.calendarEventForm = this.createCalendarEventForm();
     }
 
-    ngOnInit(): void {
+    async ngOnInit(): Promise<void> {
         this.patchFormValue();
         this.initSubscribe();
 
-        setTimeout(() => this.setGoogleMapsForm(), 100);
+        setTimeout(async () => await this.setGoogleMapsForm(), 100);
     }
 
     ngAfterViewInit(): void {
@@ -153,10 +153,10 @@ export class CalendarEventModalComponent implements OnInit, AfterViewInit {
         });
     }
 
-    private setGoogleMapsForm(): void {
+    private async setGoogleMapsForm(): Promise<void> {
         const { placeName, placeLatLng, placeId } = this.event.meta?.place! || {};
         if (!placeName || !placeLatLng) {
-            this.setToCurrentPosition();
+            await this.setToCurrentPosition();
             return;
         };
 
