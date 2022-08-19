@@ -34,7 +34,7 @@
 
     <div *ngIf="!isViewMode" class="modal-footer">
         <button class="btn btn-sm btn-outline-dark" type="button" [disabled]="!(isFormValid$ | async)" (click)="onSubmit()">
-            {{ submitButtonLabel }}
+            {{ action }}
         </button>
         <button class="btn btn-sm btn-outline-danger" type="button" (click)="dismiss()">Cancel</button>
     </div>

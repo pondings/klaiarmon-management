@@ -6,6 +6,7 @@ import { Timestamp } from "firebase/firestore";
 import { map, Observable } from "rxjs";
 import { Action } from "src/app/common/enum/action";
 import { NullableDateStructFormControl, NullableMeta, NullableNumber, NullableNumberFormControl, NullableString, NullableStringFormControl, NullableUserInfo, NullableUserInfoFormControl } from "src/app/common/types/common.type";
+import { findArrDuplicated, mapTo, sumNumber } from "src/app/common/utils/common-util";
 import { getDateStruct } from "src/app/common/utils/date-struct.util";
 import { getDateFromDateStruct } from "src/app/common/utils/date.util";
 import { isFormDisabled, isFormValid } from "src/app/common/utils/form-util";
@@ -84,10 +85,6 @@ export class ExpenseModalComponent implements OnInit, AfterViewInit {
         return this.action === Action.VIEW;
     }
 
-    get submitButtonLabel(): string {
-        return this.action === Action.CREATE ? 'Add' : 'Edit';
-    }
-
     get nameCtrl(): NullableStringFormControl {
         return this.expenseForm.controls.name;
     }
@@ -115,7 +112,7 @@ export class ExpenseModalComponent implements OnInit, AfterViewInit {
     private validateForm(): void {
         const formValue = this.expenseForm.getRawValue();
         const billings = formValue.billings;
-        const totalBillingAmount = billings.map(billing => billing.amount).reduce((prev, cur) => prev! + cur!, 0);
+        const totalBillingAmount = billings.map(mapTo('amount')).reduce(sumNumber, 0);
         if (formValue.amount !== totalBillingAmount) {
             this.toastService.showWarning(`Total billing amoumt ${totalBillingAmount} not match with expense amount ${formValue.amount}`);
             throw 'Total amount not match with expense amount';
@@ -123,7 +120,7 @@ export class ExpenseModalComponent implements OnInit, AfterViewInit {
 
         const duplicateNames = billings.map(billing => billing.user)
             .map(user => user?.displayName)
-            .filter((displayName, idx, arr) => arr.indexOf(displayName) !== idx);
+            .filter(findArrDuplicated);
         if (duplicateNames[0]) {
             this.toastService.showWarning(`${duplicateNames.join(',')} has duplicated in billing section.`);
             throw 'Duplicate user in section';
