@@ -5,7 +5,7 @@
         </span>
         <fa-icon [icon]="faBell"></fa-icon>
     </div>
-    <div ngbDropdownMenu [class.invisible]="!(hasNotification$ | async)">
+    <div ngbDropdownMenu>
         <div *ngFor="let noti of (notifications$ | async); let idx = index" class="dd-container">
             <hr *ngIf="idx !== 0">
             <button class="dd-btn" ngbDropdownItem [class.readed]="noti.meta.isReaded" (click)="openNotification(noti)">
