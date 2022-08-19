@@ -15,4 +15,5 @@
   </div>
 </div>
 
-<canvas baseChart [type]="'pie'" [data]="chartData" [options]="chartOptions"></canvas>
+<canvas baseChart [type]="'pie'" [data]="chartData" [options]="chartOptions" (doubletap)="showData()" 
+  (chartClick)="selectData($event.active!)"></canvas>

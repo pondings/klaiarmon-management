@@ -1,3 +1,4 @@
-<app-expense-chart-info [userBillingInfos$]="userBillingInfos$" (periodChange)="periodChange($event)"></app-expense-chart-info>
+<app-expense-chart-info [userBillingInfos$]="userBillingInfos$" (periodChange)="periodChange($event)"
+    (viewExpesne)="viewExpesne($event)"></app-expense-chart-info>
 <br>
 <app-user-billing-info [userBillingInfos]="(userBillingInfos$ | async)!"></app-user-billing-info>

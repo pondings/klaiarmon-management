@@ -1,10 +1,11 @@
 <div class="input-group">
     <div class="form-floating">
         <input ngbDatepicker readonly [formControl]="control" class="form-control form-control-sm" [placeholder]="label"
-            #d="ngbDatepicker" [firstDayOfWeek]="7" [maxDate]="maxDate!" [minDate]="minDate!" (click)="d.toggle()">
+            #d="ngbDatepicker" [firstDayOfWeek]="7" [maxDate]="maxDate!" [minDate]="minDate!" (click)="d.toggle()"
+            [class.disabled-control]="isDisabled$ | async">
         <label [attr.for]="label">{{ label }}</label>
     </div>
-    <button class="btn btn-outline-secondary" (click)="d.toggle()" type="button">
+    <button *ngIf="!(isDisabled$ | async)" class="btn btn-outline-secondary" (click)="d.toggle()" type="button">
         <fa-icon [icon]="faCalendar"></fa-icon>
     </button>
 </div>

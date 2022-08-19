@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, OnInit, ViewEncapsulation, Input, ViewChild, AfterViewInit } from "@angular/core";
+import { ChangeDetectionStrategy, Component, OnInit, ViewEncapsulation, Input, ViewChild, AfterViewInit, ChangeDetectorRef } from "@angular/core";
 import { FormArray, FormBuilder, FormGroup, Validators } from "@angular/forms";
 import { faCalendar } from "@fortawesome/free-solid-svg-icons";
 import { NgbActiveModal } from "@ng-bootstrap/ng-bootstrap";
@@ -8,6 +8,7 @@ import { Action } from "src/app/common/enum/action";
 import { NullableDateStructFormControl, NullableMeta, NullableNumber, NullableNumberFormControl, NullableString, NullableStringFormControl, NullableUserInfo, NullableUserInfoFormControl } from "src/app/common/types/common.type";
 import { getDateStruct } from "src/app/common/utils/date-struct.util";
 import { getDateFromDateStruct } from "src/app/common/utils/date.util";
+import { isFormDisabled, isFormValid } from "src/app/common/utils/form-util";
 import { ToastService } from "src/app/core/toast/toast.service";
 import { AttachmentUpload, AttachmentUploadForm, ExpenseForm, ExpenseFormValue, Billing, BillingForm } from "../../model/expense.model";
 import { AddAttachmentSectionComponent } from "../add-attachment-section/add-attachment-section.component";
@@ -39,21 +40,25 @@ export class ExpenseModalComponent implements OnInit, AfterViewInit {
     faCalendar = faCalendar;
 
     isFormValid$!: Observable<boolean>
+    isDisabled$!: Observable<boolean>;
 
     today = getDateStruct();
 
     constructor(private fb: FormBuilder,
         private activeModal: NgbActiveModal,
-        private toastService: ToastService) {
+        private toastService: ToastService,
+        private cdr: ChangeDetectorRef) {
         this.expenseForm = this.buildExpenseForm();
     }
 
     ngOnInit(): void {
-        this.isFormValid$ = this.expenseForm.statusChanges.pipe(map(status => status === 'VALID'));
+        this.isFormValid$ = this.expenseForm.statusChanges.pipe(isFormValid);
+        this.isDisabled$ = this.expenseForm.statusChanges.pipe(isFormDisabled);
     }
 
     ngAfterViewInit(): void {
         if (this.action === Action.UPDATE) setTimeout(() => this.initEditForm(), 100);
+        if (this.action === Action.VIEW) setTimeout(() => this.initViewForm(), 100);
     }
 
     onSubmit(): void {
@@ -73,6 +78,10 @@ export class ExpenseModalComponent implements OnInit, AfterViewInit {
 
     dismiss(): void {
         this.activeModal.dismiss();
+    }
+
+    get isViewMode(): boolean {
+        return this.action === Action.VIEW;
     }
 
     get submitButtonLabel(): string {
@@ -126,6 +135,17 @@ export class ExpenseModalComponent implements OnInit, AfterViewInit {
         this.expenseForm.patchValue(formValue);
         this.addAttachmentSection.patchValue(formValue.files);
         this.billingSection.patchValue(formValue.billings);
+    }
+
+    private initViewForm(): void {
+        const formValue = this.expense;
+        this.expenseForm.patchValue(formValue);
+        this.addAttachmentSection.patchValue(formValue.files);
+        this.billingSection.patchValue(formValue.billings);
+        
+        this.expenseForm.disable();
+        this.billingSection.disable();
+        this.addAttachmentSection.disable();
     }
 
     private processFilesBeforeClose(files: AttachmentUpload[]): AttachmentUpload[] {

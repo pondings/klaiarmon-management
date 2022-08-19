@@ -23,6 +23,9 @@ export class UserSelectorComponent implements OnInit {
     @Input()
     required!: boolean;
 
+    @Input()
+    disabled!: boolean;
+
     users$ = new BehaviorSubject<UserInfo[]>([]);
     focus$ = new Subject<string>();
     click$ = new Subject<string>();

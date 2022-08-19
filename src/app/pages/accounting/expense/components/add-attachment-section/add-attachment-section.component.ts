@@ -20,6 +20,9 @@ export class AddAttachmentSectionComponent {
     @Input()
     fileFormArr!: FormArray<FormGroup<AttachmentUploadForm>>;
 
+    @Input()
+    isDisabled!: boolean;
+
     faPlus = faPlus;
     faFileUpload = faFileUpload;
     faEye = faEye;
@@ -58,6 +61,10 @@ export class AddAttachmentSectionComponent {
         files.forEach(_ => this.addFileForm());
         this.fileFormArr.patchValue(files);
         this.cdr.detectChanges();
+    }
+
+    disable(): void {
+        this.fileFormArr.disable();
     }
 
     getAttchmentUrl(idx: number): string {

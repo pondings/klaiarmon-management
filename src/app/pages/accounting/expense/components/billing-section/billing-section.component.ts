@@ -23,6 +23,9 @@ export class BillingSectionComponent implements OnInit {
     @Input()
     action!: Action;
 
+    @Input()
+    isDisabled!: boolean;
+
     faPlus = faPlus;
     faCircleMinus = faCircleMinus;
 
@@ -76,6 +79,10 @@ export class BillingSectionComponent implements OnInit {
         billingList.forEach(_ => this.addBillingForm());
         this.billingFormArr.patchValue(billingList);
         this.cdr.detectChanges();
+    }
+
+    disable(): void {
+        this.billingFormArr.disable();
     }
 
     private initCreateForm(): void {
