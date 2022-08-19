@@ -10,6 +10,7 @@ import { takeOnce } from "src/app/common/utils/rxjs-util";
 import { DataService } from "src/app/core/services/data-service";
 import { FireAuthService } from "src/app/core/services/fire-auth.service";
 import { FireStorageService } from "src/app/core/services/fire-storage.service";
+import { SpinnerService } from "src/app/core/spinner/spinner.service";
 import { ToastService } from "src/app/core/toast/toast.service";
 import { ImageViewerComponent } from "src/app/shared/components/image-viewer/image-viewer.component";
 import { PushNotificationService } from "src/app/shared/services/push-notification.service";
@@ -27,6 +28,7 @@ export class ExpenseService {
         private fireStorageService: FireStorageService,
         private fireAuthService: FireAuthService,
         private toastService: ToastService,
+        private spinnerService: SpinnerService,
         private modalService: NgbModal,
         private pushNotificationService: PushNotificationService) { }
 
@@ -120,12 +122,14 @@ export class ExpenseService {
     }
 
     private async getExpenseFormValueFromExpense(expense: Expense): Promise<ExpenseFormValue> {
+        this.spinnerService.show();
         const { name, amount, date: _date, paidBy: _paidBy, files, meta, billings: _billings } = expense;
         const date = getDateStructFromDate(_date.toDate());
         const paidBy = await this.fireAuthService.getUserByUid(expense.paidBy);
         const billings = await Promise.all(_billings.map(async billing => 
             ({ user: await this.fireAuthService.getUserByUid(billing.user), amount: billing.amount })));
 
+        this.spinnerService.hide();
         return { name, amount, date, paidBy, files, meta, billings }
     }
 
