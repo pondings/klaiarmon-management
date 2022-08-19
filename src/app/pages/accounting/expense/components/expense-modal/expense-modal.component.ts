@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, OnInit, ViewEncapsulation, Input, ViewChild, AfterViewInit } from "@angular/core";
+import { ChangeDetectionStrategy, Component, OnInit, ViewEncapsulation, Input, ViewChild, AfterViewInit, ChangeDetectorRef } from "@angular/core";
 import { FormArray, FormBuilder, FormGroup, Validators } from "@angular/forms";
 import { faCalendar } from "@fortawesome/free-solid-svg-icons";
 import { NgbActiveModal } from "@ng-bootstrap/ng-bootstrap";
@@ -6,8 +6,10 @@ import { Timestamp } from "firebase/firestore";
 import { map, Observable } from "rxjs";
 import { Action } from "src/app/common/enum/action";
 import { NullableDateStructFormControl, NullableMeta, NullableNumber, NullableNumberFormControl, NullableString, NullableStringFormControl, NullableUserInfo, NullableUserInfoFormControl } from "src/app/common/types/common.type";
+import { findArrDuplicated, mapTo, sumNumber } from "src/app/common/utils/common-util";
 import { getDateStruct } from "src/app/common/utils/date-struct.util";
 import { getDateFromDateStruct } from "src/app/common/utils/date.util";
+import { isFormDisabled, isFormValid } from "src/app/common/utils/form-util";
 import { ToastService } from "src/app/core/toast/toast.service";
 import { AttachmentUpload, AttachmentUploadForm, ExpenseForm, ExpenseFormValue, Billing, BillingForm } from "../../model/expense.model";
 import { AddAttachmentSectionComponent } from "../add-attachment-section/add-attachment-section.component";
@@ -39,21 +41,25 @@ export class ExpenseModalComponent implements OnInit, AfterViewInit {
     faCalendar = faCalendar;
 
     isFormValid$!: Observable<boolean>
+    isDisabled$!: Observable<boolean>;
 
     today = getDateStruct();
 
     constructor(private fb: FormBuilder,
         private activeModal: NgbActiveModal,
-        private toastService: ToastService) {
+        private toastService: ToastService,
+        private cdr: ChangeDetectorRef) {
         this.expenseForm = this.buildExpenseForm();
     }
 
     ngOnInit(): void {
-        this.isFormValid$ = this.expenseForm.statusChanges.pipe(map(status => status === 'VALID'));
+        this.isFormValid$ = this.expenseForm.statusChanges.pipe(isFormValid);
+        this.isDisabled$ = this.expenseForm.statusChanges.pipe(isFormDisabled);
     }
 
     ngAfterViewInit(): void {
         if (this.action === Action.UPDATE) setTimeout(() => this.initEditForm(), 100);
+        if (this.action === Action.VIEW) setTimeout(() => this.initViewForm(), 100);
     }
 
     onSubmit(): void {
@@ -75,8 +81,8 @@ export class ExpenseModalComponent implements OnInit, AfterViewInit {
         this.activeModal.dismiss();
     }
 
-    get submitButtonLabel(): string {
-        return this.action === Action.CREATE ? 'Add' : 'Edit';
+    get isViewMode(): boolean {
+        return this.action === Action.VIEW;
     }
 
     get nameCtrl(): NullableStringFormControl {
@@ -106,7 +112,7 @@ export class ExpenseModalComponent implements OnInit, AfterViewInit {
     private validateForm(): void {
         const formValue = this.expenseForm.getRawValue();
         const billings = formValue.billings;
-        const totalBillingAmount = billings.map(billing => billing.amount).reduce((prev, cur) => prev! + cur!, 0);
+        const totalBillingAmount = billings.map(mapTo('amount')).reduce(sumNumber, 0);
         if (formValue.amount !== totalBillingAmount) {
             this.toastService.showWarning(`Total billing amoumt ${totalBillingAmount} not match with expense amount ${formValue.amount}`);
             throw 'Total amount not match with expense amount';
@@ -114,7 +120,7 @@ export class ExpenseModalComponent implements OnInit, AfterViewInit {
 
         const duplicateNames = billings.map(billing => billing.user)
             .map(user => user?.displayName)
-            .filter((displayName, idx, arr) => arr.indexOf(displayName) !== idx);
+            .filter(findArrDuplicated);
         if (duplicateNames[0]) {
             this.toastService.showWarning(`${duplicateNames.join(',')} has duplicated in billing section.`);
             throw 'Duplicate user in section';
@@ -126,6 +132,17 @@ export class ExpenseModalComponent implements OnInit, AfterViewInit {
         this.expenseForm.patchValue(formValue);
         this.addAttachmentSection.patchValue(formValue.files);
         this.billingSection.patchValue(formValue.billings);
+    }
+
+    private initViewForm(): void {
+        const formValue = this.expense;
+        this.expenseForm.patchValue(formValue);
+        this.addAttachmentSection.patchValue(formValue.files);
+        this.billingSection.patchValue(formValue.billings);
+        
+        this.expenseForm.disable();
+        this.billingSection.disable();
+        this.addAttachmentSection.disable();
     }
 
     private processFilesBeforeClose(files: AttachmentUpload[]): AttachmentUpload[] {

@@ -32,8 +32,15 @@ export class ExpenseService {
         private modalService: NgbModal,
         private pushNotificationService: PushNotificationService) { }
 
+    async viewExpense(expense: Expense): Promise<void> {
+        const expenseFormValue = await this.getExpenseFormValueFromExpense(expense);
+        const modalRef = this.modalService.open(ExpenseModalComponent, { centered: true, backdrop: 'static' });
+        modalRef.componentInstance.action = Action.VIEW;
+        modalRef.componentInstance.expense = expenseFormValue;
+    }
+
     async addExpense(): Promise<void> {
-        const modalRef = this.modalService.open(ExpenseModalComponent, { centered: true });
+        const modalRef = this.modalService.open(ExpenseModalComponent, { centered: true, backdrop: 'static' });
         modalRef.componentInstance.action = Action.CREATE;
 
         await modalRef.result.then(async (expense: Expense<Timestamp>) => {
@@ -46,16 +53,16 @@ export class ExpenseService {
 
     async editExpense(expense: Expense): Promise<void> {
         const expenseFormValue = await this.getExpenseFormValueFromExpense(expense);
-        const modalRef = this.modalService.open(ExpenseModalComponent, { centered: true });
+        const modalRef = this.modalService.open(ExpenseModalComponent, { centered: true, backdrop: 'static' });
         modalRef.componentInstance.action = Action.UPDATE;
         modalRef.componentInstance.expense = expenseFormValue;
 
         await modalRef.result.then(async (expense: Expense) => {
             expense.files = await Promise.all(expense.files.map(async file => file.file ? await this.uploadFile(file) : file));
-            const updatedData = await this.dataService.updateDocument(ExpenseService.EXPENSE_COLLECTION_PATH, expense, 
+            const updatedData = await this.dataService.updateDocument(ExpenseService.EXPENSE_COLLECTION_PATH, expense,
                 { showSpinner: true, toastMessage: 'Expense updated' });
-            this.expenses$.pipe(takeOnce()).subscribe(expenses => 
-                this.expenses$.next(expenses.map(exp => 
+            this.expenses$.pipe(takeOnce()).subscribe(expenses =>
+                this.expenses$.next(expenses.map(exp =>
                     exp.meta.documentId === updatedData.meta.documentId ? updatedData : exp)));
             await this.pushNotificationService.pushExpenseNotification(updatedData, Action.UPDATE);
         }, err => { });
@@ -89,10 +96,10 @@ export class ExpenseService {
         const confirmation = confirm('After confirm the content will be deleted from the system.');
         if (!confirmation) return;
 
-        await this.dataService.deleteDocument(ExpenseService.EXPENSE_COLLECTION_PATH, expense.meta.documentId!, 
+        await this.dataService.deleteDocument(ExpenseService.EXPENSE_COLLECTION_PATH, expense.meta.documentId!,
             { showSpinner: true, toastMessage: 'Expense deleted' });
-        this.expenses$.pipe(takeOnce()).subscribe(expenses => 
-            this.expenses$.next(expenses.filter(expense => 
+        this.expenses$.pipe(takeOnce()).subscribe(expenses =>
+            this.expenses$.next(expenses.filter(expense =>
                 expense.meta.documentId !== expense.meta.documentId)));
         this.pushNotificationService.pushExpenseNotification(expense, Action.DELETE);
     }
@@ -126,7 +133,7 @@ export class ExpenseService {
         const { name, amount, date: _date, paidBy: _paidBy, files, meta, billings: _billings } = expense;
         const date = getDateStructFromDate(_date.toDate());
         const paidBy = await this.fireAuthService.getUserByUid(expense.paidBy);
-        const billings = await Promise.all(_billings.map(async billing => 
+        const billings = await Promise.all(_billings.map(async billing =>
             ({ user: await this.fireAuthService.getUserByUid(billing.user), amount: billing.amount })));
 
         this.spinnerService.hide();

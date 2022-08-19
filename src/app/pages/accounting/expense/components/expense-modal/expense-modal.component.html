@@ -1,7 +1,7 @@
 <form [formGroup]="expenseForm">
 
     <div class="modal-header">
-        <h4>Add Expense</h4>
+        <h4>{{ action }} Expense</h4>
         <button type="button" class="btn-close" type="button" (click)="dismiss()"></button>
     </div>
 
@@ -20,19 +20,21 @@
 
         <div class="grid bs-rows-1 bs-columns-2 row-gap-1 mb-2">
             <app-date-picker label="Date" [control]="dateCtrl" [maxDate]="today!"></app-date-picker>
-            <app-user-selector label="Paid by" [control]="paidByCtrl" [required]="true"></app-user-selector>
+            <app-user-selector label="Paid by" [control]="paidByCtrl" [required]="true" 
+                [disabled]="(isDisabled$ | async)!"></app-user-selector>
         </div>
 
         <app-billing-section class="d-block mt-2" formArrayName="billings" [billingFormArr]="billingsFormArr"
-            [action]="action"></app-billing-section>
+            [action]="action" [isDisabled]="(isDisabled$ | async)!"></app-billing-section>
 
-        <app-add-attachment-section formArrayName="files" [fileFormArr]="fileFormArr"></app-add-attachment-section>
+        <app-add-attachment-section formArrayName="files" [fileFormArr]="fileFormArr"
+            [isDisabled]="(isDisabled$ | async)!"></app-add-attachment-section>
 
     </div>
 
-    <div class="modal-footer">
+    <div *ngIf="!isViewMode" class="modal-footer">
         <button class="btn btn-sm btn-outline-dark" type="button" [disabled]="!(isFormValid$ | async)" (click)="onSubmit()">
-            {{ submitButtonLabel }}
+            {{ action }}
         </button>
         <button class="btn btn-sm btn-outline-danger" type="button" (click)="dismiss()">Cancel</button>
     </div>

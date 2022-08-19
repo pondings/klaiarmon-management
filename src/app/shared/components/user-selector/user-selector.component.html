@@ -3,7 +3,7 @@
         [ngbTypeahead]="searchUsers" [resultFormatter]="searchUserFormatter" [inputFormatter]="searchUserFormatter"
         (focus)="focus$.next('')" (click)="click$.next('')" readonly/>
     <label for="user-selector" [ngClass]="{ required: required! }">{{ label }}</label>
-    <button *ngIf="control.valueChanges | async" class="btn clear-btn d-flex align-items-center"
+    <button *ngIf="(control.valueChanges | async) && !disabled!" class="btn clear-btn d-flex align-items-center"
         (click)="clearSelectedUser()">
         <fa-icon [icon]="faXmark"></fa-icon>
     </button>

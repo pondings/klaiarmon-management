@@ -4,15 +4,23 @@ import { UntilDestroy } from "@ngneat/until-destroy";
 import { ChartData, ChartOptions, ChartType } from 'chart.js';
 import { Moment } from "moment";
 import { BaseChartDirective } from "ng2-charts";
-import { combineLatest, forkJoin, merge, Observable } from "rxjs";
+import { BehaviorSubject, combineLatest, Observable } from "rxjs";
+import { mapTo, mergeArray } from "src/app/common/utils/common-util";
 import { getMoment } from "src/app/common/utils/moment.util";
-import { takeOnce } from "src/app/common/utils/rxjs-util";
+import { SpinnerService } from "src/app/core/spinner/spinner.service";
 import { UsernamePipe } from "src/app/shared/pipe/username.pipe";
+import { Expense } from "../../../expense/model/expense.model";
 import { UserBillingInfo } from "../../model/user-billing-info.model";
 
 enum ChartMode {
     BY_USER = 'By User',
     BY_EXPENSE = 'By Expense'
+}
+
+interface ChartViewData {
+    title: string;
+    data: number;
+    mode: ChartMode
 }
 
 @UntilDestroy({ checkProperties: true })
@@ -31,8 +39,16 @@ export class ExpenseChartInfoComponent implements OnInit {
     @Output()
     periodChange = new EventEmitter<Moment>();
 
+    @Output()
+    showUserExpense = new EventEmitter<UserBillingInfo>();
+
+    @Output()
+    viewExpesne = new EventEmitter<Expense>();
+
     @ViewChild(BaseChartDirective, { static: true })
     chart!: BaseChartDirective;
+
+    billingInfo$ = new BehaviorSubject<UserBillingInfo[]>([]);
 
     chartType: ChartType = 'pie';
     chartOptions: ChartOptions<'pie'> = { responsive: true };
@@ -47,13 +63,58 @@ export class ExpenseChartInfoComponent implements OnInit {
     periodCtrl = new FormControl<Moment | undefined>({ value: undefined, disabled: false });
     chartModeCtrl = new FormControl<ChartMode | undefined>({ value: undefined, disabled: false });
 
-    constructor(private usernamePipe: UsernamePipe) { }
+    viewData!: Partial<ChartViewData>;
+
+    constructor(private usernamePipe: UsernamePipe,
+        private spinnerService: SpinnerService) { }
 
     ngOnInit(): void {
         this.subscribeUserBillingInfosAndChartMode();
         this.monthOptions = this.getMonthOptions();
         this.periodCtrl.valueChanges.subscribe(val => this.periodChange.emit(val!));
         this.chartModeCtrl.setValue(ChartMode.BY_USER);
+    }
+
+    async selectData(chartEvents: any[]): Promise<void> {
+        if (!chartEvents[0]) {
+            this.viewData = {};
+            return;
+        }
+
+        const chartEvent = chartEvents[0];
+        const dataset = this.chartData.datasets[chartEvent.datasetIndex!];
+
+        const title = this.chartData.labels?.at(chartEvent.index!)!;
+        const data = dataset.data[chartEvent.index!];
+        const mode = this.chartModeCtrl.value!;
+
+        this.viewData = { title, data, mode };
+    }
+
+    async showData(): Promise<void> {
+        const { mode } = this.viewData;
+        if (!this.viewData.mode) return;
+
+        const billings = this.billingInfo$.getValue();
+
+        if (mode === ChartMode.BY_USER) {
+            await this.openShowUserExpenseDataModal(billings);
+        } else if (mode === ChartMode.BY_EXPENSE) {
+            await this.openShowExpenseInfoModal(billings);
+        }
+    }
+
+    private async openShowUserExpenseDataModal(billings: UserBillingInfo[]): Promise<void> {
+        const { title, data } = this.viewData;
+        const usernamedBillings = await Promise.all(billings.map(this.mapBillingUsername()));
+        const targetBilling = usernamedBillings.find(this.findBillingByTitleAndAmount(title!, data!));
+        this.showUserExpense.emit(targetBilling);
+    }
+
+    private async openShowExpenseInfoModal(billings: UserBillingInfo[]): Promise<void> {
+        const { title, data } = this.viewData;
+        const targetExpense = billings.map(mapTo('expenses')).reduce(mergeArray, []).find(this.findExpenseByTitleAndAmount(title!, data!));
+        this.viewExpesne.emit(targetExpense);
     }
 
     private getMonthOptions(): Moment[] {
@@ -84,7 +145,22 @@ export class ExpenseChartInfoComponent implements OnInit {
                     break;
             }
             this.chart.update();
+            this.billingInfo$.next(billingInfos);
         });
+    }
+
+    private mapBillingUsername(): (billing: UserBillingInfo) => Promise<UserBillingInfo> {
+        return billing => new Promise(async (resolve) => {
+            return resolve({ ...billing, user: await this.usernamePipe.transform(billing.user) });
+        });
+    }
+
+    private findBillingByTitleAndAmount(title: string, amount: number): (billing: UserBillingInfo) => boolean {
+        return billing => billing.user === title && billing.expenseAmount === amount;
+    }
+
+    private findExpenseByTitleAndAmount(title: string, amount: number): (expense: Expense) => boolean {
+        return expense => expense.name === title && expense.amount === amount;
     }
 
 }

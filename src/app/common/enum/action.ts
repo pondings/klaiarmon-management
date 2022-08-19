@@ -1,5 +1,6 @@
 export enum Action {
-    CREATE,
-    UPDATE,
-    DELETE
+    CREATE = 'Add',
+    UPDATE = 'Edit',
+    DELETE = 'Delete',
+    VIEW = 'View'
 }
