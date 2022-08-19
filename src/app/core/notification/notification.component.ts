@@ -26,7 +26,8 @@ export class NotificationComponent implements OnInit {
         await this.notificationService.initNotificationService();
         this.notifications$ = this.notificationService.subscribeNotifications();
 
-        this.totalNotification$ = this.notifications$.pipe(map(notis => notis.length));
+        this.totalNotification$ = this.notifications$.pipe(map(notis => notis.filter(noti => noti.meta.isReaded === false).length));
+        this.totalNotification$.subscribe(console.log);
         this.hasNotification$ = this.totalNotification$.pipe(map(total => total > 0));
         this.notifications$.subscribe(_ => this.cdr.detectChanges());
     }

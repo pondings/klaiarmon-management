@@ -6,9 +6,18 @@
         <fa-icon [icon]="faBell"></fa-icon>
     </div>
     <div ngbDropdownMenu [class.invisible]="!(hasNotification$ | async)">
-        <button *ngFor="let noti of (notifications$ | async)" class="dd-btn" ngbDropdownItem (click)="openNotification(noti)">
-            <span>{{ noti.title }}</span>
-            <span class="ms-2">{{ noti.date.toDate() | date:'dd/MM/YYYY HH:mm' }}</span>
-        </button>
+        <div *ngFor="let noti of (notifications$ | async); let idx = index" class="dd-container">
+            <hr *ngIf="idx !== 0">
+            <button class="dd-btn" ngbDropdownItem [class.readed]="noti.meta.isReaded" (click)="openNotification(noti)">
+                <span class="noti-text">{{ noti.title }}</span>
+                <span class="ms-2 date">{{ noti.date.toDate() | date:'dd/MM/YYYY HH:mm' }}</span>
+            </button>
+        </div>
+        <div class="dd-container">
+            <hr>
+            <button class="dropdown-item dd-btn text-center">
+                <span class="txt-bold text-underline">View More</span>
+            </button>
+        </div>
     </div>
 </div>

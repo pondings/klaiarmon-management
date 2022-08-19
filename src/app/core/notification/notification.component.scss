@@ -16,14 +16,40 @@ app-notification {
         }
     }
 
+    button.dd-btn.readed {
+        opacity: 0.5;
+    }
+
     button.dd-btn {
         font-size: 12px !important;
-        display: flex;
-        justify-content: space-between;
+        display: grid;
+        --bs-rows: 2;
+        --bs-columns: 1;
+        padding-top: 0px;
+        padding-bottom: 0px;
+
+        span.noti-text {
+            white-space: normal;
+        }
+
+        span.date {
+            margin-top: 0.5rem;
+            text-align: right;
+            font-size: 10px;
+            font-weight: 700;
+        }
+    }
+
+    div.dropdown-menu {
+        width: 70vw !important;
     }
 
     .dropdown-toggle:after {
         content: none !important;
+    }
+
+    div.dd-container hr {
+        margin: 0.2rem 0 !important;
     }
 
 }
