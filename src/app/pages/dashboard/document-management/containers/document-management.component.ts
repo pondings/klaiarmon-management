@@ -1,4 +1,6 @@
 import { ChangeDetectionStrategy, Component, ViewEncapsulation } from "@angular/core";
+import { faAdd } from "@fortawesome/free-solid-svg-icons";
+import { DocumentManagementService } from "../services/document-management.service";
 
 @Component({
     selector: 'app-document-management',
@@ -7,4 +9,14 @@ import { ChangeDetectionStrategy, Component, ViewEncapsulation } from "@angular/
     changeDetection: ChangeDetectionStrategy.OnPush,
     encapsulation: ViewEncapsulation.None
 })
-export class DocumentManagementComponent {}
+export class DocumentManagementComponent {
+
+    faAdd = faAdd;
+
+    constructor(private documentService: DocumentManagementService) {}
+
+    async openAddDocumentModal(): Promise<void> {
+        await this.documentService.openAddDocumentModal();
+    }
+    
+}

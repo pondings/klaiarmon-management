@@ -1,3 +1,9 @@
 <div class="d-flex flex-column">
+    <div class="d-flex justify-content-end">
+        <button class="btn add-btn" (click)="openAddDocumentModal()">
+            <fa-icon [icon]="faAdd"></fa-icon>
+        </button>
+    </div>
+
     <app-document-search-form></app-document-search-form>
 </div>

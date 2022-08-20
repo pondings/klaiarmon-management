@@ -1,5 +1,4 @@
-import { FormControl } from "@angular/forms";
-import { NullableDateStructFormControl, NullableStringFormControl, NullableUserInfoFormControl } from "src/app/common/types/common.type";
+import { NullableDateStructFormControl, NullableFileFormControl, NullableStringFormControl, NullableUserInfoFormControl } from "src/app/common/types/common.type";
 import { MetaData } from "src/app/model/meta-data";
 
 export interface Document {
@@ -17,6 +16,18 @@ export interface DocumentDto {
     meta: MetaData;
     path: string;
     type: string;
+}
+
+export interface DocumentUpload {
+    name: string;
+    url: string;
+    file: File;
+}
+
+export interface DocumentUploadForm {
+    name: NullableStringFormControl;
+    url: NullableStringFormControl;
+    file: NullableFileFormControl;
 }
 
 export interface DocumentSearch {
