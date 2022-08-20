@@ -27,9 +27,10 @@
     <div class="card mt-1">
         <div class="card-body">
             <div class="card-title">
-                <span class="text-bold" (click)="debtorCollapse.toggle()">
-                    Debtor info
-                    <fa-icon [icon]="faCaretDown"></fa-icon>
+                <span (click)="debtorCollapse.toggle()">
+                    <span class="text-bold">Debtor info</span>
+                    <span class="ps-2">{{calculateTotalAmount(billingInfo.debtors) | number}}</span>
+                    <fa-icon class="ps-1" [icon]="faCaretDown"></fa-icon>
                 </span>
             </div>
             <div #debtorCollapse="ngbCollapse" [(ngbCollapse)]="isDebtorCollapsed">
@@ -51,9 +52,10 @@
     <div class="card mt-1">
         <div class="card-body">
             <div class="card-title">
-                <span class="text-bold" (click)="creditorCollapse.toggle()">
-                    Creditor info
-                    <fa-icon [icon]="faCaretDown"></fa-icon>
+                <span (click)="creditorCollapse.toggle()">
+                    <span class="text-bold">Creditor info</span>
+                    <span class="ps-2">{{calculateTotalAmount(billingInfo.creditors) | number}}</span>
+                    <fa-icon class="ps-1" [icon]="faCaretDown"></fa-icon>
                 </span>
             </div>
             <div #creditorCollapse="ngbCollapse" [(ngbCollapse)]="isCreditorCollapsed">

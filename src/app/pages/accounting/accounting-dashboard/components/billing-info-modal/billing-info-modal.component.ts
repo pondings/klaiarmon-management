@@ -1,7 +1,8 @@
 import { ChangeDetectionStrategy, Component, Input, ViewEncapsulation } from "@angular/core";
 import { faCaretDown } from "@fortawesome/free-solid-svg-icons";
 import { NgbActiveModal } from "@ng-bootstrap/ng-bootstrap";
-import { UserBillingInfo } from "../../model/user-billing-info.model";
+import { mapTo, sumNumber } from "src/app/common/utils/common-util";
+import { UserBillingInfo, BillingInfo } from "../../model/user-billing-info.model";
 
 @Component({
     selector: 'app-billing-info-modal',
@@ -25,6 +26,10 @@ export class BillingInfoModalComponent {
 
     dismiss(): void {
         this.activeModal.dismiss();
+    }
+
+    calculateTotalAmount(billingInfos: BillingInfo[]): number {
+        return billingInfos.map(mapTo('amount')).reduce(sumNumber, 0);
     }
 
 }
