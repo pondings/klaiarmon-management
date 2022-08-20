@@ -31,6 +31,10 @@ export class AccountingDashboardComponent implements OnInit {
         this.expenseService.viewExpense(expense);
     }
 
+    async showBilling(billingInfo: UserBillingInfo) {
+        this.accountingDashboardService.showBillingInfo(billingInfo);
+    }
+
     periodChange(date: Moment) {
         this.accountingDashboardService.getUserBillingInfos(date);
     }

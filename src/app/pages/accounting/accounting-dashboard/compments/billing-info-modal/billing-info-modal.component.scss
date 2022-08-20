@@ -1,0 +1,19 @@
+app-billing-info-modal {
+
+    div.card {
+        border: unset !important;
+
+        .card-title {
+            margin-bottom: 0px;
+        }
+
+        .card-body {
+            padding: 0px;
+
+            .card-text {
+                padding-left: 1rem;
+            }
+        }
+    }
+    
+}

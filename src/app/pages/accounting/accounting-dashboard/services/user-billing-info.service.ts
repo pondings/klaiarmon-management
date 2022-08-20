@@ -2,8 +2,6 @@ import { Injectable } from "@angular/core";
 import { QueryFn } from "@angular/fire/compat/firestore";
 import * as moment from "moment";
 import { Moment } from "moment";
-import { firstValueFrom } from "rxjs";
-import { getMoment } from "src/app/common/utils/moment.util";
 import { UserInfo } from "src/app/core/models/user.model";
 import { DataService } from "src/app/core/services/data-service";
 import { FireAuthService } from "src/app/core/services/fire-auth.service";

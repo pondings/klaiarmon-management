@@ -1,0 +1,42 @@
+<div class="modal-header">
+    <h5>{{ billingInfo.user }}'s Billing Info</h5>
+    <button type="button" class="btn-close" type="button" (click)="dismiss()"></button>
+</div>
+
+<div class="modal-body">
+    <div>
+        <label class="text-bold me-2">Total expense: </label>
+        <span>{{ billingInfo.expenseAmount | number }}</span>
+    </div>
+    <div class="card mt-1">
+        <div class="card-body">
+            <div class="card-title" (click)="expenseCollapse.toggle()">
+                <span class="text-bold">
+                    Expense info
+                    <fa-icon [icon]="faCaretDown"></fa-icon>
+                </span>
+            </div>
+            <div #expenseCollapse="ngbCollapse" [(ngbCollapse)]="isExpenseCollapsed">
+                <div *ngFor="let expense of billingInfo.expenses" class="card-text">
+                    <span class="text-bold me-2">{{ expense.name }}</span>
+                    <span>{{expense.amount | number}}</span>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="mt-1">
+        <label class="text-bold">Summary: </label>
+        <div *ngFor="let result of billingInfo.results" class="ms-3">
+            <span class="text-bold me-2">
+                {{ result.paymentAction }} {{ result.user | username | async }}
+            </span>
+            <span>
+                {{ result.amount | number }}
+            </span>
+        </div>
+    </div>
+</div>
+
+<div class="modal-footer">
+    <button class="btn btn-sm btn-outline-danger" type="button" (click)="dismiss()">Close</button>
+</div>
