@@ -40,7 +40,7 @@ export class ExpenseChartInfoComponent implements OnInit {
     periodChange = new EventEmitter<Moment>();
 
     @Output()
-    showUserExpense = new EventEmitter<UserBillingInfo>();
+    showBilling = new EventEmitter<UserBillingInfo>();
 
     @Output()
     viewExpesne = new EventEmitter<Expense>();
@@ -108,7 +108,7 @@ export class ExpenseChartInfoComponent implements OnInit {
         const { title, data } = this.viewData;
         const usernamedBillings = await Promise.all(billings.map(this.mapBillingUsername()));
         const targetBilling = usernamedBillings.find(this.findBillingByTitleAndAmount(title!, data!));
-        this.showUserExpense.emit(targetBilling);
+        this.showBilling.emit(targetBilling);
     }
 
     private async openShowExpenseInfoModal(billings: UserBillingInfo[]): Promise<void> {

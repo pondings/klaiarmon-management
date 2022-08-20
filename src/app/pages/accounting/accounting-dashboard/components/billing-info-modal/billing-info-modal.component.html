@@ -1,0 +1,94 @@
+<div class="modal-header">
+    <h5>{{ billingInfo.user }}'s Billing Info</h5>
+    <button type="button" class="btn-close" type="button" (click)="dismiss()"></button>
+</div>
+
+<div class="modal-body">
+    <div>
+        <label class="text-bold">Total expense:</label>
+        <span class="ms-2">{{ billingInfo.expenseAmount | number }}</span>
+    </div>
+    <div class="card mt-1">
+        <div class="card-body">
+            <div class="card-title" (click)="expenseCollapse.toggle()">
+                <span class="text-bold">
+                    Expense info
+                    <fa-icon [icon]="faCaretDown"></fa-icon>
+                </span>
+            </div>
+            <div #expenseCollapse="ngbCollapse" [(ngbCollapse)]="isExpenseCollapsed">
+                <div *ngFor="let expense of billingInfo.expenses" class="card-text ps-3">
+                    <span class="text-bold">{{ expense.name }}</span>
+                    <span class="ms-2">{{expense.amount | number}}</span>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="card mt-1">
+        <div class="card-body">
+            <div class="card-title">
+                <span (click)="debtorCollapse.toggle()">
+                    <span class="text-bold">Debtor info</span>
+                    <span class="ps-2">{{calculateTotalAmount(billingInfo.debtors) | number}}</span>
+                    <fa-icon class="ps-1" [icon]="faCaretDown"></fa-icon>
+                </span>
+            </div>
+            <div #debtorCollapse="ngbCollapse" [(ngbCollapse)]="isDebtorCollapsed">
+                <div *ngFor="let debtor of billingInfo.debtors" class="card-text ps-3">
+                    <div class="text-bold">
+                        <span class="text-underline">{{ debtor.user | username | async }}</span>
+                        <span class="ps-1">{{ debtor.amount | number }}</span>
+                    </div>
+                    <ul class="mb-0 ps-0">
+                        <ol *ngFor="let item of debtor.items" (click)="viewExpense(item.documentId)">
+                            <span class="text-bold">{{ item.name }}:</span>
+                            <span class="ps-2">{{ item.amount | number }}</span>
+                            <fa-icon class="ps-2 text-blue" [icon]="faUpRightFromSquare"></fa-icon>
+                        </ol>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="card mt-1">
+        <div class="card-body">
+            <div class="card-title">
+                <span (click)="creditorCollapse.toggle()">
+                    <span class="text-bold">Creditor info</span>
+                    <span class="ps-2">{{calculateTotalAmount(billingInfo.creditors) | number}}</span>
+                    <fa-icon class="ps-1" [icon]="faCaretDown"></fa-icon>
+                </span>
+            </div>
+            <div #creditorCollapse="ngbCollapse" [(ngbCollapse)]="isCreditorCollapsed">
+                <div *ngFor="let creditor of billingInfo.creditors" class="card-text ps-3">
+                    <div class="text-bold">
+                        <span class="text-underline">{{ creditor.user | username | async }}</span>
+                        <span class="ps-1">{{ creditor.amount | number }}</span>
+                    </div>
+                    <ul class="mb-0 ps-0">
+                        <ol *ngFor="let item of creditor.items" (click)="viewExpense(item.documentId)">
+                            <span class="text-bold">{{ item.name }}:</span>
+                            <span class="ps-2">{{ item.amount | number }}</span>
+                            <fa-icon class="ps-2 text-blue" [icon]="faUpRightFromSquare"></fa-icon>
+                        </ol>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="mt-1">
+        <label class="text-bold">Summary: </label>
+        <div *ngFor="let result of billingInfo.results" class="ms-3">
+            <span class="text-bold">
+                {{ result.paymentAction }} {{ result.user | username | async }}
+            </span>
+            <span>
+                {{ result.amount | number }}
+            </span>
+        </div>
+    </div>
+</div>
+
+<div class="modal-footer">
+    <button class="btn btn-sm btn-outline-danger" type="button" (click)="dismiss()">Close</button>
+</div>

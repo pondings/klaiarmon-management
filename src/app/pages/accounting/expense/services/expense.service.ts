@@ -72,6 +72,10 @@ export class ExpenseService {
         return this.expenses$.asObservable();
     }
 
+    async getExpenseByDocumentId(documentId: string): Promise<Expense> {
+        return await this.dataService.getDocument<Expense>(`${ExpenseService.EXPENSE_COLLECTION_PATH}/${documentId}`);
+    }
+
     async searchExpense(criteria: ExpenseSearch): Promise<void> {
         const criteriaQuery: QueryFn = (ref) => {
             let query: firebase.default.firestore.CollectionReference | firebase.default.firestore.Query = ref;

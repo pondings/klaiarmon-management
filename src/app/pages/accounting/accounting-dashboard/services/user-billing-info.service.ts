@@ -2,8 +2,6 @@ import { Injectable } from "@angular/core";
 import { QueryFn } from "@angular/fire/compat/firestore";
 import * as moment from "moment";
 import { Moment } from "moment";
-import { firstValueFrom } from "rxjs";
-import { getMoment } from "src/app/common/utils/moment.util";
 import { UserInfo } from "src/app/core/models/user.model";
 import { DataService } from "src/app/core/services/data-service";
 import { FireAuthService } from "src/app/core/services/fire-auth.service";
@@ -75,6 +73,7 @@ export class UserBillingInfoService {
                 .map(debtor => {
                     const debtorExpenss = userExpense.filter(exp => exp.billings.find(this.uidMatchWith(debtor.user)));
                     debtor.items = debtorExpenss.map<BillingItem>(de => ({
+                        documentId: de.meta.documentId!,
                         name: de.name,
                         amount: de.billings.find(this.uidMatchWith(debtor.user))?.amount!
                     }));
