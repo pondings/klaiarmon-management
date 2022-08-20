@@ -2,7 +2,7 @@ import { Injectable } from "@angular/core";
 import { NgbModal } from "@ng-bootstrap/ng-bootstrap";
 import { Moment } from "moment";
 import { Observable, Subject } from "rxjs";
-import { BillingInfoModalComponent } from "../compments/billing-info-modal/billing-info-modal.component";
+import { BillingInfoModalComponent } from "../components/billing-info-modal/billing-info-modal.component";
 import { UserBillingInfo } from "../model/user-billing-info.model";
 import { UserBillingInfoService } from "./user-billing-info.service";
 
