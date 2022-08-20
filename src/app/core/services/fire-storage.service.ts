@@ -11,6 +11,17 @@ export class FireStorageService {
     constructor(private angularFireStorage: AngularFireStorage,
         private spinnerService: SpinnerService) { }
 
+    async deleteFile(path: string): Promise<void> {
+        this.spinnerService.show();
+        const ref = this.angularFireStorage.ref(path);
+        return new Promise((resolve) => {
+            ref.delete().subscribe(res => {
+                console.log(res);
+                return resolve(res);
+            });
+        });
+    }
+
     async uploadFile(path: string, data: Blob): Promise<string> {
         this.spinnerService.show();
         const ref = this.angularFireStorage.ref(path);

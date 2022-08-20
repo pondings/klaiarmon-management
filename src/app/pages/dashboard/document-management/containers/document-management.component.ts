@@ -2,7 +2,8 @@ import { ChangeDetectionStrategy, Component, ViewEncapsulation } from "@angular/
 
 @Component({
     selector: 'app-document-management',
-    template: 'Hello world from DocumentManagementComponent',
+    templateUrl: './document-management.component.html',
+    styleUrls: ['./document-management.component.scss'],
     changeDetection: ChangeDetectionStrategy.OnPush,
     encapsulation: ViewEncapsulation.None
 })
