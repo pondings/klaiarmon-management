@@ -1,5 +1,5 @@
 import { Timestamp } from "firebase/firestore";
-import { CalendarEventDto, CalendarEventWithMeta } from "../model/calendar";
+import { CalendarEventDto, CalendarEventWithMeta } from "../models/calendar";
 
 export const mapCalendarEventToDto = (calendarEvent: CalendarEventWithMeta): CalendarEventDto => {
     const { title, start, end, meta } = calendarEvent;

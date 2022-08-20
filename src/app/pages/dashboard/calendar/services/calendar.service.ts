@@ -1,17 +1,16 @@
 import { Injectable } from "@angular/core";
 import { NgbModal } from "@ng-bootstrap/ng-bootstrap";
 import { BehaviorSubject, Observable } from "rxjs";
-import { CalendarEventDto, CalendarEventWithMeta } from "../model/calendar";
-import { CalendarEventModalComponent } from "../components/calendar-event-modal/calendar-event-modal.component";
 import { Action } from "src/app/common/enum/action";
 import { NullableDate } from "src/app/common/utils/date.util";
-import { filterEventsDocIdNotEqual, mapCalendarDtoToEvent, mapCalendarEventToDto, mapToEditable } from "../utils/calendar.util";
 import * as moment from "moment";
 import { TimeUnit } from "src/app/shared/model/time-unit";
 import { DataService } from "src/app/core/services/data-service";
 import { takeOnce } from "src/app/common/utils/rxjs-util";
-import { SpinnerService } from "src/app/core/spinner/spinner.service";
 import { PushNotificationService } from "src/app/shared/services/push-notification.service";
+import { CalendarEventDto, CalendarEventWithMeta } from "../models/calendar";
+import { filterEventsDocIdNotEqual, mapCalendarDtoToEvent, mapCalendarEventToDto, mapToEditable } from "../utils/calendar.util";
+import { CalendarEventModalComponent } from "../components/calendar-event-modal/calendar-event-modal.component";
 
 @Injectable()
 export class CalendarService {

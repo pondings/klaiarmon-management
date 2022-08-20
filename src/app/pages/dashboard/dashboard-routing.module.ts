@@ -1,7 +1,7 @@
 import { NgModule } from "@angular/core";
 import { RouterModule, Routes } from "@angular/router";
-import { CalendarComponent } from "./containers/calendar/calendar.component";
-import { DashboardComponent } from "./containers/dashboard/dashboard.component";
+import { CalendarComponent } from "./calendar/containers/calendar/calendar.component";
+import { DashboardComponent } from "./dashboard/dashboard/dashboard.component";
 
 const routes: Routes = [
     { path: '', component: DashboardComponent },

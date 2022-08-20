@@ -1,6 +1,6 @@
 import { ChangeDetectionStrategy, Component, EventEmitter, Input, Output, ViewEncapsulation } from "@angular/core";
 import { faArrowUpRightFromSquare, faPen, faTrash } from "@fortawesome/free-solid-svg-icons";
-import { CalendarEventWithMeta } from "../../model/calendar";
+import { CalendarEventWithMeta } from "../../models/calendar";
 
 @Component({
     selector: 'app-event-info',

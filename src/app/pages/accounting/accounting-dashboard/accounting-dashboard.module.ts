@@ -8,6 +8,8 @@ import { SharedModule } from "src/app/shared/shared.module";
 import { BillingInfoModalComponent } from "./components/billing-info-modal/billing-info-modal.component";
 import { ExpenseChartInfoComponent } from "./components/expense-chart-info/expense-chart-info.component";
 import { AccountingDashboardComponent } from "./containers/accounting-dashboard.component";
+import { AccountingDashboardService } from "./services/accounting-dashboard.service";
+import { UserBillingInfoService } from "./services/user-billing-info.service";
 
 @NgModule({
     declarations: [
@@ -22,6 +24,10 @@ import { AccountingDashboardComponent } from "./containers/accounting-dashboard.
         NgbCollapseModule,
         FontAwesomeModule
     ],
-    providers: [UsernamePipe]
+    providers: [
+        UsernamePipe,
+        AccountingDashboardService, 
+        UserBillingInfoService
+    ]
 })
 export class AccountingDashboardModule {}

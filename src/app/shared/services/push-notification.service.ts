@@ -8,7 +8,7 @@ import { UserNotification } from "src/app/core/models/notification.model";
 import { DataService } from "src/app/core/services/data-service";
 import { FireAuthService } from "src/app/core/services/fire-auth.service";
 import { Expense } from "src/app/pages/accounting/expense/model/expense.model";
-import { CalendarEventDto } from "src/app/pages/dashboard/model/calendar";
+import { CalendarEventDto } from "src/app/pages/dashboard/calendar/models/calendar";
 import { UsernamePipe } from "../pipe/username.pipe";
 
 import { 
