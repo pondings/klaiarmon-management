@@ -106,9 +106,11 @@ export class ExpenseChartInfoComponent implements OnInit {
 
     private async openShowUserExpenseDataModal(billings: UserBillingInfo[]): Promise<void> {
         const { title, data } = this.viewData;
+        this.spinnerService.show();
         const usernamedBillings = await Promise.all(billings.map(this.mapBillingUsername()));
         const targetBilling = usernamedBillings.find(this.findBillingByTitleAndAmount(title!, data!));
         this.showBilling.emit(targetBilling);
+        this.spinnerService.hide();
     }
 
     private async openShowExpenseInfoModal(billings: UserBillingInfo[]): Promise<void> {
