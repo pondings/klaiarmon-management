@@ -40,9 +40,10 @@
                         <span class="ps-1">{{ debtor.amount | number }}</span>
                     </div>
                     <ul class="mb-0 ps-0">
-                        <ol *ngFor="let item of debtor.items">
+                        <ol *ngFor="let item of debtor.items" (click)="viewExpense(item.documentId)">
                             <span class="text-bold">{{ item.name }}:</span>
                             <span class="ps-2">{{ item.amount | number }}</span>
+                            <fa-icon class="ps-2 text-blue" [icon]="faUpRightFromSquare"></fa-icon>
                         </ol>
                     </ul>
                 </div>
@@ -65,9 +66,10 @@
                         <span class="ps-1">{{ creditor.amount | number }}</span>
                     </div>
                     <ul class="mb-0 ps-0">
-                        <ol *ngFor="let item of creditor.items">
+                        <ol *ngFor="let item of creditor.items" (click)="viewExpense(item.documentId)">
                             <span class="text-bold">{{ item.name }}:</span>
                             <span class="ps-2">{{ item.amount | number }}</span>
+                            <fa-icon class="ps-2 text-blue" [icon]="faUpRightFromSquare"></fa-icon>
                         </ol>
                     </ul>
                 </div>

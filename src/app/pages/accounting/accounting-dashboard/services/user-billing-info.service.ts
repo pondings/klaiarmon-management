@@ -73,6 +73,7 @@ export class UserBillingInfoService {
                 .map(debtor => {
                     const debtorExpenss = userExpense.filter(exp => exp.billings.find(this.uidMatchWith(debtor.user)));
                     debtor.items = debtorExpenss.map<BillingItem>(de => ({
+                        documentId: de.meta.documentId!,
                         name: de.name,
                         amount: de.billings.find(this.uidMatchWith(debtor.user))?.amount!
                     }));

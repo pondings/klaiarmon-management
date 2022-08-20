@@ -11,6 +11,7 @@ export interface BillingResult {
 }
 
 export interface BillingItem {
+    documentId: string;
     name: string;
     amount: number;
 }
