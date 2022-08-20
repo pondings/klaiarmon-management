@@ -18,6 +18,8 @@ export class BillingInfoModalComponent {
     faCaretDown = faCaretDown;
     
     isExpenseCollapsed = true;
+    isDebtorCollapsed = true;
+    isCreditorCollapsed = true;
 
     constructor(private activeModal: NgbActiveModal) {}
 

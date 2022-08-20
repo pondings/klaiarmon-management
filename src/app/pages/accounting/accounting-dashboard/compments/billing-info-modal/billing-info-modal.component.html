@@ -5,8 +5,8 @@
 
 <div class="modal-body">
     <div>
-        <label class="text-bold me-2">Total expense: </label>
-        <span>{{ billingInfo.expenseAmount | number }}</span>
+        <label class="text-bold">Total expense:</label>
+        <span class="ms-2">{{ billingInfo.expenseAmount | number }}</span>
     </div>
     <div class="card mt-1">
         <div class="card-body">
@@ -17,9 +17,57 @@
                 </span>
             </div>
             <div #expenseCollapse="ngbCollapse" [(ngbCollapse)]="isExpenseCollapsed">
-                <div *ngFor="let expense of billingInfo.expenses" class="card-text">
-                    <span class="text-bold me-2">{{ expense.name }}</span>
-                    <span>{{expense.amount | number}}</span>
+                <div *ngFor="let expense of billingInfo.expenses" class="card-text ps-3">
+                    <span class="text-bold">{{ expense.name }}</span>
+                    <span class="ms-2">{{expense.amount | number}}</span>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="card mt-1">
+        <div class="card-body">
+            <div class="card-title">
+                <span class="text-bold" (click)="debtorCollapse.toggle()">
+                    Debtor info
+                    <fa-icon [icon]="faCaretDown"></fa-icon>
+                </span>
+            </div>
+            <div #debtorCollapse="ngbCollapse" [(ngbCollapse)]="isDebtorCollapsed">
+                <div *ngFor="let debtor of billingInfo.debtors" class="card-text ps-3">
+                    <div class="text-bold">
+                        <span class="text-underline">{{ debtor.user | username | async }}</span>
+                        <span class="ps-1">{{ debtor.amount | number }}</span>
+                    </div>
+                    <ul class="mb-0 ps-0">
+                        <ol *ngFor="let item of debtor.items">
+                            <span class="text-bold">{{ item.name }}:</span>
+                            <span class="ps-2">{{ item.amount | number }}</span>
+                        </ol>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="card mt-1">
+        <div class="card-body">
+            <div class="card-title">
+                <span class="text-bold" (click)="creditorCollapse.toggle()">
+                    Creditor info
+                    <fa-icon [icon]="faCaretDown"></fa-icon>
+                </span>
+            </div>
+            <div #creditorCollapse="ngbCollapse" [(ngbCollapse)]="isCreditorCollapsed">
+                <div *ngFor="let creditor of billingInfo.creditors" class="card-text ps-3">
+                    <div class="text-bold">
+                        <span class="text-underline">{{ creditor.user | username | async }}</span>
+                        <span class="ps-1">{{ creditor.amount | number }}</span>
+                    </div>
+                    <ul class="mb-0 ps-0">
+                        <ol *ngFor="let item of creditor.items">
+                            <span class="text-bold">{{ item.name }}:</span>
+                            <span class="ps-2">{{ item.amount | number }}</span>
+                        </ol>
+                    </ul>
                 </div>
             </div>
         </div>
@@ -27,7 +75,7 @@
     <div class="mt-1">
         <label class="text-bold">Summary: </label>
         <div *ngFor="let result of billingInfo.results" class="ms-3">
-            <span class="text-bold me-2">
+            <span class="text-bold">
                 {{ result.paymentAction }} {{ result.user | username | async }}
             </span>
             <span>
