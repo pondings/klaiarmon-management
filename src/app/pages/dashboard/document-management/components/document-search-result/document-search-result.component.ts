@@ -1,6 +1,6 @@
 import { ChangeDetectionStrategy, Component, EventEmitter, Input, Output, ViewEncapsulation } from "@angular/core";
 import { DomSanitizer } from "@angular/platform-browser";
-import { faDownload, faEye, faTrash } from "@fortawesome/free-solid-svg-icons";
+import { faArrowUpRightFromSquare, faDownload, faEye, faTrash } from "@fortawesome/free-solid-svg-icons";
 import { NgbModal } from "@ng-bootstrap/ng-bootstrap";
 import { FileViewerComponent } from "src/app/shared/components/file-viewer/file-viewer.component";
 import { ImageViewerComponent } from "src/app/shared/components/image-viewer/image-viewer.component";
@@ -34,6 +34,7 @@ export class DocumentSearchResultComponent {
     faTrash = faTrash;
     faEye = faEye;
     faDownload = faDownload;
+    faArrowUpRightFromSquare = faArrowUpRightFromSquare;
 
     isCollapsed = true;
 

@@ -19,6 +19,7 @@ export class FileViewerComponent implements AfterViewInit {
 
     ngAfterViewInit(): void {
         setTimeout(() => this.spinnerService.show(), 100);
+        setTimeout(() => this.spinnerService.hide(), 10000);
     }
 
     documentLoaded(): void {

@@ -59,7 +59,7 @@ export class DocumentUploadModalComponent implements OnInit {
     }
 
     dismiss(): void {
-        this.activeModal.close();
+        this.activeModal.dismiss();
     }
 
     get fileCtrl(): NullableFileFormControl {

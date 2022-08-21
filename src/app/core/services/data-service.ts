@@ -1,7 +1,6 @@
 import { Injectable } from "@angular/core";
 import { Timestamp } from "firebase/firestore";
 import { firstValueFrom, map, Observable, tap } from "rxjs";
-import { getDate } from "src/app/common/utils/date.util";
 import { HasMetaData } from "src/app/model/meta-data";
 import { DataServiceOptions } from "../models/data.model";
 import { SpinnerService } from "../spinner/spinner.service";

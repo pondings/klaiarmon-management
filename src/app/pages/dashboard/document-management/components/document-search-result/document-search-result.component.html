@@ -11,8 +11,11 @@
             </div>
         </div>
         <div class="card-text mt-2" #collapse="ngbCollapse" [(ngbCollapse)]="isCollapsed">
-            <a #downloadFile target="_blank" [href]="document.url!" download>Download file</a>
-            <div class="upload-by grid bs-columns-6 column-gap-0">
+            <a #downloadFile class="fs-12" target="_blank" [href]="document.url!" download>
+                Download file
+                <fa-icon class="text-blue" [icon]="faArrowUpRightFromSquare"></fa-icon>
+            </a>
+            <div class="upload-by mt-2 grid bs-columns-6 column-gap-0">
                 <label class="text-bold g-col-1">Upload</label>
                 <span class="g-col-2 text-center">{{ document.meta.createdBy! | username | async }}</span>
                 <label class="text-bold g-col-1">Date</label>
