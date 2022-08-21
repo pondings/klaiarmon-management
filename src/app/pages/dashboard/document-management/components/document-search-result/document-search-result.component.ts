@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, Input, ViewEncapsulation } from "@angular/core";
+import { ChangeDetectionStrategy, Component, EventEmitter, Input, Output, ViewEncapsulation } from "@angular/core";
 import { DomSanitizer } from "@angular/platform-browser";
 import { faDownload, faEye, faTrash } from "@fortawesome/free-solid-svg-icons";
 import { NgbModal } from "@ng-bootstrap/ng-bootstrap";
@@ -17,6 +17,9 @@ export class DocumentSearchResultComponent {
 
     @Input()
     document!: DocumentDto;
+
+    @Output()
+    onDelete = new EventEmitter<DocumentDto>();
 
     private readonly IMAGE_TYPES = ['image/png', 'image/jpeg'];
     private readonly DOCUMENT_TYPES = [
@@ -51,7 +54,9 @@ export class DocumentSearchResultComponent {
         }
     }
 
-    deleteDocument(): void {}
+    deleteDocument(): void {
+        this.onDelete.emit(this.document);
+    }
 
     get isPreviewable(): boolean {
         return !!this.IMAGE_TYPES.concat(this.DOCUMENT_TYPES)

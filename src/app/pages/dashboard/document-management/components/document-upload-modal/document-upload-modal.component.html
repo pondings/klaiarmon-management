@@ -18,15 +18,10 @@
                         (click)="uploadFile.click()" readonly>
                     <label for="file" class="required">File</label>
                 </div>
-                <button *ngIf="!(urlCtrl.valueChanges | async); else hasUrl" class="btn btn-outline-secondary" 
+                <button class="btn btn-outline-secondary upload-btn" 
                     type="button" (click)="uploadFile.click()">
                     <fa-icon [icon]="faFileUpload"></fa-icon>
                 </button>
-                <ng-template #hasUrl>
-                    <button class="btn btn-outline-secondary" type="button" (click)="viewAttachment()">
-                        <fa-icon [icon]="faEye"></fa-icon>
-                    </button>
-                </ng-template>
                 <input #uploadFile class="d-none" type="file" (change)="uploadAttachment($event)">
             </div>
         </div>

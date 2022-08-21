@@ -13,6 +13,7 @@ import { DocumentUploadForm } from "../../models/document.model";
 @Component({
     selector: 'app-document-upload-modal',
     templateUrl: './document-upload-modal.component.html',
+    styles: ['app-document-upload-modal .upload-btn { border-top-right-radius: 4px !important; border-bottom-right-radius: 4px !important; }'],
     changeDetection: ChangeDetectionStrategy.OnPush,
     encapsulation: ViewEncapsulation.None
 })

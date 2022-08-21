@@ -31,6 +31,10 @@ export class DocumentManagementComponent implements OnInit {
         this.documentService.clearSearchResult();
     }
 
+    deleteDocument(document: DocumentDto): void {
+        this.documentService.deleteDocument(document);
+    }
+
     async openAddDocumentModal(): Promise<void> {
         await this.documentService.openAddDocumentModal();
     }

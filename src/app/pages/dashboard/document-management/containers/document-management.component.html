@@ -9,5 +9,5 @@
         (onClear)="clear()"></app-document-search-form>
 
     <app-document-search-result *ngFor="let document of (documents$ | async)!" 
-        [document]="document"></app-document-search-result>
+        [document]="document" (onDelete)="deleteDocument($event)"></app-document-search-result>
 </div>
