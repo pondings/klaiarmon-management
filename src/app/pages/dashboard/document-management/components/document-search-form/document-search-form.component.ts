@@ -50,6 +50,7 @@ export class DocumentSearchFormComponent implements OnInit {
     }
 
     clear(): void {
+        this.documentForm.reset();
         this.onClear.emit();
     }
 

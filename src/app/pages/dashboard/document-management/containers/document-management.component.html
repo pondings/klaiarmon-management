@@ -5,5 +5,9 @@
         </button>
     </div>
 
-    <app-document-search-form></app-document-search-form>
+    <app-document-search-form class="d-block mb-3" (onSearch)="search($event)"
+        (onClear)="clear()"></app-document-search-form>
+
+    <app-document-search-result *ngFor="let document of (documents$ | async)!" 
+        [document]="document"></app-document-search-result>
 </div>

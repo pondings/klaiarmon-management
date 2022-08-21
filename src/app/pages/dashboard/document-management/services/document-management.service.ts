@@ -26,7 +26,7 @@ export class DocumentManagementService {
         return this.document$.asObservable();
     }
 
-    async fetchDocument(criteria: DocumentSearch): Promise<void> {
+    async searchDocument(criteria: DocumentSearch): Promise<void> {
         const criteriaQuery: QueryFn = ref => {
             let query: firebase.default.firestore.CollectionReference | firebase.default.firestore.Query = ref;
             if (criteria.uploadBy) query = query.where('meta.createdBy', '==', criteria.uploadBy);
@@ -56,6 +56,10 @@ export class DocumentManagementService {
         await this.storageService.deleteFile(documentDto.path);
         await this.dataService.deleteDocument(DocumentManagementService.DOCUMENT_COLLECTION_PATH, documentDto.meta.documentId!,
             { showSpinner: true, toastMessage: 'Document deleted' });
+    }
+
+    clearSearchResult(): void {
+        this.document$.next([]);
     }
 
     async openAddDocumentModal(): Promise<void> {
