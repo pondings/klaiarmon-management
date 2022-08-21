@@ -3,7 +3,7 @@ import { FormBuilder, FormControl, FormControlStatus, FormGroup, Validators } fr
 import { NgbActiveModal, NgbDateStruct } from "@ng-bootstrap/ng-bootstrap";
 import { faCalendar } from "@fortawesome/free-solid-svg-icons";
 import { BehaviorSubject, debounceTime, distinctUntilChanged, filter, map, Observable, OperatorFunction, skip, startWith, Subject, switchMap, tap } from "rxjs";
-import { AddCalendarEventForm, CalendarEventWithMeta, Place } from "../../model/calendar";
+import { AddCalendarEventForm, CalendarEventWithMeta, Place } from "../../models/calendar";
 import { Action } from "src/app/common/enum/action";
 import { getDateStructFromDate } from "src/app/common/utils/date-struct.util";
 import { getDateFromDateStruct } from "src/app/common/utils/date.util";

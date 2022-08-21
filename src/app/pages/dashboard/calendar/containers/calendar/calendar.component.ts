@@ -1,13 +1,13 @@
 import { ChangeDetectionStrategy, Component, OnInit, ViewEncapsulation } from "@angular/core";
-import { catchError, map, Observable, of } from "rxjs";
+import { map, Observable } from "rxjs";
 import { CalendarView } from 'angular-calendar';
-import { CalendarDayEvent, CalendarEventWithMeta } from "../../model/calendar";
+import { CalendarDayEvent, CalendarEventWithMeta } from "../../models/calendar";
 import { faArrowsRotate, faBan, faChevronLeft, faChevronRight, faPlus, faReplyAll } from "@fortawesome/free-solid-svg-icons";
 import { TimeUnit } from "src/app/shared/model/time-unit";
 import { UntilDestroy } from '@ngneat/until-destroy';
-import { CalendarService } from "../../services/calendar.service";
 import { addDate, getDate } from "src/app/common/utils/date.util";
 import { GoogleMapsLoaderService } from "src/app/shared/services/google-maps-loader.service";
+import { CalendarService } from "../../services/calendar.service";
 
 @UntilDestroy({ checkProperties: true })
 @Component({

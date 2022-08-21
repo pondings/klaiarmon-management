@@ -1,5 +1,5 @@
 import { faCalendar, faFile } from "@fortawesome/free-regular-svg-icons";
-import { faBuilding, faChartLine, faFileInvoiceDollar, faHouse, faMoneyCheck, IconDefinition, } from "@fortawesome/free-solid-svg-icons";
+import { faBuilding, faChartLine, faFileInvoiceDollar, faFolderOpen, faHouse, faMoneyCheck, IconDefinition, } from "@fortawesome/free-solid-svg-icons";
 
 export interface Menu {
     path: string;
@@ -24,7 +24,8 @@ const DASHBOARD: Menu = {
 
     subMenuList: [
         { path: 'dashboard', title: 'Dashboard', icon: faChartLine },
-        { path: 'dashboard/calendar', title: 'Calendar', icon: faCalendar }
+        { path: 'dashboard/calendar', title: 'Calendar', icon: faCalendar },
+        { path: 'dashboard/document', title: 'Documents', icon: faFolderOpen }
     ]
 }
 
@@ -35,7 +36,7 @@ const ACCOUNTING: Menu = {
 
     subMenuList: [
         { path: 'accounting', title: 'Accounting', icon: faFileInvoiceDollar },
-        { path: 'accounting/expense', title: 'Expense', icon: faMoneyCheck }
+        { path: 'accounting/expense', title: 'Expenses', icon: faMoneyCheck }
     ]
 }
 
@@ -46,7 +47,7 @@ const CONDO: Menu = {
 
     subMenuList: [
         { path: 'condo', title: 'Condo', icon: faBuilding },
-        { path: 'condo/document', title: 'Document', icon: faFile }
+        { path: 'condo/document', title: 'Documents', icon: faFile }
     ]
 }
 
@@ -57,7 +58,7 @@ const HOME: Menu = {
 
     subMenuList: [
         { path: 'home', title: 'Home', icon: faHouse },
-        { path: 'home/document', title: 'Document', icon: faFile }
+        { path: 'home/document', title: 'Documents', icon: faFile }
     ]
 }
 

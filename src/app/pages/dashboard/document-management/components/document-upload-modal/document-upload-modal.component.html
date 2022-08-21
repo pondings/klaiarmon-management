@@ -1,0 +1,38 @@
+<form [formGroup]="documentUploadForm">
+
+    <div class="modal-header">
+        <h4>Add Document</h4>
+        <button type="button" class="btn-close" type="button" (click)="dismiss()"></button>
+    </div>
+
+    <div class="modal-body">
+
+        <div class="grid bs-rows-1 bs-columns-2 row-gap-1 mb-3">
+            <div class="form-floating g-col-1">
+                <input class="form-control form-control-sm" placeholder="Name" formControlName="name" required>
+                <label for="name" class="required">Name</label>
+            </div>
+            <div class="input-group">
+                <div class="form-floating">
+                    <input formControlName="url" class="form-control form-control-sm" placeholder="File" 
+                        (click)="uploadFile.click()" readonly>
+                    <label for="file" class="required">File</label>
+                </div>
+                <button class="btn btn-outline-secondary upload-btn" 
+                    type="button" (click)="uploadFile.click()">
+                    <fa-icon [icon]="faFileUpload"></fa-icon>
+                </button>
+                <input #uploadFile class="d-none" type="file" (change)="uploadAttachment($event)">
+            </div>
+        </div>
+    </div>
+
+    <div class="modal-footer">
+        <button class="btn btn-sm btn-outline-dark" type="button" [disabled]="!(isFormValid$ | async)" 
+            (click)="submit()">
+            Add
+        </button>
+        <button class="btn btn-sm btn-outline-danger" type="button" (click)="dismiss()">Cancel</button>
+    </div>
+
+</form>

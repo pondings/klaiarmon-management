@@ -10,6 +10,8 @@ export const isNotNull = (target: any): boolean => target != null;
 export const isNotNullOrUndefined = (target: any): boolean => isNotNull(target) && isNotUndefined(target);
 export const removeArrDuplicated = <T>(record: T, idx: number, self: T[]) => self.indexOf(record) === idx;
 export const findArrDuplicated = <T>(record: T, idx: number, self: T[]) => self.indexOf(record) !== idx;
+export const filterByEqual = <T, K extends keyof T>(prop: K, candicate: T[K]): (record: T) => boolean => 
+    record => record[prop] === candicate;
 
 // Reduce
 export const mergeArray = <T>(prev: T[], cur: T[]): T[] => prev.concat(cur);
