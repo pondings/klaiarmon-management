@@ -3,7 +3,7 @@ import { QueryFn } from "@angular/fire/compat/firestore";
 import { NgbModal } from "@ng-bootstrap/ng-bootstrap";
 import * as moment from "moment";
 import { BehaviorSubject, Observable } from "rxjs";
-import { filterByEqual } from "src/app/common/utils/common-util";
+import { filterByIgnoreCase } from "src/app/common/utils/common-util";
 import { getMoment } from "src/app/common/utils/moment.util";
 import { takeOnce } from "src/app/common/utils/rxjs-util";
 import { DataService } from "src/app/core/services/data-service";
@@ -40,7 +40,7 @@ export class DocumentManagementService {
         };
 
         let collection = await this.dataService.getCollection<Document>(DocumentManagementService.DOCUMENT_COLLECTION_PATH, { showSpinner: true, query: criteriaQuery });
-        if (criteria.name) collection = collection.filter(filterByEqual('name', criteria.name));
+        if (criteria.name) collection = collection.filter(filterByIgnoreCase('name', criteria.name));
         if (!collection[0]) this.toastService.showSuccess('No data found');
         this.document$.next(collection);
     }
