@@ -1,7 +1,6 @@
 import { CommonModule } from "@angular/common";
 import { NgModule } from "@angular/core";
 import { DatePickerModule } from "src/app/shared/components/date-picker/date-picker.module";
-import { FileViewerModule } from "src/app/shared/components/file-viewer/file-viewer.module";
 import { UserSelectorModule } from "src/app/shared/components/user-selector/user-selector.module";
 import { SharedModule } from "src/app/shared/shared.module";
 import { DocumentSearchFormComponent } from "./components/document-search-form/document-search-form.component";
@@ -22,8 +21,7 @@ import { DocumentManagementService } from "./services/document-management.servic
         CommonModule,
         SharedModule,
         DatePickerModule,
-        UserSelectorModule,
-        FileViewerModule
+        UserSelectorModule
     ]
 })
 export class DocumentManagementModule {}
