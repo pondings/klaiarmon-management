@@ -6,8 +6,7 @@
             </span>
             <div class="d-flex">
                 <fa-icon [icon]="faDownload" (click)="downloadFile.click()"></fa-icon>
-                <fa-icon *ngIf="isPreviewable" class="ms-2" [icon]="faEye" (click)="viewDocument()"></fa-icon>
-                <fa-icon class="ms-2" [icon]="faTrash" (click)="deleteDocument()"></fa-icon>
+                <fa-icon class="ms-3" [icon]="faTrash" (click)="deleteDocument()"></fa-icon>
             </div>
         </div>
         <div class="card-text mt-2" #collapse="ngbCollapse" [(ngbCollapse)]="isCollapsed">

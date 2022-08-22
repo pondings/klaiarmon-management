@@ -50,8 +50,11 @@ export class DocumentSearchFormComponent implements OnInit {
     }
 
     clear(): void {
-        this.documentForm.reset();
         this.onClear.emit();
+        this.documentForm.reset({
+            startDate: getDateStruct(),
+            endDate: getDateStruct()
+        });
     }
 
     get startDateCtrl(): NullableDateStructFormControl {
