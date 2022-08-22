@@ -26,10 +26,6 @@ export class FireAuthService {
         return this.userInfo$;
     }
 
-    triggerSubscribedUserInfo(userInfo: UserInfo): void {
-        // this.userInfo$.next(userInfo);
-    }
-
     async getCurrentUser(): Promise<UserInfo> {
         return await firstValueFrom(this.userInfo$);
     }

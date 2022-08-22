@@ -9,6 +9,7 @@ import { EditProfileComponent } from "./edit-profile.component";
 import { EditProfile } from "./edit-profile.model";
 import { UserInfo } from "../models/user.model";
 import { FireStorageService } from "../services/fire-storage.service";
+import { SidebarService } from "../sidebar/sidebar.service";
 
 @Injectable()
 @UntilDestroy({ checkProperties: true })
@@ -18,6 +19,7 @@ export class EditProfileService {
         private fireAuthService: FireAuthService,
         private fireStorageService: FireStorageService,
         private spinnerService: SpinnerService,
+        private sidebarService: SidebarService,
         private toastService: ToastService) {}
 
     async editProfile(): Promise<void> {
@@ -35,8 +37,8 @@ export class EditProfileService {
             const editData: Partial<UserInfo> = { displayName: userInfo.displayName!, photoURL };
 
             this.fireAuthService.updateUserInfo(editData);
-            this.fireAuthService.triggerSubscribedUserInfo(editData);
             this.spinnerService.hide();
+            this.sidebarService.triggerUpdateUserProfile(editData);
             this.toastService.showSuccess('Update user data successfully');
         }, err => {});
     }

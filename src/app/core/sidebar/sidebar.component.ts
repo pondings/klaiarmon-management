@@ -6,7 +6,7 @@ import { Offcanvas } from 'bootstrap';
 import { faPenToSquare } from "@fortawesome/free-regular-svg-icons";
 import { faRightFromBracket } from "@fortawesome/free-solid-svg-icons";
 import { EditProfileService } from "../edit-profile/edit-profile.service";
-import { FireAuthService } from "../services/fire-auth.service";
+import { UserInfo } from "../models/user.model";
 
 @Component({
     selector: 'app-sidebar',
@@ -22,14 +22,13 @@ export class SidebarComponent implements OnInit {
 
     toggle$: Subject<void>;
     menuList$: Observable<Menu[]>;
-    userInfo$!: Observable<Partial<firebase.default.UserInfo>>;
+    userInfo$!: Observable<UserInfo>;
 
     offCanvas: Offcanvas | undefined;
     faPenToSquare = faPenToSquare;
     faRightFromBracket = faRightFromBracket;
 
     constructor(private renderer2: Renderer2,
-        private fireAuthService: FireAuthService,
         private editProfileService: EditProfileService,
         public sidebarService: SidebarService) {
         this.menuList$ = new BehaviorSubject<Menu[]>(MENU_LIST);
@@ -41,7 +40,8 @@ export class SidebarComponent implements OnInit {
         this.offCanvasElem?.nativeElement?.addEventListener('show.bs.offcanvas', () => this.handleMenu());
 
         this.toggle$.subscribe(() => this.offCanvas?.toggle());
-        this.userInfo$ = this.fireAuthService.subscribeUserInfo();
+        this.userInfo$ = this.sidebarService.subscribeUserInfo();
+        await this.sidebarService.fetchUserInfo();
     }
 
     editProfile(): void {
@@ -49,7 +49,7 @@ export class SidebarComponent implements OnInit {
     }
 
     logout(): void {
-        this.fireAuthService.signout();
+        this.sidebarService.logout();
     }
 
     handleMenu(): void {
