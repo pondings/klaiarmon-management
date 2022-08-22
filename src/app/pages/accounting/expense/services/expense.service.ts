@@ -4,6 +4,7 @@ import { NgbModal } from "@ng-bootstrap/ng-bootstrap";
 import { Timestamp } from "firebase/firestore";
 import { BehaviorSubject, Observable } from "rxjs";
 import { Action } from "src/app/common/enum/action";
+import { filterByEqual, filterByIgnoreCase } from "src/app/common/utils/common-util";
 import { getDateStructFromDate } from "src/app/common/utils/date-struct.util";
 import { getMoment } from "src/app/common/utils/moment.util";
 import { takeOnce } from "src/app/common/utils/rxjs-util";
@@ -85,8 +86,8 @@ export class ExpenseService {
         };
 
         let collection = await this.dataService.getCollection<Expense>(ExpenseService.EXPENSE_COLLECTION_PATH, { showSpinner: true, query: criteriaQuery });
-        if (criteria.name) collection = collection.filter(this.filterExpenseByName(criteria.name));
-        if (criteria.paidBy) collection = collection.filter(this.filterExpenseByPaidBy(criteria.paidBy));
+        if (criteria.name) collection = collection.filter(filterByIgnoreCase('name', criteria.name));
+        if (criteria.paidBy) collection = collection.filter(filterByEqual('paidBy', criteria.paidBy));
 
         if (!collection || !collection[0]) this.toastService.showSuccess('No data found.');
         this.expenses$.next(collection);
@@ -122,14 +123,6 @@ export class ExpenseService {
         const path = `expense/${year}/${month}/${fileName}-${currentDate?.format('DD-MM-YYYY-HH-mm-ss')}`;
         const uploadUrl = await this.fireStorageService.uploadPhoto(path, file.file!);
         return { name: fileName!, attachmentUrl: uploadUrl, uploadDate: currentDate?.toDate() };
-    }
-
-    private filterExpenseByName(name: string): (expense: Expense) => boolean {
-        return (expenses: Expense) => expenses.name.toLowerCase().includes(name.toLowerCase());
-    }
-
-    private filterExpenseByPaidBy(paidBy: string): (expense: Expense) => boolean {
-        return (expense: Expense) => expense.paidBy === paidBy;
     }
 
     private async getExpenseFormValueFromExpense(expense: Expense): Promise<ExpenseFormValue> {
