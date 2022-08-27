@@ -7,6 +7,7 @@ import { DocumentManagementService } from "../services/document-management.servi
 @Component({
     selector: 'app-document-management',
     templateUrl: './document-management.component.html',
+    styles: ['app-document-management { height: 100%; }'],
     changeDetection: ChangeDetectionStrategy.OnPush,
     encapsulation: ViewEncapsulation.None
 })

@@ -1,4 +1,4 @@
-<div class="d-flex flex-column">
+<div class="d-flex flex-column h-100">
     <div class="d-flex justify-content-between">
         <h6 class="page-title">Documents</h6>
         <button class="btn add-btn" (click)="openAddDocumentModal()">
@@ -9,6 +9,8 @@
     <app-document-search-form class="d-block mb-3" (onSearch)="search($event)"
         (onClear)="clear()"></app-document-search-form>
 
-    <app-document-search-result *ngFor="let document of (documents$ | async)!" 
-        [document]="document" (onDelete)="deleteDocument($event)"></app-document-search-result>
+    <div class="result-container fg-1 overflow-auto">
+        <app-document-search-result *ngFor="let document of (documents$ | async)!" 
+            [document]="document" (onDelete)="deleteDocument($event)"></app-document-search-result>
+    </div>
 </div>
