@@ -11,7 +11,6 @@ import { ExpenseSearch, ExpenseSearchForm } from "../../model/expense.model";
 @Component({
     selector: 'app-expense-search-form',
     templateUrl: './expense-search-form.component.html',
-    styleUrls: ['./expense-search-form.component.scss'],
     changeDetection: ChangeDetectionStrategy.OnPush,
     encapsulation: ViewEncapsulation.None
 })

@@ -6,6 +6,9 @@ $enable-cssgrid: true;
 @import '~bootstrap/scss/bootstrap';
 @import "../node_modules/angular-calendar/css/angular-calendar.css";
 
+@import '~quill/dist/quill.bubble.css'; 
+ @import '~quill/dist/quill.snow.css';
+
 @import './scss/button.scss';
 @import './scss/theme.scss';
 
@@ -64,8 +67,12 @@ h6.page-title {
     opacity: 1;
 }
 
-fg-1 {
+.fg-1 {
     flex-grow: 1;
+}
+
+.btn-cmd button { 
+    width: 30%; 
 }
 
 @include media-breakpoint-down(sm) {

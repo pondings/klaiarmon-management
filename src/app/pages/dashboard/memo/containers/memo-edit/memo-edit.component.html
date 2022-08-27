@@ -1,0 +1,25 @@
+<div class="d-flex flex-column h-100">
+    <div class="d-flex justify-content-between">
+        <button class="btn add-btn" (click)="back()">
+            <fa-icon [icon]="faChevronLeft"></fa-icon>
+        </button>
+        <div class="cmd-group">
+            <button class="btn add-btn">
+                <fa-icon [icon]="faFloppyDisk"></fa-icon>
+            </button>
+        </div>
+    </div>
+
+    <form class="fg-1 overflow-auto">
+
+        <div class="grid bs-rows-1 bs-columns-2 mt-4">
+            <div class="form-floating g-col-1">
+                <input class="form-control form-control-sm" placeholder="Name">
+                <label for="name">Name</label>
+            </div>
+        </div>
+
+        <quill-editor class="d-block mt-3"></quill-editor>
+
+    </form>
+</div>

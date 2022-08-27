@@ -24,6 +24,7 @@ import { HammerModule, HAMMER_GESTURE_CONFIG } from "@angular/platform-browser";
 import { AppHammerGestureConfig } from './core/providers/hammer-gesture.provider';
 import { CustomDateFormatter } from './core/providers/custom-date-formatter.provider';
 import { SharedModule } from './shared/shared.module';
+import { QuillModule } from 'ngx-quill';
 
 export function momentAdapterFactory(): DateAdapter {
   return adapterFactory(moment);
@@ -49,7 +50,8 @@ export function momentAdapterFactory(): DateAdapter {
     AuthModule,
     FontAwesomeModule,
     CalendarModule.forRoot({ provide: DateAdapter, useFactory: momentAdapterFactory }, 
-      { dateFormatter: { provide: CalendarDateFormatter, useClass: CustomCalendarDateFormatter } })
+      { dateFormatter: { provide: CalendarDateFormatter, useClass: CustomCalendarDateFormatter } }),
+    QuillModule.forRoot()
   ],
   providers: [
     { provide: FIREBASE_OPTIONS, useValue: environment.firebase },
