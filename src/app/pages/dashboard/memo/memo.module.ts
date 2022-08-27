@@ -1,5 +1,6 @@
 import { CommonModule } from "@angular/common";
 import { NgModule } from "@angular/core";
+import { QuillModule } from "ngx-quill";
 import { DatePickerModule } from "src/app/shared/components/date-picker/date-picker.module";
 import { UserSelectorModule } from "src/app/shared/components/user-selector/user-selector.module";
 import { SharedModule } from "src/app/shared/shared.module";
@@ -19,7 +20,8 @@ import { MemoSearchComponent } from "./containers/memo-search/memo-search.compon
         CommonModule,
         SharedModule,
         DatePickerModule,
-        UserSelectorModule
+        UserSelectorModule,
+        QuillModule
     ]
 })
 export class MemoModule {}

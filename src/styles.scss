@@ -6,6 +6,9 @@ $enable-cssgrid: true;
 @import '~bootstrap/scss/bootstrap';
 @import "../node_modules/angular-calendar/css/angular-calendar.css";
 
+@import '~quill/dist/quill.bubble.css'; 
+ @import '~quill/dist/quill.snow.css';
+
 @import './scss/button.scss';
 @import './scss/theme.scss';
 
