@@ -1,5 +1,5 @@
 import { faCalendar, faFile } from "@fortawesome/free-regular-svg-icons";
-import { faBuilding, faChartLine, faFileInvoiceDollar, faFolderOpen, faHouse, faMoneyCheck, IconDefinition, } from "@fortawesome/free-solid-svg-icons";
+import { faBuilding, faChartLine, faFileInvoiceDollar, faFolderOpen, faHouse, faMoneyCheck, faNoteSticky, IconDefinition, } from "@fortawesome/free-solid-svg-icons";
 
 export interface Menu {
     path: string;
@@ -25,7 +25,8 @@ const DASHBOARD: Menu = {
     subMenuList: [
         { path: 'dashboard', title: 'Dashboard', icon: faChartLine },
         { path: 'dashboard/calendar', title: 'Calendar', icon: faCalendar },
-        { path: 'dashboard/document', title: 'Documents', icon: faFolderOpen }
+        { path: 'dashboard/document', title: 'Documents', icon: faFolderOpen },
+        { path: 'dashboard/memo', title: 'Memo', icon: faNoteSticky }
     ]
 }
 
