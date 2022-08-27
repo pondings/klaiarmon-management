@@ -1,1 +1,14 @@
-Hello from MemoEditComponent
+<div class="d-flex flex-column h-100">
+    <div class="d-flex justify-content-between">
+        <button class="btn add-btn" (click)="back()">
+            <fa-icon [icon]="faChevronLeft"></fa-icon>
+        </button>
+        <div class="cmd-group">
+            <button class="btn add-btn">
+                <fa-icon [icon]="faFloppyDisk"></fa-icon>
+            </button>
+        </div>
+    </div>
+
+    <div class="fg-1 overflow-auto"></div>
+</div>
