@@ -2,12 +2,12 @@ import { ChangeDetectionStrategy, Component, ViewEncapsulation } from "@angular/
 import { faAdd } from "@fortawesome/free-solid-svg-icons";
 
 @Component({
-    selector: 'app-memo',
-    templateUrl: './memo.component.html',
+    selector: 'app-memo-search',
+    templateUrl: './memo-search.component.html',
     changeDetection: ChangeDetectionStrategy.OnPush,
     encapsulation: ViewEncapsulation.None
 })
-export class MemoComponent {
+export class MemoSearchComponent {
 
     faAdd = faAdd;
 
