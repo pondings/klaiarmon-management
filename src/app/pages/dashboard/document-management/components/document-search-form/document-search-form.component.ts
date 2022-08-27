@@ -10,7 +10,6 @@ import { DocumentSearch, DocumentSearchForm } from "../../models/document.model"
 @Component({
     selector: 'app-document-search-form',
     templateUrl: './document-search-form.component.html',
-    styles: [`.btn-cmd button { width: 30%; }`],
     changeDetection: ChangeDetectionStrategy.OnPush,
     encapsulation: ViewEncapsulation.None
 })

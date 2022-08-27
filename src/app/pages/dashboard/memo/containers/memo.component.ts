@@ -1,4 +1,5 @@
 import { ChangeDetectionStrategy, Component, ViewEncapsulation } from "@angular/core";
+import { faAdd } from "@fortawesome/free-solid-svg-icons";
 
 @Component({
     selector: 'app-memo',
@@ -6,4 +7,8 @@ import { ChangeDetectionStrategy, Component, ViewEncapsulation } from "@angular/
     changeDetection: ChangeDetectionStrategy.OnPush,
     encapsulation: ViewEncapsulation.None
 })
-export class MemoComponent {}
+export class MemoComponent {
+
+    faAdd = faAdd;
+
+}

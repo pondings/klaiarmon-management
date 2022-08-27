@@ -64,8 +64,12 @@ h6.page-title {
     opacity: 1;
 }
 
-fg-1 {
+.fg-1 {
     flex-grow: 1;
+}
+
+.btn-cmd button { 
+    width: 30%; 
 }
 
 @include media-breakpoint-down(sm) {

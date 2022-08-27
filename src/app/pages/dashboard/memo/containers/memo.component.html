@@ -1,2 +1,14 @@
-<app-memo-search-form></app-memo-search-form>
-<app-memo-search-result></app-memo-search-result>
+<div class="d-flex flex-column h-100">
+    <div class="d-flex justify-content-between">
+        <h6 class="page-title">Memo</h6>
+        <button class="btn add-btn">
+            <fa-icon [icon]="faAdd"></fa-icon>
+        </button>
+    </div>
+
+    <app-memo-search-form class="d-block mb-3"></app-memo-search-form>
+
+    <div class="result-container fg-1 overflow-auto">
+        <app-memo-search-result></app-memo-search-result>
+    </div>
+</div>
