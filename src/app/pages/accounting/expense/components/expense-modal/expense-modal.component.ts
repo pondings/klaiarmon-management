@@ -3,7 +3,7 @@ import { FormArray, FormBuilder, FormGroup, Validators } from "@angular/forms";
 import { faCalendar } from "@fortawesome/free-solid-svg-icons";
 import { NgbActiveModal } from "@ng-bootstrap/ng-bootstrap";
 import { Timestamp } from "firebase/firestore";
-import { map, Observable } from "rxjs";
+import { Observable } from "rxjs";
 import { Action } from "src/app/common/enum/action";
 import { NullableDateStructFormControl, NullableMeta, NullableNumber, NullableNumberFormControl, NullableString, NullableStringFormControl, NullableUserInfo, NullableUserInfoFormControl } from "src/app/common/types/common.type";
 import { findArrDuplicated, mapTo, sumNumber } from "src/app/common/utils/common-util";
@@ -42,8 +42,6 @@ export class ExpenseModalComponent implements OnInit, AfterViewInit {
 
     isFormValid$!: Observable<boolean>
     isDisabled$!: Observable<boolean>;
-
-    today = getDateStruct();
 
     constructor(private fb: FormBuilder,
         private activeModal: NgbActiveModal,
