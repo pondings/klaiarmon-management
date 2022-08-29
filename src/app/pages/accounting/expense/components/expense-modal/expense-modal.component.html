@@ -19,7 +19,7 @@
         </div>
 
         <div class="grid bs-rows-1 bs-columns-2 row-gap-1 mb-2">
-            <app-date-picker label="Date" [control]="dateCtrl" [maxDate]="today!"></app-date-picker>
+            <app-date-picker label="Date" [control]="dateCtrl"></app-date-picker>
             <app-user-selector label="Paid by" [control]="paidByCtrl" [required]="true" 
                 [disabled]="(isDisabled$ | async)!"></app-user-selector>
         </div>
