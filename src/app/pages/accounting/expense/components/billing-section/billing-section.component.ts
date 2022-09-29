@@ -60,6 +60,8 @@ export class BillingSectionComponent implements OnInit {
     }
 
     recalculateBillingAmount(amount: number): void {
+        if (this.action === Action.VIEW) return;
+
         const totalBilling = this.billingFormArr.controls.length;
         if (!totalBilling) return;
 
