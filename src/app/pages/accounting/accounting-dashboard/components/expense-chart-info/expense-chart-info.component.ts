@@ -123,6 +123,8 @@ export class ExpenseChartInfoComponent implements OnInit {
         const backMonths = 7;
         const months = Array.from(Array(backMonths).keys()).map(num => getMoment()?.startOf('month').subtract(num, 'month')!);
         this.periodCtrl.setValue(months[0]);
+
+        months.unshift(getMoment()?.startOf('month').add(1, 'month')!);
         return months;
     }
 
