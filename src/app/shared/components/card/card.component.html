@@ -1,0 +1,27 @@
+<div class="card mb-2">
+    <div class="card-body p-2">
+        <div class="card-title d-flex flex-row justify-content-between align-items-center m-0">
+            <ng-template *ngIf="customTitle; else defaultTitle" [ngTemplateOutlet]="customTitle"></ng-template>
+
+            <ng-template #defaultTitle>
+                <span class="title hide-overflow m-0" [innerHTML]="title" (click)="collapse.toggle()">
+                </span>
+                <div class="d-flex">
+                    <fa-icon *ngIf="isEditable" [icon]="faPen"
+                        (click)="onEdit.emit()">
+                    </fa-icon>
+                    <fa-icon *ngIf="isEditable" class="ms-2" [icon]="faTrash" 
+                        (click)="onDelete.emit()">
+                    </fa-icon>
+                </div>
+            </ng-template>
+        </div>
+        <div class="card-text mt-2" #collapse="ngbCollapse" [(ngbCollapse)]="isCollapsed">
+            <ng-template *ngIf="customContent; else defaultContent" [ngTemplateOutlet]="customContent"></ng-template> 
+
+            <ng-template #defaultContent>
+                <div [innerHTML]="content">{{ content }}</div>
+            </ng-template>
+        </div>
+    </div>
+</div>

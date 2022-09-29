@@ -1,5 +1,5 @@
 import { ChangeDetectionStrategy, Component, EventEmitter, Input, Output, ViewEncapsulation } from "@angular/core";
-import { faArrowUpRightFromSquare, faPen, faTrash } from "@fortawesome/free-solid-svg-icons";
+import { faPen, faTrash } from "@fortawesome/free-solid-svg-icons";
 import { CalendarEventWithMeta } from "../../models/calendar";
 
 @Component({
@@ -22,7 +22,6 @@ export class EventInfoComponent {
 
     faPen = faPen;
     faTrash = faTrash;
-    faArrowUpRightFromSquare = faArrowUpRightFromSquare;
 
     isCollapsed = true;
 
