@@ -19,8 +19,7 @@
             </div>
             <div *ngIf="event.meta?.place?.placeId" class="location mt-2">
                 <a target="_blank" [href]="getDirectionLink()">
-                    {{event.meta?.place?.placeName}}
-                    <fa-icon [icon]="faArrowUpRightFromSquare"></fa-icon>
+                    {{event.meta?.place?.placeName}} 🗺️
                 </a>
             </div>
             <ng-template #defaultDescription><span style="font-style: italic; opacity: 0.7;">No Description</span></ng-template>

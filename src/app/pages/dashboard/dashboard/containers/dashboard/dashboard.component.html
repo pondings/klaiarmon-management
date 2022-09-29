@@ -1,0 +1,47 @@
+<div *ngIf="isContentReady$ | async" class="flex flex-column">
+
+    <div class="w-100">
+        <div class="w-100 text-center">
+            <h5>Incoming Event 📅</h5>
+        </div>
+        <app-card #card *ngFor="let event of (incomingEvents$ | async)" [customTitle]="customTitle"
+            [customContent]="customContent">
+
+            <ng-template #customTitle>
+                <div class="w-100 d-flex justify-content-between" (click)="card.toggle()">
+                    <span class="text-bold">{{event.title}}</span>
+                    <span class="text-bold">{{ event.start | date: 'dd/MM/YYYY' }}</span>
+                </div>
+            </ng-template>
+
+            <ng-template #customContent>
+                <div *ngIf="event.meta?.description; else noDescription">
+                    {{event.meta?.description}}
+                </div>
+                <ng-template #noDescription>
+                    <div style="font-style: italic; opacity: 0.7;">No Description</div>
+                </ng-template>
+
+                <a *ngIf="event.meta?.place?.placeId" target="_blank" [href]="getDirectionLink(event)">
+                    {{event.meta?.place?.placeName}} 🗺️
+                </a>
+            </ng-template>
+
+        </app-card>
+    </div>
+
+    <div class="w-100 mt-3">
+        <div class="w-100 text-center">
+            <h5>Incoming Holiday 🏖️</h5>
+        </div>
+        <app-card #card *ngFor="let event of (incomingHoliday$ | async)" [customTitle]="customTitle">
+            <ng-template #customTitle>
+                <div class="w-100 d-flex justify-content-between" (click)="card.toggle()">
+                    <span class="text-bold hide-overflow">{{event.title}}</span>
+                    <span class="text-bold">{{ event.start | date: 'dd/MM/YYYY' }}</span>
+                </div>
+            </ng-template>
+        </app-card>
+    </div>
+
+</div>

@@ -1,0 +1,12 @@
+app-dashboard {
+    a {
+        text-decoration: unset;
+    }
+
+    .hide-overflow {
+        max-height: 28px !important;
+        white-space: nowrap;
+        text-overflow: ellipsis;
+        overflow: hidden;
+    }
+}
