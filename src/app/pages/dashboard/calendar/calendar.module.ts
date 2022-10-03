@@ -10,6 +10,7 @@ import { SharedModule } from "src/app/shared/shared.module";
 import { EventInfoComponent } from "./components/calendar-event-info/event-info.component";
 import { CalendarEventModalComponent } from "./components/calendar-event-modal/calendar-event-modal.component";
 import { CalendarComponent } from "./containers/calendar/calendar.component";
+import { CalendarNotificationService } from "./services/calendar-notification.service";
 import { CalendarService } from "./services/calendar.service";
 
 @NgModule({
@@ -20,7 +21,8 @@ import { CalendarService } from "./services/calendar.service";
     ],
     providers: [
         CalendarService,
-        GoogleMapsLoaderService
+        GoogleMapsLoaderService,
+        CalendarNotificationService
     ],
     imports: [
         CommonModule,

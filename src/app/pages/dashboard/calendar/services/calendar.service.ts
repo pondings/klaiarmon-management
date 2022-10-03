@@ -11,6 +11,7 @@ import { PushNotificationService } from "src/app/shared/services/push-notificati
 import { CalendarEventDto, CalendarEventWithMeta } from "../models/calendar";
 import { filterEventsDocIdNotEqual, mapCalendarDtoToEvent, mapCalendarEventToDto, mapToEditable } from "../utils/calendar.util";
 import { CalendarEventModalComponent } from "../components/calendar-event-modal/calendar-event-modal.component";
+import { CalendarNotificationService } from "./calendar-notification.service";
 
 @Injectable()
 export class CalendarService {
@@ -22,7 +23,7 @@ export class CalendarService {
     private dayEvent$ = new BehaviorSubject<CalendarEventWithMeta[]>([]);
 
     constructor(private dataService: DataService,
-        private pushNotificationService: PushNotificationService,
+        private calendarNotificationService: CalendarNotificationService,
         private ngbModalService: NgbModal) { }
 
     subscribeCalendarEvents(): Observable<CalendarEventWithMeta[]> {
@@ -56,7 +57,7 @@ export class CalendarService {
             const editedData = await this.dataService.updateDocument(
                 CalendarService.CUSTOM_EVENT_COLLECTION, dto, { showSpinner: true });
 
-            this.pushNotificationService.pushCalendarNotification(editedData, Action.UPDATE);
+            this.calendarNotificationService.pushNotification(editedData, Action.UPDATE);
             const calendarEvent = mapCalendarDtoToEvent(editedData);
             this.updateToEventsDisplay(calendarEvent, currentViewDate);
         }, err => { });
@@ -69,7 +70,7 @@ export class CalendarService {
         const documentId = event.meta?.documentId!;
         await this.dataService.deleteDocument(CalendarService.CUSTOM_EVENT_COLLECTION, documentId, { showSpinner: true, toastMessage: 'Event deleted' });
 
-        this.pushNotificationService.pushCalendarNotification(mapCalendarEventToDto(event), Action.DELETE);
+        this.calendarNotificationService.pushNotification(mapCalendarEventToDto(event), Action.DELETE);
         this.calendarEvent$.pipe(takeOnce()).subscribe(events =>
             this.calendarEvent$.next(events.filter(filterEventsDocIdNotEqual(documentId))));
         this.dayEvent$.pipe(takeOnce()).subscribe(events =>
@@ -90,7 +91,7 @@ export class CalendarService {
             const calendarEvent = mapCalendarDtoToEvent(addedEvent);
             calendarEvent.meta!.editable = true;
 
-            this.pushNotificationService.pushCalendarNotification(addedEvent, Action.CREATE);
+            this.calendarNotificationService.pushNotification(addedEvent, Action.CREATE);
             this.addToEventsDisplay(calendarEvent);
         }, err => { });
     }
