@@ -41,7 +41,7 @@
             <label class="text-bold g-col-1">To</label>
             <span class="g-col-2">{{ billing.user | username | async }}</span>
             <label class="text-bold g-col-1">Amount</label>
-            <span class="g-col-4 text-center">{{ billing | averagePerMonth: item.period! }}</span>
+            <span class="g-col-4 text-center">{{ billing.amount | number | default: 'N/A' }}</span>
         </div>
 
         <hr>
