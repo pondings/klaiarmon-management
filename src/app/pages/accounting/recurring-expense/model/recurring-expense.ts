@@ -25,6 +25,7 @@ export interface RecurringExpense<TDATE = Timestamp> {
     billings: Billing[];
     active: boolean;
     recurringEnd: TDATE;
+    recurringStart: TDATE;
 }
 
 export interface RecurringExpenseForm {

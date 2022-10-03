@@ -1,5 +1,6 @@
 import { CommonModule } from "@angular/common";
 import { NgModule } from "@angular/core";
+import { CardModule } from "src/app/shared/components/card/card.module";
 import { DropdownModule } from "src/app/shared/components/dropdown/dropdown.module";
 import { UserSelectorModule } from "src/app/shared/components/user-selector/user-selector.module";
 import { SharedModule } from "src/app/shared/shared.module";
@@ -27,7 +28,8 @@ import { RecurringExpenseService } from "./services/recurring-expense.service";
         SharedModule,
         UserSelectorModule,
         ExpenseModule,
-        DropdownModule
+        DropdownModule,
+        CardModule
     ]
 })
 export class RecurringExpenseModule {}

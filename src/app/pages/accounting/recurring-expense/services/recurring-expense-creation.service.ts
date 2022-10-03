@@ -13,20 +13,28 @@ export class RecurringExpenseCreationService {
 
     async create(recurringExpense: RecurringExpense): Promise<void> {
         recurringExpense.active = true;
+        recurringExpense.recurringStart = this.calculateRecurringStart(recurringExpense)!;
         recurringExpense.recurringEnd = this.calculateRecurringEnd(recurringExpense)!;
         await this.dataService.addDocument(RecurringExpenseService.RECURRING_EXPENSE_COLLECTION_PATH, recurringExpense,
             { showSpinner: true, toastMessage: 'Recurring Expense added' });
     }
 
-    private calculateRecurringEnd(recurringExpense: RecurringExpense): Nullable<Timestamp> {
+    private calculateRecurringStart(recurringExpense: RecurringExpense): Nullable<Timestamp> {
         if (!recurringExpense.period) return null;
         const today = moment();
         const day = today.date();
         let month = today.month() + 1;
         const year = today.year();
-        
+
         if (recurringExpense.every < day) month += 1;
-        const recurringEndDate = moment(`${year}/${month}/${recurringExpense.every}`)
+        const recurringStartDate = moment(`${year}/${month}/${recurringExpense.every}`);
+        return Timestamp.fromDate(recurringStartDate.toDate());
+    }
+
+    private calculateRecurringEnd(recurringExpense: RecurringExpense): Nullable<Timestamp> {
+        if (!recurringExpense.period) return null;
+
+        const recurringEndDate = moment(recurringExpense.recurringStart.toDate())
             .add(recurringExpense.period - 1, "months")
             .toDate();
         return Timestamp.fromDate(recurringEndDate);

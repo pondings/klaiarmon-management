@@ -4,13 +4,13 @@
             <ng-template *ngIf="customTitle; else defaultTitle" [ngTemplateOutlet]="customTitle"></ng-template>
 
             <ng-template #defaultTitle>
-                <span class="title hide-overflow m-0" [innerHTML]="title" (click)="collapse.toggle()">
+                <span class="title hide-overflow m-0 text-bold" [innerHTML]="title" (click)="collapse.toggle()">
                 </span>
-                <div class="d-flex">
+                <div class="d-flex button-group">
                     <fa-icon *ngIf="isEditable" [icon]="faPen"
                         (click)="onEdit.emit()">
                     </fa-icon>
-                    <fa-icon *ngIf="isEditable" class="ms-2" [icon]="faTrash" 
+                    <fa-icon *ngIf="isEditable" class="ms-3" [icon]="faTrash" 
                         (click)="onDelete.emit()">
                     </fa-icon>
                 </div>

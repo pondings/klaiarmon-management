@@ -7,10 +7,7 @@ import { ExpenseService } from "../../services/expense.service";
 @Component({
     selector: 'app-expense',
     templateUrl: './expense.component.html',
-    styles: [
-        'app-expense { height: 100%; }',
-        'app-expense .result-container { flex-grow: 1; overflow: auto; margin-top: 0.5rem; padding-bottom: 0.75rem; }'
-    ],
+    styles: [ 'app-expense { height: 100%; }' ],
     changeDetection: ChangeDetectionStrategy.OnPush,
     encapsulation: ViewEncapsulation.None
 })

@@ -10,6 +10,47 @@
     <app-recurring-expense-search-form (onSearch)="searchRecurringExpense($event)"
         (onReset)="resetRecurringExpense()"></app-recurring-expense-search-form>
 
-    {{ recurringExpenses$ | async | json }}
+    <div class="result-container">
+        <app-card #card *ngFor="let item of (recurringExpenses$ | async)" 
+            [title]="item.name" [isEditable]="true" [customContent]="customContent">
+
+            <ng-template #customContent>
+                <div class="grid bs-columns-6 column-gap-0 row-gap-0">
+                    <label class="text-bold g-col-1">Paid By</label>
+                    <span class="g-col-2 text-center">{{ item.paidBy | username | async }}</span>
+                    <label class="text-bold g-col-1">Period</label>
+                    <span class="g-col-2 text-center">{{ item.period }}</span>
+
+                    <label class="text-bold g-col-1">Amount</label>
+                    <span class="g-col-2 text-center">{{ item.amount || 'Not set' }}</span>
+                    <label class="text-bold g-col-1">Status</label>
+                    <span class="g-col-2 text-center">{{ item.active }}</span>
+
+                    <label class="text-bold g-col-1">Every</label>
+                    <span class="g-col-2 text-center">{{ item.every }}th of month</span>
+                    <div class="g-col-3"></div>
+
+                    <label class="text-bold g-col-1">Start</label>
+                    <span class="g-col-2 text-center">{{ item.recurringStart.toDate() | date: 'dd/MM/YYYY' }}</span>
+                    <label class="text-bold g-col-1">End</label>
+                    <span class="g-col-2 text-center">{{ item.recurringEnd.toDate() | date: 'dd/MM/YYYY' }}</span>
+
+                </div>
+                <hr>
+                <div class="grid bs-columns-6 column-gap-0 row-gap-0 fs-12">
+                    <label class="text-bold g-col-1">Created</label>
+                    <span class="g-col-2 text-center">{{ item.meta.createdBy! | username | async }}</span>
+                    <label class="text-bold g-col-1">Date</label>
+                    <span class="g-col-2 text-center">{{ item.meta.createdDate?.toDate() | date: 'dd/MM/YYYY' }}</span>
+
+                    <label class="text-bold g-col-1">Updated</label>
+                    <span class="g-col-2 text-center">{{ item.meta.updatedBy! | username | async }}</span>
+                    <label class="text-bold g-col-1">Date</label>
+                    <span class="g-col-2 text-center">{{ item.meta.updatedDate?.toDate() | date: 'dd/MM/YYYY' }}</span>
+                </div>
+            </ng-template>
+
+        </app-card>
+    </div>
 
 </div>
