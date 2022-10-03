@@ -186,8 +186,17 @@ h6.page-title {
     }
 }
 
+@mixin fs-x {
+    @for $i from 0 through 30 {
+        .fs-#{$i} {
+            font-size: #{$i}px !important;
+        }
+    }
+}
+
 
 @include bs-rows-x;
 @include bs-columns-x;
 @include row-gap-x;
 @include column-gap-x;
+@include fs-x;

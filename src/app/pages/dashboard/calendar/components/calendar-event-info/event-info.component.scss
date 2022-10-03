@@ -10,14 +10,18 @@ app-event-info {
     }
 
     span.title {
-        font-size: 12px !important;
+        font-size: $font-size !important;
         font-weight: bold;
         flex-grow: 1;
         cursor: pointer;
     }
 
     div.card-text {
-        font-size: 12px !important;
+        font-size: $font-size !important;
+    }
+
+    div.button-group {
+        font-size: $icon-button-size !important;
     }
 
     div.location a fa-icon {

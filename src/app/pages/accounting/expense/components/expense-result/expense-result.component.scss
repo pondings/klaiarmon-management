@@ -7,10 +7,14 @@ app-expense-result {
     }
 
     span.title {
-        font-size: 12px !important;
+        font-size: $font-size !important;
         font-weight: bold;
         flex-grow: 1;
         cursor: pointer;
+    }
+
+    div.button-group {
+        font-size: $icon-button-size !important;
     }
 
     .hide-overflow {
@@ -21,7 +25,7 @@ app-expense-result {
     }
 
     div.card-text {
-        font-size: 12px !important;
+        font-size: $font-size !important;
     }
 
     span.attachment-link {

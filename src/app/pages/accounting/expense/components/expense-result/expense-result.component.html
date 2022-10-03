@@ -5,11 +5,11 @@
             <span class="title hide-overflow m-0" (click)="collapse.toggle()">
                 {{expense.name}}
             </span>
-            <div class="d-flex">
+            <div class="d-flex button-group">
                 <fa-icon [icon]="faPen"
                     (click)="onEdit()">
                 </fa-icon>
-                <fa-icon class="ms-2" [icon]="faTrash" 
+                <fa-icon class="ms-3" [icon]="faTrash" 
                     (click)="onDelete()">
                 </fa-icon>
             </div>
@@ -48,13 +48,13 @@
 
             <hr>
 
-            <div class="grid bs-columns-6 column-gap-0">
+            <div class="grid bs-columns-6 column-gap-0 fs-12">
                 <label class="text-bold g-col-1">Created</label>
                 <span class="g-col-2 text-center">{{ expense.meta.createdBy! | username | async }}</span>
                 <label class="text-bold g-col-1">Date</label>
                 <span class="g-col-2 text-center">{{ expense.meta.createdDate?.toDate() | date:'dd/MM/YYYY HH:mm:ss' }}</span>
             </div>
-            <div class="grid bs-columns-6 column-gap-0">
+            <div class="grid bs-columns-6 column-gap-0 fs-12">
                 <label class="text-bold g-col-1">Updated</label>
                 <span class="g-col-2 text-center">{{ expense.meta.updatedBy! | username | async }}</span>
                 <label class="text-bold g-col-1">Date</label>
