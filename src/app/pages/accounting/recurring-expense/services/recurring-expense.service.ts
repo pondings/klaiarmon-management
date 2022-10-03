@@ -32,7 +32,7 @@ export class RecurringExpenseService {
     }
 
     async searchRecurringExpense(recurringExpenseSearchValue: RecurringExpenseSearchValue): Promise<void> {
-        const recurringExpenses = await this.recurringExpenseSearchService.search();
+        const recurringExpenses = await this.recurringExpenseSearchService.search(recurringExpenseSearchValue);
         this.recurringExpenses$.next(recurringExpenses);
     }
 
