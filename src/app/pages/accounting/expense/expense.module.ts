@@ -38,6 +38,7 @@ import { ExpenseNotificationService } from "./services/expense-notification.serv
         UserSelectorModule,
         DatePickerModule,
         ImageViewerModule
-    ]
+    ],
+    exports: [BillingSectionComponent]
 })
 export class ExpenseModule {}

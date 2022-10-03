@@ -4,7 +4,7 @@ import { faCircleMinus, faPlus } from "@fortawesome/free-solid-svg-icons";
 import { UntilDestroy } from "@ngneat/until-destroy";
 import { map, Observable } from "rxjs";
 import { Action } from "src/app/common/enum/action";
-import { NullableNumber, NullableNumberFormControl, NullableUserInfo, NullableUserInfoFormControl } from "src/app/common/types/common.type";
+import { NullableNumber, NullableNumberFormControl, NullableStringFormControl, NullableUserInfo, NullableUserInfoFormControl } from "src/app/common/types/common.type";
 import { ExpenseForm, BillingForm, BillingFormValue } from "../../model/expense.model";
 
 @UntilDestroy({ checkProperties: true })
@@ -25,6 +25,9 @@ export class BillingSectionComponent implements OnInit {
 
     @Input()
     isDisabled!: boolean;
+
+    @Input()
+    isRequireAmount = true;
 
     faPlus = faPlus;
     faCircleMinus = faCircleMinus;
@@ -102,9 +105,9 @@ export class BillingSectionComponent implements OnInit {
     }
 
     private buildBillingForm(isDisabled = false): FormGroup<BillingForm> {
-        return this.fb.group({
-            user: this.fb.control<NullableUserInfo>({ value: null, disabled: isDisabled }, [Validators.required]),
-            amount: this.fb.control<NullableNumber>({ value: null, disabled: isDisabled }, [Validators.required])
+        return this.fb.group({ 
+            user: this.fb.control<NullableUserInfo>({ value: null, disabled: isDisabled }, [Validators.required]), 
+            amount: this.fb.control<NullableNumber>({ value: null, disabled: isDisabled }, this.isRequireAmount ? [Validators.required] : []) 
         });
     }
 

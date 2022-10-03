@@ -38,7 +38,7 @@ const ACCOUNTING: Menu = {
     subMenuList: [
         { path: 'accounting', title: 'Accounting', icon: faFileInvoiceDollar },
         { path: 'accounting/expense', title: 'Expenses', icon: faMoneyCheck },
-        { path: 'accounting/recurring-expense', title: 'Recurring Expense', icon: faArrowsSpin }
+        { path: 'accounting/recurring-expense', title: 'Recurring Expenses', icon: faArrowsSpin }
     ]
 }
 
