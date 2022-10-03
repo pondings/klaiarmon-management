@@ -20,7 +20,6 @@ export class RecurringExpenseCreationService {
     }
 
     private calculateRecurringStart(recurringExpense: RecurringExpense): Nullable<Timestamp> {
-        if (!recurringExpense.period) return null;
         const today = moment();
         const day = today.date();
         let month = today.month() + 1;
@@ -34,7 +33,7 @@ export class RecurringExpenseCreationService {
     private calculateRecurringEnd(recurringExpense: RecurringExpense): Nullable<Timestamp> {
         if (!recurringExpense.period) return null;
 
-        const recurringEndDate = moment(recurringExpense.recurringStart.toDate())
+        const recurringEndDate = moment(recurringExpense.recurringStart?.toDate())
             .add(recurringExpense.period - 1, "months")
             .toDate();
         return Timestamp.fromDate(recurringEndDate);

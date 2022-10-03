@@ -3,6 +3,7 @@ import { NgModule } from "@angular/core";
 import { ReactiveFormsModule } from "@angular/forms";
 import { FontAwesomeModule } from "@fortawesome/angular-fontawesome";
 import { NgbCollapseModule, NgbDatepickerModule } from "@ng-bootstrap/ng-bootstrap";
+import { DefaultValuePipe } from "./pipe/default-value.pipe";
 import { OrdinalPipe } from "./pipe/ordinal.pipe";
 import { StatusPipe } from "./pipe/status.pipe";
 import { UsernamePipe } from "./pipe/username.pipe";
@@ -13,14 +14,16 @@ import { PushNotificationService } from "./services/push-notification.service";
     declarations: [
         UsernamePipe, 
         StatusPipe,
-        OrdinalPipe
+        OrdinalPipe,
+        DefaultValuePipe
     ],
     providers: [
         HttpService, 
         PushNotificationService, 
         UsernamePipe,
         StatusPipe,
-        OrdinalPipe
+        OrdinalPipe,
+        DefaultValuePipe
     ],
     imports: [
         HttpClientModule, 
@@ -34,7 +37,8 @@ import { PushNotificationService } from "./services/push-notification.service";
         NgbCollapseModule,
         FontAwesomeModule,
         StatusPipe,
-        OrdinalPipe
+        OrdinalPipe,
+        DefaultValuePipe
     ]
 })
 export class SharedModule { }

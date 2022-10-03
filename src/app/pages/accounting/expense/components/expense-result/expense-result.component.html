@@ -19,7 +19,7 @@
             <div class="grid bs-columns-6 column-gap-0">
                 <label class="text-bold g-col-1">Paid By</label>
                 <span class="g-col-2 text-center">{{ expense.paidBy | username | async }}</span>
-                <label class="text-bold g-col-1">Paid Date</label>
+                <label class="text-bold g-col-1">Date</label>
                 <span class="g-col-2 text-center">{{ expense.date.toDate() | date:'dd/MM/YYYY' }}</span>
             </div>
 
@@ -32,7 +32,7 @@
 
             <span class="d-block mt-2 title-section text-bold">Billing to</span>
             <div *ngFor="let billing of expense.billings" class="grid bs-columns-4 column-gap-0 mt-2">
-                <label class="text-bold">By</label>
+                <label class="text-bold">To</label>
                 <span>{{ billing.user | username | async }}</span>
                 <label class="text-bold">Amount</label>
                 <span>{{ billing.amount | number }}</span>

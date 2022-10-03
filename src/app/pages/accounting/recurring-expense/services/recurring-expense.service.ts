@@ -2,9 +2,11 @@ import { Injectable } from "@angular/core";
 import { NgbModal } from "@ng-bootstrap/ng-bootstrap";
 import { BehaviorSubject, Observable } from "rxjs";
 import { Action } from "src/app/common/enum/action";
+import { takeOnce } from "src/app/common/utils/rxjs-util";
 import { RecurringExpenseModalComponent } from "../components/recurring-expense-modal/recurring-expense-modal.component";
 import { RecurringExpense, RecurringExpenseSearchValue } from "../model/recurring-expense";
 import { RecurringExpenseCreationService } from "./recurring-expense-creation.service";
+import { RecurringExpenseDeletationService } from "./recurring-expense-deletation.service";
 import { RecurringExpenseSearchService } from "./recurring-expense-search.service";
 
 @Injectable()
@@ -16,7 +18,8 @@ export class RecurringExpenseService {
 
     constructor(private modalService: NgbModal,
         private recurringExpenseCreationService: RecurringExpenseCreationService,
-        private recurringExpenseSearchService: RecurringExpenseSearchService) {}
+        private recurringExpenseSearchService: RecurringExpenseSearchService,
+        private recurringExpenseDeletationService: RecurringExpenseDeletationService) {}
 
     subscribeRecurringExpense(): Observable<RecurringExpense[]> {
         return this.recurringExpenses$.asObservable();
@@ -29,6 +32,13 @@ export class RecurringExpenseService {
         await modalRef.result.then(async (recurringExpense: RecurringExpense) => {
             await this.recurringExpenseCreationService.create(recurringExpense);
         }, err => { });
+    }
+
+    async deleteRecurringExpense(recurringExpense: RecurringExpense): Promise<void> {
+        const result = await this.recurringExpenseDeletationService.delete(recurringExpense);
+        if (!result) return;
+        this.recurringExpenses$.pipe(takeOnce()).subscribe(recurringExpenses => 
+            this.recurringExpenses$.next(recurringExpenses.filter(re => re.meta.documentId !== recurringExpense.meta.documentId)));
     }
 
     async searchRecurringExpense(recurringExpenseSearchValue: RecurringExpenseSearchValue): Promise<void> {

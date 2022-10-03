@@ -24,8 +24,8 @@ export interface RecurringExpense<TDATE = Timestamp> {
     meta: MetaData<TDATE>;
     billings: Billing[];
     active: boolean;
-    recurringEnd: TDATE;
-    recurringStart: TDATE;
+    recurringEnd?: TDATE;
+    recurringStart?: TDATE;
 }
 
 export interface RecurringExpenseForm {

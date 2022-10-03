@@ -31,6 +31,10 @@ export class RecurringExpenseComponet implements OnInit {
         await this.recurringExpenseSerivce.searchRecurringExpense(recurringExpenseSearchValue);
     }
 
+    async deleteRecurringExpense(recurringExpense: RecurringExpense): Promise<void> {
+        await this.recurringExpenseSerivce.deleteRecurringExpense(recurringExpense);
+    }
+
     resetRecurringExpense(): void {
         this.recurringExpenseSerivce.resetRecurringExpense();
     }

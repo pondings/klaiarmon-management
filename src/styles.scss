@@ -11,6 +11,7 @@ $enable-cssgrid: true;
 
 @import './scss/button.scss';
 @import './scss/theme.scss';
+@import './scss/layout.scss';
 
 html, body {
     height: 100%;
@@ -185,7 +186,6 @@ h6.page-title {
     @for $i from 0 through 5 {
         .row-gap-#{$i} {
             row-gap: #{$i};
-            --bs-gap: 0.25rem;
         }
     }
 }
