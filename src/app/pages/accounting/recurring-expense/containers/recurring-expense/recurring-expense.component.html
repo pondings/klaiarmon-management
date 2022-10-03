@@ -24,10 +24,10 @@
                     <label class="text-bold g-col-1">Amount</label>
                     <span class="g-col-2 text-center">{{ item.amount || 'Not set' }}</span>
                     <label class="text-bold g-col-1">Status</label>
-                    <span class="g-col-2 text-center">{{ item.active }}</span>
+                    <span class="g-col-2 text-center">{{ item.active | status }}</span>
 
                     <label class="text-bold g-col-1">Every</label>
-                    <span class="g-col-2 text-center">{{ item.every }}th of month</span>
+                    <span class="g-col-2 text-center">{{ item.every | ordinal }} of month</span>
                     <div class="g-col-3"></div>
 
                     <label class="text-bold g-col-1">Start</label>

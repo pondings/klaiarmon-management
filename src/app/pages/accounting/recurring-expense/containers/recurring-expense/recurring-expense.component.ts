@@ -7,6 +7,7 @@ import { RecurringExpenseService } from "../../services/recurring-expense.servic
 @Component({
     selector: 'app-recurring-expense',
     templateUrl: './recurring-expense.component.html',
+    styles: ['app-recurring-expense { height: 100% !important; }'],
     changeDetection: ChangeDetectionStrategy.OnPush,
     encapsulation: ViewEncapsulation.None
 })
