@@ -19,7 +19,7 @@ export class CalendarNotificationService {
     async pushNotification(calendarDto: CalendarEventDto, action: Action): Promise<void> {
         const allUser = await this.fireAuthService.getAllUsers();
         const currentUser = await this.fireAuthService.getCurrentUser();
-        const userAction = action === Action.CREATE ? 'add' : action === Action.UPDATE ? 'edit' : 'delete';
+        const userAction = action === Action.CREATE ? 'add new' : action === Action.UPDATE ? 'update' : 'delete';
 
         const notiUsers = allUser.filter(filterUidNotMatch(currentUser.uid!)).map(mapToUid);
         const notiUserNames = await Promise.all(notiUsers.map(transformUsername(this.usernamePipe)));

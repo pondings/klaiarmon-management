@@ -4,6 +4,7 @@ import { faPen, faTrash } from "@fortawesome/free-solid-svg-icons";
 @Component({
     selector: 'app-card',
     templateUrl: './card.component.html',
+    styleUrls: ['./card.component.scss'],
     changeDetection: ChangeDetectionStrategy.OnPush,
     encapsulation: ViewEncapsulation.None
 })

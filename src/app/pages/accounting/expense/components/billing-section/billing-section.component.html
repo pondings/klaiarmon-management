@@ -23,7 +23,7 @@
             <div class="input-group">
                 <div class="form-floating">
                     <input class="form-control form-control-sm" formControlName="amount" type="number" placeholder="Amount">
-                    <label class="required">Amount</label>
+                    <label [class.required]="isRequireAmount">Amount</label>
                 </div>
                 <button *ngIf="!isDisabled" class="btn btn-outline-secondary" type="button" [disabled]="idx === 0" 
                     (click)="removeBillingForm(idx)">

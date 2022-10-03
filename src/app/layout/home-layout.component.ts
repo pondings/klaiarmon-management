@@ -13,9 +13,9 @@ import { ChangeDetectionStrategy, Component, ViewEncapsulation } from "@angular/
         <app-sidebar></app-sidebar>
     `,
     styles: [
-        'app-home-layout .overflow-container { height: 100% !important; }',
+        'app-home-layout { .overflow-container { height: 100% !important; } }',
         'app-home-layout { height: 100% !important; width: 100% !important; display: flex !important; flex-direction: column !important; }',
-        'app-home-layout .container { flex-grow: 1; display: flex; flex-direction: column; height: 100%; }'
+        'app-home-layout { .container { flex-grow: 1; display: flex; flex-direction: column; height: 100%; } }'
     ],
     changeDetection: ChangeDetectionStrategy.OnPush,
     encapsulation: ViewEncapsulation.None

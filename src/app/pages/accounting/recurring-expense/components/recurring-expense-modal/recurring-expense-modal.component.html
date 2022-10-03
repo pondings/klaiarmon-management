@@ -1,0 +1,47 @@
+<form [formGroup]="recurringExpenseForm">
+
+    <div class="modal-header">
+        <h4>{{ action }} Recurring Expense</h4>
+        <button type="button" class="btn-close" (click)="dismiss()"></button>
+    </div>
+
+    <div class="modal-body">
+
+        <div class="grid bs-rows-2 bs-columns-2 mb-3 bs-gap-1-25">
+            <div class="form-floating g-col-1">
+                <input type="text" class="form-control form-control-sm" placeholder="Name" formControlName="name">
+                <label for="name" class="required">Name</label>
+            </div>
+            <div class="form-floating g-col-1">
+                <input type="number" class="form-control form-control-sm" placeholder="Every" formControlName="every"/>
+                <label for="day-selector" class="required">Every</label>
+            </div>
+
+            <app-user-selector label="Paid By" [required]="true" [control]="paidByCtrl"></app-user-selector>
+            <div class="form-floating g-col-1">
+                <input type="number" class="form-control form-control-sm" placeholder="Amount" formControlName="amount">
+                <label for="amount">Amount</label>
+            </div>
+
+            <div class="form-floating g-col-1">
+                <input type="number" class="form-control form-control-sm" placeholder="Period" formControlName="period"/>
+                <label for="period">Period</label>
+            </div>
+            
+        </div>
+
+        <app-billing-section class="d-block mt-2" formArrayName="billings" [billingFormArr]="billingsFormArr"
+            [action]="action" [isRequireAmount]="false" [isDisabled]="(isFormDisabled$ | async)!"></app-billing-section>
+
+    </div>
+
+    <div class="modal-footer">
+        <button class="btn btn-sm btn-outline-dark" type="button" [disabled]="!(isFormValid$ | async)" (click)="submit()">
+            {{ action }}
+        </button>
+        <button class="btn btn-sm btn-outline-danger" type="button" (click)="dismiss()">
+            Cancel
+        </button>
+    </div>
+
+</form>

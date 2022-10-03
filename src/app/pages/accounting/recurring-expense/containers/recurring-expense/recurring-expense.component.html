@@ -1,0 +1,18 @@
+<div class="d-flex flex-column h-100">
+
+    <div class="d-flex justify-content-between">
+        <h6 class="page-title">Recurring Expenses</h6>
+        <button class="btn add-btn">
+            <fa-icon [icon]="faAdd" (click)="addRecurringExpense()"></fa-icon>
+        </button>
+    </div>
+
+    <app-recurring-expense-search-form (onSearch)="searchRecurringExpense($event)"
+        (onReset)="resetRecurringExpense()"></app-recurring-expense-search-form>
+
+    <div class="result-container">
+        <app-recurring-expense-result [recurringExpenses]="(recurringExpenses$ | async)!"
+            (onDelete)="deleteRecurringExpense($event)"></app-recurring-expense-result>
+    </div>
+
+</div>

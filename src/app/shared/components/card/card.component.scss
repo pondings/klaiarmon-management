@@ -1,0 +1,12 @@
+@import '/src/scss/var.scss';
+
+app-card {
+    span.title {
+        font-size: $font-size;
+        flex: 1;
+    }
+
+    div.button-group {
+        font-size: $icon-button-size;
+    }
+}

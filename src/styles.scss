@@ -11,6 +11,7 @@ $enable-cssgrid: true;
 
 @import './scss/button.scss';
 @import './scss/theme.scss';
+@import './scss/layout.scss';
 
 html, body {
     height: 100%;
@@ -73,6 +74,17 @@ h6.page-title {
 
 .btn-cmd button { 
     width: 30%; 
+}
+
+.ngb-highlight {
+    font-weight: unset !important;
+}
+
+.result-container { 
+    flex-grow: 1; 
+    overflow: auto; 
+    margin-top: 0.5rem; 
+    padding-bottom: 0.75rem; 
 }
 
 @include media-breakpoint-down(sm) {

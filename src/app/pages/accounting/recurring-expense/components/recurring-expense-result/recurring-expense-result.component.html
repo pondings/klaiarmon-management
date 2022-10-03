@@ -1,0 +1,62 @@
+<app-card #card *ngFor="let item of recurringExpenses" [title]="item.name" [customTitle]="customTitle"
+    [customContent]="customContent">
+
+    <ng-template #customTitle>
+        <div class="w-100 d-flex justify-content-between">
+            <span class="text-bold fg-1" (click)="card.toggle()">{{item.name}}</span>
+            <span class="text-bold">
+                <fa-icon class="me-2" [icon]="faTrash" (click)="deleteRecurringExpense(item)">
+                </fa-icon>
+            </span>
+        </div>
+    </ng-template>
+
+    <ng-template #customContent>
+        <div class="grid bs-columns-6 column-gap-0 row-gap-0">
+            <label class="text-bold g-col-1">Paid By</label>
+            <span class="g-col-2 text-center">{{ item.paidBy | username | async }}</span>
+            <label class="text-bold g-col-1">Period</label>
+            <span class="g-col-2 text-center">{{ item.period | default: 'N/A' }}</span>
+
+            <label class="text-bold g-col-1">Amount</label>
+            <span class="g-col-2 text-center">{{ item.amount | number | default: 'N/A' }}</span>
+            <label class="text-bold g-col-1">Status</label>
+            <span class="g-col-2 text-center">{{ item.active | status }}</span>
+
+            <label class="text-bold g-col-1">Every</label>
+            <span class="g-col-2 text-center">{{ item.every | ordinal }} of month</span>
+            <div class="g-col-3"></div>
+
+            <label class="text-bold g-col-1">Start</label>
+            <span class="g-col-2 text-center">{{ item.recurringStart?.toDate() | date: 'dd/MM/YYYY' | default: 'N/A' }}</span>
+            <label class="text-bold g-col-1">End</label>
+            <span class="g-col-2 text-center">{{ item.recurringEnd?.toDate() | date: 'dd/MM/YYYY' | default: 'N/A' }}</span>
+
+        </div>
+
+        <hr>
+
+        <span class="d-block mt-2 title-section text-bold">Billing to</span>
+        <div *ngFor="let billing of item.billings" class="grid bs-columns-8 column-gap-0 mt-2">
+            <label class="text-bold g-col-1">To</label>
+            <span class="g-col-2">{{ billing.user | username | async }}</span>
+            <label class="text-bold g-col-1">Amount</label>
+            <span class="g-col-4 text-center">{{ billing | averagePerMonth: item.period! }}</span>
+        </div>
+
+        <hr>
+
+        <div class="grid bs-columns-6 column-gap-0 row-gap-0 fs-12">
+            <label class="text-bold g-col-1">Created</label>
+            <span class="g-col-2 text-center">{{ item.meta.createdBy! | username | async }}</span>
+            <label class="text-bold g-col-1">Date</label>
+            <span class="g-col-2 text-center">{{ item.meta.createdDate?.toDate() | date: 'dd/MM/YYYY' }}</span>
+
+            <label class="text-bold g-col-1">Updated</label>
+            <span class="g-col-2 text-center">{{ item.meta.updatedBy! | username | async }}</span>
+            <label class="text-bold g-col-1">Date</label>
+            <span class="g-col-2 text-center">{{ item.meta.updatedDate?.toDate() | date: 'dd/MM/YYYY' }}</span>
+        </div>
+    </ng-template>
+
+</app-card>
