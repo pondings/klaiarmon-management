@@ -9,7 +9,6 @@ import { RecurringExpenseModalComponent } from "./components/recurring-expense-m
 import { RecurringExpenseResultComponent } from "./components/recurring-expense-result/recurring-expense-result.component";
 import { RecurringExpenseSearchFormComponent } from "./components/recurring-expense-search-form/recurring-expense-search-form.component";
 import { RecurringExpenseComponet } from "./containers/recurring-expense/recurring-expense.component";
-import { AveragePerMonthPipe } from "./pipe/average-per-month.pipe";
 import { RecurringExpenseCreationService } from "./services/recurring-expense-creation.service";
 import { RecurringExpenseDeletationService } from "./services/recurring-expense-deletation.service";
 import { RecurringExpenseSearchService } from "./services/recurring-expense-search.service";
@@ -21,7 +20,6 @@ import { RecurringExpenseService } from "./services/recurring-expense.service";
         RecurringExpenseModalComponent,
         RecurringExpenseSearchFormComponent,
         RecurringExpenseResultComponent,
-        AveragePerMonthPipe
     ],
     providers: [
         RecurringExpenseService,
