@@ -1,6 +1,7 @@
 import { FormArray, FormGroup } from "@angular/forms";
 import { Timestamp } from "firebase/firestore";
-import { NullableBoolean, NullableBooleanFormControl, NullableMeta, NullableMetaFormControl, NullableNumber, NullableNumberFormControl, NullableString, NullableStringFormControl, NullableUserInfoFormControl } from "src/app/common/types/common.type";
+import { NullableBoolean, NullableBooleanFormControl, NullableDateStructFormControl, NullableMeta, NullableMetaFormControl, NullableNumber, NullableNumberFormControl, NullableString, NullableStringFormControl, NullableUserInfoFormControl } from "src/app/common/types/common.type";
+import { NullableDateStruct } from "src/app/common/utils/date-struct.util";
 import { MetaData } from "src/app/model/meta-data";
 import { Billing, BillingForm, BillingFormValue } from "../../expense/model/expense.model";
 
@@ -11,7 +12,9 @@ export interface RecurringExpense<TDATE = Timestamp> {
     amount?: number;
     period?: number;
     meta: MetaData<TDATE>;
-    billings: Billing[]
+    billings: Billing[];
+    active: boolean;
+    recurringEnd: TDATE;
 }
 
 export interface RecurringExpenseForm {
@@ -22,6 +25,8 @@ export interface RecurringExpenseForm {
     period: NullableNumberFormControl;
     meta: NullableMetaFormControl;
     billings: FormArray<FormGroup<BillingForm>>;
+    active: NullableBooleanFormControl;
+    recurringEnd: NullableDateStructFormControl;
 }
 
 export interface RecurringExpenseFormValue {
@@ -32,4 +37,6 @@ export interface RecurringExpenseFormValue {
     period: NullableNumber;
     meta: NullableMeta;
     billings: BillingFormValue[];
+    active: NullableBoolean;
+    recurringEnd: NullableDateStruct
 }

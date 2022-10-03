@@ -5,6 +5,7 @@ import { Observable } from "rxjs";
 import { Action } from "src/app/common/enum/action";
 import { NullableBoolean, NullableMeta, NullableNumber, NullableString, NullableStringFormControl, NullableUserInfo, NullableUserInfoFormControl } from "src/app/common/types/common.type";
 import { findArrDuplicated, mapTo, sumNumber } from "src/app/common/utils/common-util";
+import { NullableDateStruct } from "src/app/common/utils/date-struct.util";
 import { isFormDisabled, isFormValid } from "src/app/common/utils/form-util";
 import { ToastService } from "src/app/core/toast/toast.service";
 import { Billing, BillingForm } from "../../../expense/model/expense.model";
@@ -91,7 +92,9 @@ export class RecurringExpenseModalComponent implements OnInit {
             every: this.fb.control<NullableNumber>({ value: null, disabled: false }, [Validators.required]),
             period: this.fb.control<NullableNumber>({ value: null, disabled: false }),
             meta: this.fb.control<NullableMeta>({ value: {}, disabled: false }),
-            billings: this.fb.array<FormGroup<BillingForm>>([])
+            billings: this.fb.array<FormGroup<BillingForm>>([]),
+            active: this.fb.control<NullableBoolean>({ value: true, disabled: false }),
+            recurringEnd: this.fb.control<NullableDateStruct>({ value: null, disabled: false })
         });
     }
 

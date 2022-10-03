@@ -5,6 +5,8 @@ import { SharedModule } from "src/app/shared/shared.module";
 import { ExpenseModule } from "../expense/expense.module";
 import { RecurringExpenseModalComponent } from "./components/recurring-expense-modal/recurring-expense-modal.component";
 import { RecurringExpenseComponet } from "./containers/recurring-expense/recurring-expense.component";
+import { RecurringExpenseCreationService } from "./services/recurring-expense-creation.service";
+import { RecurringExpenseSearchService } from "./services/recurring-expense-search.service";
 import { RecurringExpenseService } from "./services/recurring-expense.service";
 
 @NgModule({
@@ -12,7 +14,11 @@ import { RecurringExpenseService } from "./services/recurring-expense.service";
         RecurringExpenseComponet,
         RecurringExpenseModalComponent
     ],
-    providers: [RecurringExpenseService],
+    providers: [
+        RecurringExpenseService,
+        RecurringExpenseCreationService,
+        RecurringExpenseSearchService
+    ],
     imports: [
         CommonModule,
         SharedModule,
