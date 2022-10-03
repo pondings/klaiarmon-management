@@ -17,39 +17,37 @@ export const DROPDOWN_STATUS: Status[] = [
 
 export interface RecurringExpense<TDATE = Timestamp> {
     name: string;
-    every: number;
+    repeat: number;
     paidBy: string;
     amount?: number;
-    period?: number;
+    cycle?: number;
     meta: MetaData<TDATE>;
     billings: Billing[];
     active: boolean;
     recurringEnd?: TDATE;
     recurringStart?: TDATE;
+    nextRecurring?: TDATE;
+    currentCycle?: number;
 }
 
 export interface RecurringExpenseForm {
     name: NullableStringFormControl;
-    every: NullableNumberFormControl;
+    repeat: NullableNumberFormControl;
     paidBy: NullableUserInfoFormControl;
     amount: NullableNumberFormControl;
-    period: NullableNumberFormControl;
+    cycle: NullableNumberFormControl;
     meta: NullableMetaFormControl;
     billings: FormArray<FormGroup<BillingForm>>;
-    active: NullableBooleanFormControl;
-    recurringEnd: NullableDateStructFormControl;
 }
 
 export interface RecurringExpenseFormValue {
     name: NullableString;
-    every: NullableNumber;
+    repeat: NullableNumber;
     paidBy: NullableString;
     amount: NullableNumber;
-    period: NullableNumber;
+    cycle: NullableNumber;
     meta: NullableMeta;
     billings: BillingFormValue[];
-    active: NullableBoolean;
-    recurringEnd: NullableDateStruct
 }
 
 export interface RecurringExpenseSearchForm {

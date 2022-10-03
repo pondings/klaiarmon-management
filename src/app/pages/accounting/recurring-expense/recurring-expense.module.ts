@@ -4,7 +4,7 @@ import { CardModule } from "src/app/shared/components/card/card.module";
 import { DropdownModule } from "src/app/shared/components/dropdown/dropdown.module";
 import { UserSelectorModule } from "src/app/shared/components/user-selector/user-selector.module";
 import { SharedModule } from "src/app/shared/shared.module";
-import { ExpenseModule } from "../expense/expense.module";
+import { RecurringExpenseBillingComponent } from "./components/recurring-expense-billing/recurring-expense-billing.component";
 import { RecurringExpenseModalComponent } from "./components/recurring-expense-modal/recurring-expense-modal.component";
 import { RecurringExpenseResultComponent } from "./components/recurring-expense-result/recurring-expense-result.component";
 import { RecurringExpenseSearchFormComponent } from "./components/recurring-expense-search-form/recurring-expense-search-form.component";
@@ -20,6 +20,7 @@ import { RecurringExpenseService } from "./services/recurring-expense.service";
         RecurringExpenseModalComponent,
         RecurringExpenseSearchFormComponent,
         RecurringExpenseResultComponent,
+        RecurringExpenseBillingComponent
     ],
     providers: [
         RecurringExpenseService,
@@ -31,7 +32,6 @@ import { RecurringExpenseService } from "./services/recurring-expense.service";
         CommonModule,
         SharedModule,
         UserSelectorModule,
-        ExpenseModule,
         DropdownModule,
         CardModule
     ]
