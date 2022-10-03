@@ -40,3 +40,13 @@ export interface RecurringExpenseFormValue {
     active: NullableBoolean;
     recurringEnd: NullableDateStruct
 }
+
+export interface RecurringExpenseSearchForm {
+    name: NullableStringFormControl;
+    paidBy: NullableUserInfoFormControl;
+}
+
+export interface RecurringExpenseSearchValue {
+    name: string;
+    paidBy: string;
+}
