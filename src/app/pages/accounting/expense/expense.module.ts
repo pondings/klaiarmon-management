@@ -14,6 +14,7 @@ import { ExpenseSearchFormComponent } from "./components/expense-search-form/exp
 import { BillingSectionComponent } from "./components/billing-section/billing-section.component";
 import { ExpenseComponent } from "./containers/expense/expense.component";
 import { ExpenseService } from "./services/expense.service";
+import { ExpenseNotificationService } from "./services/expense-notification.service";
 
 @NgModule({
     declarations: [
@@ -24,7 +25,10 @@ import { ExpenseService } from "./services/expense.service";
         ExpenseSearchFormComponent,
         BillingSectionComponent
     ],
-    providers: [ExpenseService],
+    providers: [
+        ExpenseService,
+        ExpenseNotificationService
+    ],
     imports: [
         CommonModule,
         SharedModule,

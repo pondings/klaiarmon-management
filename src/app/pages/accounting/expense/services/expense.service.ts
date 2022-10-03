@@ -14,9 +14,9 @@ import { FireStorageService } from "src/app/core/services/fire-storage.service";
 import { SpinnerService } from "src/app/core/spinner/spinner.service";
 import { ToastService } from "src/app/core/toast/toast.service";
 import { ImageViewerComponent } from "src/app/shared/components/image-viewer/image-viewer.component";
-import { PushNotificationService } from "src/app/shared/services/push-notification.service";
 import { ExpenseModalComponent } from "../components/expense-modal/expense-modal.component";
 import { AttachmentUpload, Expense, ExpenseFormValue, ExpenseSearch } from "../model/expense.model";
+import { ExpenseNotificationService } from "./expense-notification.service";
 
 @Injectable()
 export class ExpenseService {
@@ -31,7 +31,7 @@ export class ExpenseService {
         private toastService: ToastService,
         private spinnerService: SpinnerService,
         private modalService: NgbModal,
-        private pushNotificationService: PushNotificationService) { }
+        private expenseNotificationService: ExpenseNotificationService) { }
 
     async viewExpense(expense: Expense): Promise<void> {
         const expenseFormValue = await this.getExpenseFormValueFromExpense(expense);
@@ -48,7 +48,7 @@ export class ExpenseService {
             expense.files = await Promise.all(expense.files.map(async file => await this.uploadFile(file)));
             const addedData = await this.dataService.addDocument(ExpenseService.EXPENSE_COLLECTION_PATH, expense,
                 { showSpinner: true, toastMessage: 'Expense added' });
-            await this.pushNotificationService.pushExpenseNotification(addedData, Action.CREATE);
+            await this.expenseNotificationService.pushNotification(addedData, Action.CREATE);
         }, err => { });
     }
 
@@ -65,7 +65,7 @@ export class ExpenseService {
             this.expenses$.pipe(takeOnce()).subscribe(expenses =>
                 this.expenses$.next(expenses.map(exp =>
                     exp.meta.documentId === updatedData.meta.documentId ? updatedData : exp)));
-            await this.pushNotificationService.pushExpenseNotification(updatedData, Action.UPDATE);
+            await this.expenseNotificationService.pushNotification(updatedData, Action.UPDATE);
         }, err => { });
     }
 
@@ -106,7 +106,7 @@ export class ExpenseService {
         this.expenses$.pipe(takeOnce()).subscribe(expenses =>
             this.expenses$.next(expenses.filter(expense =>
                 expense.meta.documentId !== expense.meta.documentId)));
-        this.pushNotificationService.pushExpenseNotification(expense, Action.DELETE);
+        await this.expenseNotificationService.pushNotification(expense, Action.DELETE);
     }
 
     viewAttachment(attachmentUrl: string) {
