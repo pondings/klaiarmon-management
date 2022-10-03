@@ -12,11 +12,7 @@ import { ChangeDetectionStrategy, Component, ViewEncapsulation } from "@angular/
         </div>
         <app-sidebar></app-sidebar>
     `,
-    styles: [
-        'app-home-layout { .overflow-container { height: 100% !important; } }',
-        'app-home-layout { height: 100% !important; width: 100% !important; display: flex !important; flex-direction: column !important; }',
-        'app-home-layout { .container { flex-grow: 1; display: flex; flex-direction: column; height: 100%; } }'
-    ],
+    styleUrls: ['./home-layout.component.scss'],
     changeDetection: ChangeDetectionStrategy.OnPush,
     encapsulation: ViewEncapsulation.None
 })

@@ -3,7 +3,7 @@
 
     <ng-template #customTitle>
         <div class="w-100 d-flex justify-content-between">
-            <span class="text-bold fg-1" (click)="card.toggle()">{{item.name}}</span>
+            <span class="text-bold title fg-1" (click)="card.toggle()">{{item.name}}</span>
             <span class="text-bold">
                 <fa-icon class="me-2" [icon]="faTrash" (click)="deleteRecurringExpense(item)">
                 </fa-icon>
@@ -12,41 +12,45 @@
     </ng-template>
 
     <ng-template #customContent>
-        <div class="grid bs-columns-6 column-gap-0 row-gap-0">
+        <div class="grid bs-columns-6 bs-gap-0-25 card-text">
             <label class="text-bold g-col-1">Paid By</label>
             <span class="g-col-2 text-center">{{ item.paidBy | username | async }}</span>
-            <label class="text-bold g-col-1">Cycle</label>
-            <span class="g-col-2 text-center">{{ item.cycle | default: 'N/A' }}</span>
-
             <label class="text-bold g-col-1">Amount</label>
             <span class="g-col-2 text-center">{{ item.amount | number | default: 'N/A' }}</span>
-            <label class="text-bold g-col-1">Status</label>
-            <span class="g-col-2 text-center">{{ item.active | status }}</span>
 
             <label class="text-bold g-col-1">Repeat</label>
             <span class="g-col-2 text-center">{{ item.repeat | ordinal }} of month</span>
-            <div class="g-col-3"></div>
+            <label class="text-bold g-col-1">Status</label>
+            <span class="g-col-2 text-center">{{ item.active | status }}</span>
+
+            <label class="text-bold g-col-1">Cycle</label>
+            <span class="g-col-2 text-center">{{ item.cycle | default: 'N/A' }}</span>
+            <label class="text-bold g-col-1">Current</label>
+            <span class="g-col-2 text-center">{{ item.currentCycle }}</span>
 
             <label class="text-bold g-col-1">Start</label>
             <span class="g-col-2 text-center">{{ item.recurringStart?.toDate() | date: 'dd/MM/YYYY' | default: 'N/A' }}</span>
             <label class="text-bold g-col-1">End</label>
             <span class="g-col-2 text-center">{{ item.recurringEnd?.toDate() | date: 'dd/MM/YYYY' | default: 'N/A' }}</span>
 
+            <label class="text-bold g-col-1">Next</label>
+            <span class="g-col-2 text-center">{{ item.nextRecurring?.toDate() | date: 'dd/MM/YYYY' | default: 'N/A' }}</span>
+
         </div>
 
         <hr>
 
         <span class="d-block mt-2 title-section text-bold">Billing to</span>
-        <div *ngFor="let billing of item.billings" class="grid bs-columns-8 column-gap-0 mt-2">
-            <label class="text-bold g-col-1">To</label>
-            <span class="g-col-2">{{ billing.user | username | async }}</span>
-            <label class="text-bold g-col-1">Amount</label>
-            <span class="g-col-4 text-center">{{ billing.amount | number | default: 'N/A' }}</span>
+        <div *ngFor="let billing of item.billings" class="grid bs-columns-4 bs-gap-0-25 mt-1">
+            <label class="text-bold">To</label>
+            <span>{{ billing.user | username | async }}</span>
+            <label class="text-bold">Amount/m</label>
+            <span class="text-center">{{ billing.amount | number | default: 'N/A' }}</span>
         </div>
 
         <hr>
 
-        <div class="grid bs-columns-6 column-gap-0 row-gap-0 fs-12">
+        <div class="grid bs-columns-6 bs-gap-0-25 fs-12">
             <label class="text-bold g-col-1">Created</label>
             <span class="g-col-2 text-center">{{ item.meta.createdBy! | username | async }}</span>
             <label class="text-bold g-col-1">Date</label>

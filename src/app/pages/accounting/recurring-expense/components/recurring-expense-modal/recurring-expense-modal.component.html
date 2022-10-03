@@ -12,10 +12,7 @@
                 <input type="text" class="form-control form-control-sm" placeholder="Name" formControlName="name">
                 <label for="name" class="required">Name</label>
             </div>
-            <div class="form-floating">
-                <input type="number" class="form-control form-control-sm" placeholder="Repeat (date)" formControlName="repeat"/>
-                <label for="day-selector" class="required">Repeat (Date)</label>
-            </div>
+            <app-dropdown label="Repeat (Date)" [values]="dayOptions" [control]="repeatCtrl" [required]="true"></app-dropdown>
 
             <app-user-selector label="Paid By" [required]="true" [control]="paidByCtrl"></app-user-selector>
             <div class="form-floating">
@@ -23,15 +20,12 @@
                 <label for="amount">Amount</label>
             </div>
 
-            <div class="form-floating">
-                <input type="number" class="form-control form-control-sm" placeholder="Cycle" formControlName="cycle"/>
-                <label for="period">Cycle</label>
-            </div>
-            
+            <app-dropdown label="Cycle" [values]="cycleOptions" [control]="cycleCtrl"></app-dropdown>
+
         </div>
 
-        <app-billing-section class="d-block mt-2" formArrayName="billings" [billingFormArr]="billingsFormArr"
-            [action]="action" [isRequireAmount]="false" [isDisabled]="(isFormDisabled$ | async)!"></app-billing-section>
+        <app-recurring-expense-billing [billingFormArr]="billingsFormArr"
+            [action]="action"></app-recurring-expense-billing>
 
     </div>
 

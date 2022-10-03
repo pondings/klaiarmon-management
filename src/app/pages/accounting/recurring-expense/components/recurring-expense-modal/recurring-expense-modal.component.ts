@@ -3,14 +3,16 @@ import { FormArray, FormBuilder, FormGroup, Validators } from "@angular/forms";
 import { NgbActiveModal } from "@ng-bootstrap/ng-bootstrap";
 import { Observable } from "rxjs";
 import { Action } from "src/app/common/enum/action";
-import { NullableBoolean, NullableMeta, NullableNumber, NullableString, NullableStringFormControl, NullableUserInfo, NullableUserInfoFormControl } from "src/app/common/types/common.type";
-import { findArrDuplicated, mapTo, sumNumber } from "src/app/common/utils/common-util";
-import { NullableDateStruct } from "src/app/common/utils/date-struct.util";
+import { NullableMeta, NullableNumber, NullableNumberFormControl, NullableString, NullableUserInfo, NullableUserInfoFormControl } from "src/app/common/types/common.type";
+import { findArrDuplicated  } from "src/app/common/utils/common-util";
 import { isFormDisabled, isFormValid } from "src/app/common/utils/form-util";
 import { ToastService } from "src/app/core/toast/toast.service";
 import { Billing, BillingForm } from "../../../expense/model/expense.model";
+import { CYCLE_OPTIONS, DAY_OPTIONS } from "../../model/select-options";
 import { RecurringExpenseForm } from "../../model/recurring-expense";
+import { UntilDestroy } from "@ngneat/until-destroy";
 
+@UntilDestroy({ checkProperties: true })
 @Component({
     selector: 'app-recurring-expense-modal',
     templateUrl: './recurring-expense-modal.component.html',
@@ -25,6 +27,9 @@ export class RecurringExpenseModalComponent implements OnInit {
 
     isFormValid$!: Observable<boolean>;
     isFormDisabled$!: Observable<boolean>;
+
+    dayOptions = DAY_OPTIONS;
+    cycleOptions = CYCLE_OPTIONS;
 
     recurringExpenseForm: FormGroup<RecurringExpenseForm>;
 
@@ -58,6 +63,18 @@ export class RecurringExpenseModalComponent implements OnInit {
         return this.recurringExpenseForm.controls.paidBy;
     }
 
+    get amountCtrl(): NullableNumberFormControl {
+        return this.recurringExpenseForm.controls.amount;
+    }
+
+    get repeatCtrl(): NullableNumberFormControl {
+        return this.recurringExpenseForm.controls.repeat;
+    }
+
+    get cycleCtrl(): NullableNumberFormControl {
+        return this.recurringExpenseForm.controls.cycle;
+    }
+
     get billingsFormArr(): FormArray<FormGroup<BillingForm>> {
         return this.recurringExpenseForm.controls.billings;
     }
@@ -65,11 +82,6 @@ export class RecurringExpenseModalComponent implements OnInit {
     private validateForm(): void {
         const formValue = this.recurringExpenseForm.getRawValue();
         const billings = formValue.billings;
-        const totalBillingAmount = billings.map(mapTo('amount')).reduce(sumNumber, 0);
-        if ((formValue.amount || 0) !== totalBillingAmount) {
-            this.toastService.showWarning(`Total billing amoumt ${totalBillingAmount} not match with expense amount ${formValue.amount}`);
-            throw 'Total amount not match with expense amount';
-        }
 
         const duplicateNames = billings.map(billing => billing.user)
             .map(user => user?.displayName)
@@ -93,8 +105,6 @@ export class RecurringExpenseModalComponent implements OnInit {
             cycle: this.fb.control<NullableNumber>({ value: null, disabled: false }),
             meta: this.fb.control<NullableMeta>({ value: {}, disabled: false }),
             billings: this.fb.array<FormGroup<BillingForm>>([]),
-            active: this.fb.control<NullableBoolean>({ value: true, disabled: false }),
-            recurringEnd: this.fb.control<NullableDateStruct>({ value: null, disabled: false })
         });
     }
 

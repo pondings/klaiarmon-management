@@ -15,6 +15,8 @@ export class RecurringExpenseCreationService {
         recurringExpense.active = true;
         recurringExpense.recurringStart = this.calculateRecurringStart(recurringExpense)!;
         recurringExpense.recurringEnd = this.calculateRecurringEnd(recurringExpense)!;
+        recurringExpense.nextRecurring = recurringExpense.recurringStart;
+        recurringExpense.currentCycle = 0;
         await this.dataService.addDocument(RecurringExpenseService.RECURRING_EXPENSE_COLLECTION_PATH, recurringExpense,
             { showSpinner: true, toastMessage: 'Recurring Expense added' });
     }

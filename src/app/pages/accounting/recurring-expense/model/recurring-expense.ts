@@ -26,6 +26,8 @@ export interface RecurringExpense<TDATE = Timestamp> {
     active: boolean;
     recurringEnd?: TDATE;
     recurringStart?: TDATE;
+    nextRecurring?: TDATE;
+    currentCycle?: number;
 }
 
 export interface RecurringExpenseForm {
@@ -36,8 +38,6 @@ export interface RecurringExpenseForm {
     cycle: NullableNumberFormControl;
     meta: NullableMetaFormControl;
     billings: FormArray<FormGroup<BillingForm>>;
-    active: NullableBooleanFormControl;
-    recurringEnd: NullableDateStructFormControl;
 }
 
 export interface RecurringExpenseFormValue {
@@ -48,8 +48,6 @@ export interface RecurringExpenseFormValue {
     cycle: NullableNumber;
     meta: NullableMeta;
     billings: BillingFormValue[];
-    active: NullableBoolean;
-    recurringEnd: NullableDateStruct
 }
 
 export interface RecurringExpenseSearchForm {
