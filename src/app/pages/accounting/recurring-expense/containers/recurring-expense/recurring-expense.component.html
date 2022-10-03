@@ -7,6 +7,9 @@
         </button>
     </div>
 
-    <app-recurring-expense-search-form></app-recurring-expense-search-form>
+    <app-recurring-expense-search-form (onSearch)="searchRecurringExpense($event)"
+        (onReset)="resetRecurringExpense()"></app-recurring-expense-search-form>
+
+    {{ recurringExpenses$ | async | json }}
 
 </div>

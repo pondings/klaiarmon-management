@@ -36,6 +36,7 @@ export class RecurringExpenseSearchFormComponent {
     }
 
     reset(): void {
+        this.searchForm.reset();
         this.onReset.emit();
     }
 

@@ -3,7 +3,7 @@ import { NgbModal } from "@ng-bootstrap/ng-bootstrap";
 import { BehaviorSubject, Observable } from "rxjs";
 import { Action } from "src/app/common/enum/action";
 import { RecurringExpenseModalComponent } from "../components/recurring-expense-modal/recurring-expense-modal.component";
-import { RecurringExpense } from "../model/recurring-expense";
+import { RecurringExpense, RecurringExpenseSearchValue } from "../model/recurring-expense";
 import { RecurringExpenseCreationService } from "./recurring-expense-creation.service";
 import { RecurringExpenseSearchService } from "./recurring-expense-search.service";
 
@@ -31,9 +31,13 @@ export class RecurringExpenseService {
         }, err => { });
     }
 
-    async searchRecurringExpense(): Promise<void> {
+    async searchRecurringExpense(recurringExpenseSearchValue: RecurringExpenseSearchValue): Promise<void> {
         const recurringExpenses = await this.recurringExpenseSearchService.search();
         this.recurringExpenses$.next(recurringExpenses);
+    }
+
+    resetRecurringExpense(): void {
+        this.recurringExpenses$.next([]);
     }
 
 }
