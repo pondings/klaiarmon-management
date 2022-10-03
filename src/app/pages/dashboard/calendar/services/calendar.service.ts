@@ -7,7 +7,6 @@ import * as moment from "moment";
 import { TimeUnit } from "src/app/shared/model/time-unit";
 import { DataService } from "src/app/core/services/data-service";
 import { takeOnce } from "src/app/common/utils/rxjs-util";
-import { PushNotificationService } from "src/app/shared/services/push-notification.service";
 import { CalendarEventDto, CalendarEventWithMeta } from "../models/calendar";
 import { filterEventsDocIdNotEqual, mapCalendarDtoToEvent, mapCalendarEventToDto, mapToEditable } from "../utils/calendar.util";
 import { CalendarEventModalComponent } from "../components/calendar-event-modal/calendar-event-modal.component";

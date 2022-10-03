@@ -1,0 +1,24 @@
+@import '/src/scss/var.scss';
+
+app-document-search-result {
+    
+    span.title {
+        font-size: $font-size !important;
+        font-weight: bold;
+        flex-grow: 1;
+        cursor: pointer;
+    }
+
+    div.button-group {
+        font-size: $icon-button-size !important;
+    }
+
+    div.card-text {
+        font-size: $font-size !important;
+    }
+    
+    .upload-by {
+        font-size: 12px !important;
+    }
+
+}

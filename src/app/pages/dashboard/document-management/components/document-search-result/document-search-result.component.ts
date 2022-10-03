@@ -5,7 +5,7 @@ import { DocumentDto } from "../../models/document.model";
 @Component({
     selector: 'app-document-search-result',
     templateUrl: './document-search-result.component.html',
-    styles: ['app-document-search-result { .upload-by { font-size: 12px !important; } }'],
+    styleUrls: ['./document-search-result.component.scss'],
     changeDetection: ChangeDetectionStrategy.OnPush,
     encapsulation: ViewEncapsulation.None
 })

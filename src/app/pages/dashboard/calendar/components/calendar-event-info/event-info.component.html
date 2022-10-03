@@ -4,11 +4,11 @@
             <span class="title hide-overflow m-0" (click)="collapse.toggle()">
                 {{event.title}}
             </span>
-            <div class="d-flex">
+            <div class="d-flex button-group">
                 <fa-icon *ngIf="event.meta?.editable" [icon]="faPen"
                     (click)="editEvent()">
                 </fa-icon>
-                <fa-icon *ngIf="event.meta?.editable" class="ms-2" [icon]="faTrash" 
+                <fa-icon *ngIf="event.meta?.editable" class="ms-3" [icon]="faTrash" 
                     (click)="deleteEvent()">
                 </fa-icon>
             </div>

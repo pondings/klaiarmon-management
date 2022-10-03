@@ -4,7 +4,7 @@
             <span class="title hide-overflow m-0 w-100" (click)="collapse.toggle()">
                 {{document.name}}
             </span>
-            <div class="d-flex">
+            <div class="d-flex button-group">
                 <fa-icon [icon]="faDownload" (click)="downloadFile.click()"></fa-icon>
                 <fa-icon class="ms-3" [icon]="faTrash" (click)="deleteDocument()"></fa-icon>
             </div>
