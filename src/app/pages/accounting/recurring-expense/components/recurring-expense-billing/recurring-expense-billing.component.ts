@@ -93,7 +93,7 @@ export class RecurringExpenseBillingComponent {
     private buildBillingForm(isDisabled = false): FormGroup<BillingForm> {
         return this.fb.group({ 
             user: this.fb.control<NullableUserInfo>({ value: null, disabled: isDisabled }, [Validators.required]), 
-            amount: this.fb.control<NullableNumber>({ value: null, disabled: isDisabled }, this.isRequireAmount ? [Validators.required] : []) 
+            amount: this.fb.control<NullableNumber>({ value: null, disabled: isDisabled }) 
         });
     }
 
