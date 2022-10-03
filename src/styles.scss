@@ -75,6 +75,10 @@ h6.page-title {
     width: 30%; 
 }
 
+.ngb-highlight {
+    font-weight: unset !important;
+}
+
 @include media-breakpoint-down(sm) {
     app-auth>form.card {
         width: 90vw;

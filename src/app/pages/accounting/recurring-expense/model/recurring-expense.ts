@@ -1,9 +1,19 @@
-import { FormArray, FormGroup } from "@angular/forms";
+import { FormArray, FormControl, FormGroup } from "@angular/forms";
 import { Timestamp } from "firebase/firestore";
-import { NullableBoolean, NullableBooleanFormControl, NullableDateStructFormControl, NullableMeta, NullableMetaFormControl, NullableNumber, NullableNumberFormControl, NullableString, NullableStringFormControl, NullableUserInfoFormControl } from "src/app/common/types/common.type";
+import { Nullable, NullableBoolean, NullableBooleanFormControl, NullableDateStructFormControl, NullableMeta, NullableMetaFormControl, NullableNumber, NullableNumberFormControl, NullableString, NullableStringFormControl, NullableUserInfoFormControl } from "src/app/common/types/common.type";
 import { NullableDateStruct } from "src/app/common/utils/date-struct.util";
 import { MetaData } from "src/app/model/meta-data";
 import { Billing, BillingForm, BillingFormValue } from "../../expense/model/expense.model";
+
+export interface Status {
+    title: string;
+    value: boolean;
+}
+
+export const DROPDOWN_STATUS: Status[] = [
+    { title: 'Active', value: true },
+    { title: 'Inactive', value: false }
+];
 
 export interface RecurringExpense<TDATE = Timestamp> {
     name: string;
@@ -44,9 +54,11 @@ export interface RecurringExpenseFormValue {
 export interface RecurringExpenseSearchForm {
     name: NullableStringFormControl;
     paidBy: NullableUserInfoFormControl;
+    active: FormControl<Nullable<Status>>;
 }
 
 export interface RecurringExpenseSearchValue {
     name: string;
     paidBy: string;
+    active: boolean;
 }

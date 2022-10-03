@@ -1,8 +1,8 @@
 import { ChangeDetectionStrategy, Component, EventEmitter, Output, ViewEncapsulation } from "@angular/core";
-import { FormBuilder, FormGroup } from "@angular/forms";
+import { FormBuilder, FormControl, FormGroup } from "@angular/forms";
 import { faMagnifyingGlass, faXmark } from "@fortawesome/free-solid-svg-icons";
-import { NullableString, NullableUserInfo, NullableUserInfoFormControl } from "src/app/common/types/common.type";
-import { RecurringExpenseSearchForm, RecurringExpenseSearchValue } from "../../model/recurring-expense";
+import { Nullable, NullableBoolean, NullableBooleanFormControl, NullableString, NullableUserInfo, NullableUserInfoFormControl } from "src/app/common/types/common.type";
+import { DROPDOWN_STATUS, RecurringExpenseSearchForm, RecurringExpenseSearchValue, Status } from "../../model/recurring-expense";
 
 @Component({
     selector: 'app-recurring-expense-search-form',
@@ -23,6 +23,8 @@ export class RecurringExpenseSearchFormComponent {
     faXmark = faXmark;
     faMagnifyingGlass = faMagnifyingGlass;
 
+    readonly status = DROPDOWN_STATUS;
+
     constructor(private fb: FormBuilder) {
         this.searchForm = this.buildSearchForm();
     }
@@ -31,7 +33,8 @@ export class RecurringExpenseSearchFormComponent {
         const searchValue = this.searchForm.getRawValue();
         this.onSearch.emit({
             name: searchValue.name!,
-            paidBy: searchValue.paidBy?.uid!
+            paidBy: searchValue.paidBy?.uid!,
+            active: searchValue.active?.value!
         });
     }
 
@@ -44,10 +47,17 @@ export class RecurringExpenseSearchFormComponent {
         return this.searchForm.controls.paidBy;
     }
 
+    get activeCtrl(): FormControl<Nullable<Status>> {
+        return this.searchForm.controls.active;
+    }
+
+    statusDropdownFormatter = (result: Status) => result.title;
+
     private buildSearchForm(): FormGroup<RecurringExpenseSearchForm> {
         return this.fb.group({
             name: this.fb.control<NullableString>({ value: null, disabled: false }),
-            paidBy: this.fb.control<NullableUserInfo>({ value: null, disabled: false})
+            paidBy: this.fb.control<NullableUserInfo>({ value: null, disabled: false}),
+            active: this.fb.control<Nullable<Status>>({ value: null, disabled: false })
         });
     }
 

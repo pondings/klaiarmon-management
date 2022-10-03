@@ -1,11 +1,13 @@
 <form class="d-flex flex-column mt-3" [formGroup]="searchForm">
 
-    <div class="grid bs-rows-1 bs-columns-2 mb-4">
+    <div class="grid bs-rows-2 bs-columns-2 mb-4">
         <div class="form-floating g-col-1">
             <input class="form-control form-control-sm" placeholder="Name" formControlName="name">
             <label for="name">Name</label>
         </div>
         <app-user-selector class="g-col-1" label="Paid by" [control]="paidByCtrl"></app-user-selector>
+
+        <app-dropdown label="Status" [control]="activeCtrl" [values]="status" [formatterFn]="statusDropdownFormatter"></app-dropdown>
     </div>
 
     <div class="btn-cmd d-flex flex-row justify-content-center">
