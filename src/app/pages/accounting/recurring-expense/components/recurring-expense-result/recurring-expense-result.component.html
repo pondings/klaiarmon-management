@@ -15,16 +15,16 @@
         <div class="grid bs-columns-6 column-gap-0 row-gap-0">
             <label class="text-bold g-col-1">Paid By</label>
             <span class="g-col-2 text-center">{{ item.paidBy | username | async }}</span>
-            <label class="text-bold g-col-1">Period</label>
-            <span class="g-col-2 text-center">{{ item.period | default: 'N/A' }}</span>
+            <label class="text-bold g-col-1">Cycle</label>
+            <span class="g-col-2 text-center">{{ item.cycle | default: 'N/A' }}</span>
 
             <label class="text-bold g-col-1">Amount</label>
             <span class="g-col-2 text-center">{{ item.amount | number | default: 'N/A' }}</span>
             <label class="text-bold g-col-1">Status</label>
             <span class="g-col-2 text-center">{{ item.active | status }}</span>
 
-            <label class="text-bold g-col-1">Every</label>
-            <span class="g-col-2 text-center">{{ item.every | ordinal }} of month</span>
+            <label class="text-bold g-col-1">Repeat</label>
+            <span class="g-col-2 text-center">{{ item.repeat | ordinal }} of month</span>
             <div class="g-col-3"></div>
 
             <label class="text-bold g-col-1">Start</label>

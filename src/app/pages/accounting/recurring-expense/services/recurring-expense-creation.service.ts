@@ -25,16 +25,16 @@ export class RecurringExpenseCreationService {
         let month = today.month() + 1;
         const year = today.year();
 
-        if (recurringExpense.every < day) month += 1;
-        const recurringStartDate = moment(`${year}/${month}/${recurringExpense.every}`);
+        if (recurringExpense.repeat < day) month += 1;
+        const recurringStartDate = moment(`${year}/${month}/${recurringExpense.repeat}`);
         return Timestamp.fromDate(recurringStartDate.toDate());
     }
 
     private calculateRecurringEnd(recurringExpense: RecurringExpense): Nullable<Timestamp> {
-        if (!recurringExpense.period) return null;
+        if (!recurringExpense.cycle) return null;
 
         const recurringEndDate = moment(recurringExpense.recurringStart?.toDate())
-            .add(recurringExpense.period - 1, "months")
+            .add(recurringExpense.cycle - 1, "months")
             .toDate();
         return Timestamp.fromDate(recurringEndDate);
     }
