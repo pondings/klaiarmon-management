@@ -28,4 +28,9 @@ export class ExpenseSearchingService {
         return await this.dataService.getDocument<Expense>(`${ExpenseService.EXPENSE_COLLECTION_PATH}/${documentId}`);
     }
 
+    async searchByStatus(status: string): Promise<Expense[]> {
+        const query: QueryFn = ref => ref.where('status', '==', status);
+        return await this.dataService.getCollection<Expense>(ExpenseService.EXPENSE_COLLECTION_PATH, { showSpinner: true, query });
+    }
+
 }

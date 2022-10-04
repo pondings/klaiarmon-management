@@ -20,7 +20,7 @@ import { ExpenseUpdationService } from "./expense-updation.service";
 @Injectable()
 export class ExpenseService {
 
-    static readonly EXPENSE_COLLECTION_PATH = 'accounting/expense/data';
+    static readonly EXPENSE_COLLECTION_PATH = 'accounting/expense/test';
 
     private expenses$ = new BehaviorSubject<Expense[]>([]);
 

@@ -1,4 +1,5 @@
-import { ChangeDetectionStrategy, Component, ViewEncapsulation } from "@angular/core";
+import { ChangeDetectionStrategy, Component, OnInit, ViewEncapsulation } from "@angular/core";
+import { ExpenseAlertService } from "../core/expense-alert/expense-alert.service";
 
 @Component({
     selector: 'app-home-layout',
@@ -16,4 +17,12 @@ import { ChangeDetectionStrategy, Component, ViewEncapsulation } from "@angular/
     changeDetection: ChangeDetectionStrategy.OnPush,
     encapsulation: ViewEncapsulation.None
 })
-export class HomeLayoutComponent {}
+export class HomeLayoutComponent implements OnInit {
+
+    constructor(private expenseAlertService: ExpenseAlertService) {}
+
+    ngOnInit(): void {
+        this.expenseAlertService.subscribeExpenseAlert();
+    }
+
+}
