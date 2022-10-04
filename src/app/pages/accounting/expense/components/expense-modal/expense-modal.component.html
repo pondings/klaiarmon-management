@@ -2,7 +2,7 @@
 
     <div class="modal-header">
         <h4>{{ action }} Expense</h4>
-        <button type="button" class="btn-close" type="button" (click)="dismiss()"></button>
+        <button type="button" class="btn-close" type="button" [class.d-none]="isAlertMode" (click)="dismiss()"></button>
     </div>
 
     <div class="modal-body">
@@ -21,7 +21,7 @@
         <div class="grid bs-rows-1 bs-columns-2 row-gap-1 mb-2">
             <app-date-picker label="Date" [control]="dateCtrl"></app-date-picker>
             <app-user-selector label="Paid by" [control]="paidByCtrl" [required]="true" 
-                [disabled]="(isDisabled$ | async)!"></app-user-selector>
+                [disabled]="(isDisabled$ | async)! || isAlertMode"></app-user-selector>
         </div>
 
         <app-billing-section class="d-block mt-2" formArrayName="billings" [billingFormArr]="billingsFormArr"
@@ -34,9 +34,9 @@
 
     <div *ngIf="!isViewMode" class="modal-footer">
         <button class="btn btn-sm btn-outline-dark" type="button" [disabled]="!(isFormValid$ | async)" (click)="onSubmit()">
-            {{ action }}
+            {{ buttonText }}
         </button>
-        <button class="btn btn-sm btn-outline-danger" type="button" (click)="dismiss()">Cancel</button>
+        <button class="btn btn-sm btn-outline-danger" type="button" [disabled]="isAlertMode" (click)="dismiss()">Cancel</button>
     </div>
 
 </form>

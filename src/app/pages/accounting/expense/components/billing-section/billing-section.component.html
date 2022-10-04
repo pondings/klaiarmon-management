@@ -1,6 +1,6 @@
 <div class="d-flex flex-column">
 
-    <div *ngIf="!isDisabled" class="d-flex justify-content-between align-items-center mb-3">
+    <div *ngIf="!isDisabled && !isAlertMode" class="d-flex justify-content-between align-items-center mb-3">
         <button class="btn btn-outline-dark add-attachment-btn" [disabled]="!(parentPaidByCtrl.valueChanges | async)"
             (click)="addBillingForm()">
             <fa-icon [icon]="faPlus"></fa-icon>
@@ -10,7 +10,7 @@
             {{ overRemain$ | async }}
         </span>
     </div>
-    <div *ngIf="isDisabled" class="mb-3">
+    <div *ngIf="isDisabled || isAlertMode" class="mb-3">
         <span class="text-bold">Billing</span>
     </div>
 
@@ -18,14 +18,14 @@
         <div class="grid bs-rows-1 bs-columns-2" [formGroup]="billingForm">
             <div class="form-floating g-col-1">
                 <app-user-selector label="User" [control]="billingForm.controls.user" [required]="true"
-                    [disabled]="isDisabled"></app-user-selector>
+                    [disabled]="isDisabled || isAlertMode"></app-user-selector>
             </div>
             <div class="input-group">
                 <div class="form-floating">
                     <input class="form-control form-control-sm" formControlName="amount" type="number" placeholder="Amount">
                     <label [class.required]="isRequireAmount">Amount</label>
                 </div>
-                <button *ngIf="!isDisabled" class="btn btn-outline-secondary" type="button" [disabled]="idx === 0" 
+                <button *ngIf="!isDisabled" class="btn btn-outline-secondary" type="button" [disabled]="idx === 0 || isAlertMode" 
                     (click)="removeBillingForm(idx)">
                     <fa-icon [icon]="faCircleMinus"></fa-icon>
                 </button>

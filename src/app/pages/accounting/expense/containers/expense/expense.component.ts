@@ -23,7 +23,7 @@ export class ExpenseComponent implements OnInit {
     constructor(private expenseService: ExpenseService) {}
 
     async ngOnInit(): Promise<void> {
-        this.expenses$ = this.expenseService.getExpense();
+        this.expenses$ = this.expenseService.subscribeExpense();
     }
 
     openAddExpenseModal(): void {
