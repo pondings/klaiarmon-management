@@ -22,7 +22,7 @@ export class HomeLayoutComponent implements OnInit {
     constructor(private expenseAlertService: ExpenseAlertService) {}
 
     ngOnInit(): void {
-        this.expenseAlertService.subscribeExpenseAlert();
+        this.expenseAlertService.fetchExpenseAlert();
     }
 
 }

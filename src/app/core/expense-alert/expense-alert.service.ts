@@ -20,7 +20,7 @@ export class ExpenseAlertService {
         private expenseNotificationService: ExpenseNotificationService,
         private fireAuthService: FireAuthService) {}
 
-    async subscribeExpenseAlert(): Promise<void> {
+    async fetchExpenseAlert(): Promise<void> {
         const expenseAlerts = await this.expenseSearchingService.searchByStatus('ALERT');
         const currentUser = await this.fireAuthService.getCurrentUser();
 
