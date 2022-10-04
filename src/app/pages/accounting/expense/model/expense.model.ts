@@ -25,7 +25,8 @@ export interface Expense<TDATE = Timestamp> {
     paidBy: string;
     files: AttachmentUpload[];
     meta: MetaData<TDATE>;
-    billings: Billing[]
+    billings: Billing[];
+    status: string;
 }
 
 export interface ExpenseForm {

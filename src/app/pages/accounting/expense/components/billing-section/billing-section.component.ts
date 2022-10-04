@@ -80,6 +80,10 @@ export class BillingSectionComponent implements OnInit {
         return this.parentForm.controls.paidBy;
     }
 
+    get isAlertMode(): boolean {
+        return this.action === Action.EXPENSE_ALERT;
+    }
+
     patchValue(billingList: BillingFormValue[]): void {
         billingList.forEach(_ => this.addBillingForm());
         this.billingFormArr.patchValue(billingList);
@@ -88,6 +92,10 @@ export class BillingSectionComponent implements OnInit {
 
     disable(): void {
         this.billingFormArr.disable();
+    }
+
+    enableAmount(): void {
+        this.billingFormArr.controls.forEach(group => group.controls.amount.enable());
     }
 
     private initCreateForm(): void {

@@ -1,11 +1,11 @@
 import { Pipe, PipeTransform } from "@angular/core";
-import ordinal from 'ordinal';
+import { indicator } from 'ordinal';
 
 @Pipe({ name: 'ordinal' })
 export class OrdinalPipe implements PipeTransform {
 
     transform(target: number): string {
-        return ordinal(target);
+        return `${target}${indicator(target)}`;
     }
 
 }

@@ -15,6 +15,11 @@ import { BillingSectionComponent } from "./components/billing-section/billing-se
 import { ExpenseComponent } from "./containers/expense/expense.component";
 import { ExpenseService } from "./services/expense.service";
 import { ExpenseNotificationService } from "./services/expense-notification.service";
+import { ExpenseCommonService } from "./services/expense-common.service";
+import { ExpenseCreationService } from "./services/expense-creation.service";
+import { ExpenseUpdationService } from "./services/expense-updation.service";
+import { ExpenseSearchingService } from "./services/expense-searching.service";
+import { ExpenseDeletationService } from "./services/expense-deletation.service";
 
 @NgModule({
     declarations: [
@@ -27,6 +32,11 @@ import { ExpenseNotificationService } from "./services/expense-notification.serv
     ],
     providers: [
         ExpenseService,
+        ExpenseCommonService,
+        ExpenseSearchingService,
+        ExpenseCreationService,
+        ExpenseUpdationService,
+        ExpenseDeletationService,
         ExpenseNotificationService
     ],
     imports: [

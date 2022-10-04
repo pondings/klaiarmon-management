@@ -3,7 +3,7 @@ import { FormArray, FormBuilder, FormGroup, Validators } from "@angular/forms";
 import { faCalendar } from "@fortawesome/free-solid-svg-icons";
 import { NgbActiveModal } from "@ng-bootstrap/ng-bootstrap";
 import { Timestamp } from "firebase/firestore";
-import { Observable } from "rxjs";
+import { Observable, of, switchMap } from "rxjs";
 import { Action } from "src/app/common/enum/action";
 import { NullableDateStructFormControl, NullableMeta, NullableNumber, NullableNumberFormControl, NullableString, NullableStringFormControl, NullableUserInfo, NullableUserInfoFormControl } from "src/app/common/types/common.type";
 import { findArrDuplicated, mapTo, sumNumber } from "src/app/common/utils/common-util";
@@ -57,6 +57,7 @@ export class ExpenseModalComponent implements OnInit, AfterViewInit {
 
     ngAfterViewInit(): void {
         if (this.action === Action.UPDATE) setTimeout(() => this.initEditForm(), 100);
+        if (this.action === Action.EXPENSE_ALERT) setTimeout(() => this.initAlertForm(), 100);
         if (this.action === Action.VIEW) setTimeout(() => this.initViewForm(), 100);
     }
 
@@ -83,6 +84,10 @@ export class ExpenseModalComponent implements OnInit, AfterViewInit {
         return this.action === Action.VIEW;
     }
 
+    get isAlertMode(): boolean {
+        return this.action === Action.EXPENSE_ALERT;
+    }
+
     get nameCtrl(): NullableStringFormControl {
         return this.expenseForm.controls.name;
     }
@@ -105,6 +110,10 @@ export class ExpenseModalComponent implements OnInit, AfterViewInit {
 
     get billingsFormArr(): FormArray<FormGroup<BillingForm>> {
         return this.expenseForm.controls.billings;
+    }
+
+    get buttonText(): string {
+        return this.action === Action.EXPENSE_ALERT ? 'Add' : this.action;
     }
 
     private validateForm(): void {
@@ -130,6 +139,20 @@ export class ExpenseModalComponent implements OnInit, AfterViewInit {
         this.expenseForm.patchValue(formValue);
         this.addAttachmentSection.patchValue(formValue.files);
         this.billingSection.patchValue(formValue.billings);
+    }
+
+    private initAlertForm(): void {
+        const formValue = this.expense;
+        this.expenseForm.patchValue(formValue);
+        this.addAttachmentSection.patchValue(formValue.files);
+        this.billingSection.patchValue(formValue.billings);
+
+        this.expenseForm.disable();
+        this.billingSection.disable();
+        this.addAttachmentSection.disable();
+
+        this.amountCtrl.enable();
+        this.billingSection.enableAmount();
     }
 
     private initViewForm(): void {

@@ -1,5 +1,6 @@
 import { NgModule } from "@angular/core";
 import { EditProfileModule } from "./edit-profile/edit-profile.module";
+import { ExpenseAlertModule } from "./expense-alert/expense-alert.module";
 import { HeaderModule } from "./header/header.module";
 import { DataService } from "./services/data-service";
 import { FireAuthService } from "./services/fire-auth.service";
@@ -16,7 +17,8 @@ import { ToastModule } from "./toast/toast.module";
         SpinnerModule, 
         ToastModule,
         SidebarModule,
-        EditProfileModule
+        EditProfileModule,
+        ExpenseAlertModule
     ],
     exports: [
         HeaderModule, 

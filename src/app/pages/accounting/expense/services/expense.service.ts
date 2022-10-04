@@ -1,22 +1,20 @@
 import { Injectable } from "@angular/core";
-import { QueryFn } from "@angular/fire/compat/firestore";
 import { NgbModal } from "@ng-bootstrap/ng-bootstrap";
 import { Timestamp } from "firebase/firestore";
 import { BehaviorSubject, Observable } from "rxjs";
 import { Action } from "src/app/common/enum/action";
-import { filterByEqual, filterByIgnoreCase } from "src/app/common/utils/common-util";
-import { getDateStructFromDate } from "src/app/common/utils/date-struct.util";
-import { getMoment } from "src/app/common/utils/moment.util";
+import { isEmptyList } from "src/app/common/utils/common-util";
 import { takeOnce } from "src/app/common/utils/rxjs-util";
-import { DataService } from "src/app/core/services/data-service";
-import { FireAuthService } from "src/app/core/services/fire-auth.service";
-import { FireStorageService } from "src/app/core/services/fire-storage.service";
-import { SpinnerService } from "src/app/core/spinner/spinner.service";
 import { ToastService } from "src/app/core/toast/toast.service";
 import { ImageViewerComponent } from "src/app/shared/components/image-viewer/image-viewer.component";
 import { ExpenseModalComponent } from "../components/expense-modal/expense-modal.component";
-import { AttachmentUpload, Expense, ExpenseFormValue, ExpenseSearch } from "../model/expense.model";
+import { Expense, ExpenseSearch } from "../model/expense.model";
+import { ExpenseCommonService } from "./expense-common.service";
+import { ExpenseCreationService } from "./expense-creation.service";
+import { ExpenseDeletationService } from "./expense-deletation.service";
 import { ExpenseNotificationService } from "./expense-notification.service";
+import { ExpenseSearchingService } from "./expense-searching.service";
+import { ExpenseUpdationService } from "./expense-updation.service";
 
 @Injectable()
 export class ExpenseService {
@@ -25,16 +23,36 @@ export class ExpenseService {
 
     private expenses$ = new BehaviorSubject<Expense[]>([]);
 
-    constructor(private dataService: DataService,
-        private fireStorageService: FireStorageService,
-        private fireAuthService: FireAuthService,
-        private toastService: ToastService,
-        private spinnerService: SpinnerService,
+    constructor(private toastService: ToastService,
         private modalService: NgbModal,
+        private expenseCommonService: ExpenseCommonService,
+        private expenseSearchingService: ExpenseSearchingService,
+        private expenseCreationService: ExpenseCreationService,
+        private expenseUpdationService: ExpenseUpdationService,
+        private expenseDeletationService: ExpenseDeletationService,
         private expenseNotificationService: ExpenseNotificationService) { }
 
+    subscribeExpense(): Observable<Expense[]> {
+        return this.expenses$.asObservable();
+    }
+
+    async getExpenseByDocumentId(documentId: string): Promise<Expense> {
+        return this.expenseSearchingService.searchByDocumentId(documentId);
+    }
+
+    async searchExpense(criteria: ExpenseSearch): Promise<void> {
+        const expenses = await this.expenseSearchingService.searchByCriteria(criteria);
+
+        if (isEmptyList(expenses)) this.toastService.showSuccess('No data found.');
+        this.expenses$.next(expenses);
+    }
+
+    clearExpense(): void {
+        this.expenses$.next([]);
+    }
+
     async viewExpense(expense: Expense): Promise<void> {
-        const expenseFormValue = await this.getExpenseFormValueFromExpense(expense);
+        const expenseFormValue = await this.expenseCommonService.getExpenseFormValueFromExpense(expense);
         const modalRef = this.modalService.open(ExpenseModalComponent, { centered: true, backdrop: 'static' });
         modalRef.componentInstance.action = Action.VIEW;
         modalRef.componentInstance.expense = expenseFormValue;
@@ -45,64 +63,31 @@ export class ExpenseService {
         modalRef.componentInstance.action = Action.CREATE;
 
         await modalRef.result.then(async (expense: Expense<Timestamp>) => {
-            expense.files = await Promise.all(expense.files.map(async file => await this.uploadFile(file)));
-            const addedData = await this.dataService.addDocument(ExpenseService.EXPENSE_COLLECTION_PATH, expense,
-                { showSpinner: true, toastMessage: 'Expense added' });
-            await this.expenseNotificationService.pushNotification(addedData, Action.CREATE);
+            const created = await this.expenseCreationService.create(expense);
+            await this.expenseNotificationService.pushNotification(created, Action.CREATE);
         }, err => { });
     }
 
     async editExpense(expense: Expense): Promise<void> {
-        const expenseFormValue = await this.getExpenseFormValueFromExpense(expense);
+        const expenseFormValue = await this.expenseCommonService.getExpenseFormValueFromExpense(expense);
         const modalRef = this.modalService.open(ExpenseModalComponent, { centered: true, backdrop: 'static' });
         modalRef.componentInstance.action = Action.UPDATE;
         modalRef.componentInstance.expense = expenseFormValue;
 
         await modalRef.result.then(async (expense: Expense) => {
-            expense.files = await Promise.all(expense.files.map(async file => file.file ? await this.uploadFile(file) : file));
-            const updatedData = await this.dataService.updateDocument(ExpenseService.EXPENSE_COLLECTION_PATH, expense,
-                { showSpinner: true, toastMessage: 'Expense updated' });
+            const updated = await this.expenseUpdationService.update(expense);
             this.expenses$.pipe(takeOnce()).subscribe(expenses =>
                 this.expenses$.next(expenses.map(exp =>
-                    exp.meta.documentId === updatedData.meta.documentId ? updatedData : exp)));
-            await this.expenseNotificationService.pushNotification(updatedData, Action.UPDATE);
+                    exp.meta.documentId === updated.meta.documentId ? updated : exp)));
+            await this.expenseNotificationService.pushNotification(updated, Action.UPDATE);
         }, err => { });
-    }
-
-    getExpense(): Observable<Expense[]> {
-        return this.expenses$.asObservable();
-    }
-
-    async getExpenseByDocumentId(documentId: string): Promise<Expense> {
-        return await this.dataService.getDocument<Expense>(`${ExpenseService.EXPENSE_COLLECTION_PATH}/${documentId}`);
-    }
-
-    async searchExpense(criteria: ExpenseSearch): Promise<void> {
-        const criteriaQuery: QueryFn = (ref) => {
-            let query: firebase.default.firestore.CollectionReference | firebase.default.firestore.Query = ref;
-            if (criteria.startDate) query = query.where('date', '>=', criteria.startDate);
-            if (criteria.endDate) query = query.where('date', '<=', criteria.endDate);
-            return query.orderBy('date', 'desc');
-        };
-
-        let collection = await this.dataService.getCollection<Expense>(ExpenseService.EXPENSE_COLLECTION_PATH, { showSpinner: true, query: criteriaQuery });
-        if (criteria.name) collection = collection.filter(filterByIgnoreCase('name', criteria.name));
-        if (criteria.paidBy) collection = collection.filter(filterByEqual('paidBy', criteria.paidBy));
-
-        if (!collection || !collection[0]) this.toastService.showSuccess('No data found.');
-        this.expenses$.next(collection);
-    }
-
-    clearExpense(): void {
-        this.expenses$.next([]);
     }
 
     async deleteExpense(expense: Expense): Promise<void> {
         const confirmation = confirm('After confirm the content will be deleted from the system.');
         if (!confirmation) return;
 
-        await this.dataService.deleteDocument(ExpenseService.EXPENSE_COLLECTION_PATH, expense.meta.documentId!,
-            { showSpinner: true, toastMessage: 'Expense deleted' });
+        await this.expenseDeletationService.delete(expense);
         this.expenses$.pipe(takeOnce()).subscribe(expenses =>
             this.expenses$.next(expenses.filter(expense =>
                 expense.meta.documentId !== expense.meta.documentId)));
@@ -112,29 +97,6 @@ export class ExpenseService {
     viewAttachment(attachmentUrl: string) {
         const modalRef = this.modalService.open(ImageViewerComponent, { centered: true });
         modalRef.componentInstance.imgUrl = attachmentUrl;
-    }
-
-    private async uploadFile(file: AttachmentUpload): Promise<AttachmentUpload> {
-        const currentDate = getMoment(),
-            year = currentDate?.year(),
-            month = currentDate?.month()! + 1;
-        const fileName = file.name?.toLowerCase().replace(/\s|\//g, '');
-
-        const path = `expense/${year}/${month}/${fileName}-${currentDate?.format('DD-MM-YYYY-HH-mm-ss')}`;
-        const uploadUrl = await this.fireStorageService.uploadPhoto(path, file.file!);
-        return { name: fileName!, attachmentUrl: uploadUrl, uploadDate: currentDate?.toDate() };
-    }
-
-    private async getExpenseFormValueFromExpense(expense: Expense): Promise<ExpenseFormValue> {
-        this.spinnerService.show();
-        const { name, amount, date: _date, paidBy: _paidBy, files, meta, billings: _billings } = expense;
-        const date = getDateStructFromDate(_date.toDate());
-        const paidBy = await this.fireAuthService.getUserByUid(expense.paidBy);
-        const billings = await Promise.all(_billings.map(async billing =>
-            ({ user: await this.fireAuthService.getUserByUid(billing.user), amount: billing.amount })));
-
-        this.spinnerService.hide();
-        return { name, amount, date, paidBy, files, meta, billings }
     }
 
 }

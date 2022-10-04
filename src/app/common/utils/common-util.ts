@@ -27,3 +27,4 @@ export function mapTo<T, K extends keyof T>(prop: K): (record: T) => T[K] {
 }
 
 export const stringFormat = (str: string, ...args: string[]) => str.replace(/{(\d+)}/g, (match, index) => args[index] || '');
+export const isEmptyList = <T> (list: T[]) => !list || !list[0];
