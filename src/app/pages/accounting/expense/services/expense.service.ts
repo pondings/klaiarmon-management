@@ -5,7 +5,6 @@ import { BehaviorSubject, Observable } from "rxjs";
 import { Action } from "src/app/common/enum/action";
 import { isEmptyList } from "src/app/common/utils/common-util";
 import { takeOnce } from "src/app/common/utils/rxjs-util";
-import { DataService } from "src/app/core/services/data-service";
 import { ToastService } from "src/app/core/toast/toast.service";
 import { ImageViewerComponent } from "src/app/shared/components/image-viewer/image-viewer.component";
 import { ExpenseModalComponent } from "../components/expense-modal/expense-modal.component";
@@ -20,12 +19,11 @@ import { ExpenseUpdationService } from "./expense-updation.service";
 @Injectable()
 export class ExpenseService {
 
-    static readonly EXPENSE_COLLECTION_PATH = 'accounting/expense/test';
+    static readonly EXPENSE_COLLECTION_PATH = 'accounting/expense/data';
 
     private expenses$ = new BehaviorSubject<Expense[]>([]);
 
-    constructor(private dataService: DataService,
-        private toastService: ToastService,
+    constructor(private toastService: ToastService,
         private modalService: NgbModal,
         private expenseCommonService: ExpenseCommonService,
         private expenseSearchingService: ExpenseSearchingService,
