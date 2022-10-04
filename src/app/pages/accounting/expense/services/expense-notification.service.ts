@@ -20,7 +20,7 @@ export class ExpenseNotificationService {
             .filter(removeArrDuplicated);
         if (!notiUsers[0]) return;
 
-        const contentAction = action === Action.CREATE ? 'add new' : action === Action.UPDATE ? 'update' : 'delete';
+        const contentAction = action === Action.CREATE ? 'added the new' : action === Action.UPDATE ? 'updated the' : 'deleted the';
         const details = await Promise.all(expense.billings.map(async billing => {
             const username = await this.usernamePipe.transform(billing.user);
             return stringFormat(EXPENSE_DETAIL_NOTIFICATION_TEMPLATE, username, billing.amount.toFixed(2));

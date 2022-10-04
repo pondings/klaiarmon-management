@@ -5,6 +5,7 @@ import { filterByEqual } from "src/app/common/utils/common-util";
 import { ExpenseModalComponent } from "src/app/pages/accounting/expense/components/expense-modal/expense-modal.component";
 import { Expense } from "src/app/pages/accounting/expense/model/expense.model";
 import { ExpenseCommonService } from "src/app/pages/accounting/expense/services/expense-common.service";
+import { ExpenseNotificationService } from "src/app/pages/accounting/expense/services/expense-notification.service";
 import { ExpenseSearchingService } from "src/app/pages/accounting/expense/services/expense-searching.service";
 import { ExpenseUpdationService } from "src/app/pages/accounting/expense/services/expense-updation.service";
 import { FireAuthService } from "../services/fire-auth.service";
@@ -16,6 +17,7 @@ export class ExpenseAlertService {
         private expenseCommonService: ExpenseCommonService,
         private expenseSearchingService: ExpenseSearchingService,
         private expenseUpdationService: ExpenseUpdationService,
+        private expenseNotificationService: ExpenseNotificationService,
         private fireAuthService: FireAuthService) {}
 
     async subscribeExpenseAlert(): Promise<void> {
@@ -32,6 +34,7 @@ export class ExpenseAlertService {
                 expense.files = await Promise.all(expense.files.map(async file => file.file ? await this.expenseCommonService.uploadFile(file) : file));
                 expense.status = 'DONE';
                 await this.expenseUpdationService.update(expense);
+                await this.expenseNotificationService.pushNotification(expense, Action.CREATE);
             }, err => { });
         }));
     }
