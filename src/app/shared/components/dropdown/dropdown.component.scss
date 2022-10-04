@@ -3,7 +3,7 @@ app-dropdown {
         width: 100%;
         font-size: 12px !important;
         overflow: auto;
-        height: 200px;
+        max-height: 200px;
     }
 
     .clear-btn {
