@@ -3,4 +3,4 @@ export const EXPENSE_CONTENT_NOTIFICATION_TEMPLATE = '<font face="Arial">Hi <b>{
 export const EXPENSE_DETAIL_NOTIFICATION_TEMPLATE = '<li><b>{0} amount</b> {1}</li>';
 
 export const CALENDAR_TITLE_NOTIFICATION_TEMPLATE = 'Calendar Event from {0}';
-export const CALENDAR_CONTENT_NOTIFICATION_TEMPLATE = '<font face="Arial">Hi <b>{0}</b>,</font><p><font face="Arial"><b>{1}</b> was <b>{2}</b> a calendar event.</font></p><p><font face="Arial"><u><b>Event Info</b></u><br><b>Name:</b> {3}<br><b>Date:</b> {4}<br><b>Description:</b> {5}<br><br></font></p>';
+export const CALENDAR_CONTENT_NOTIFICATION_TEMPLATE = '<font face="Arial">Hi <b>{0}</b>,</font><p><font face="Arial"><b>{1}</b> is <b>{2}</b> calendar event.</font></p><p><font face="Arial"><u><b>Event Info</b></u><br><b>Name:</b> {3}<br><b>Date:</b> {4}<br><b>Description:</b> {5}<br><br></font></p>';
